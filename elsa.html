@@ -1555,25 +1555,38 @@ body.fs-full > .wrap {
       }
       return shuffle(opts);
     }
-    // 干扰项优先取题目里出现过的同类元素（更有迷惑性）
+    // 图形串答案（如 ●●●○）→ 通过增减符号做干扰项
+    const SYMCHARS = ['●', '○', '△', '□', '★', '☆', '▲', '▼', '■'];
+    if (correct.length > 1 && correct.split('').every(function (c) { return SYMCHARS.indexOf(c) !== -1; })) {
+      const freq = {};
+      correct.split('').forEach(function (c) { freq[c] = (freq[c] || 0) + 1; });
+      let top = correct[0], tn = 0;
+      Object.keys(freq).forEach(function (c) { if (freq[c] > tn) { tn = freq[c]; top = c; } });
+      if (tn >= 2) { opts.push(correct.replace(top, '')); opts.push(correct.replace(top, top + top)); }
+      return shuffle(opts.slice(0, 3));
+    }
+    // 干扰项只取「和正确答案同类」且题目里出现过的元素（避免“小”混进人名题）
     q = q || '';
     const cands = [];
-    shuffle((q.match(/[一二三四五六七八九十0-9]+楼/g) || []).slice()).forEach(function (t) {
-      if (cands.indexOf(t) === -1) cands.push(t);
-    });
-    const others = [];
-    NAMES.forEach(function (n) { if (q.indexOf(n) !== -1 && others.indexOf(n) === -1) others.push(n); });
-    ANIMALS.forEach(function (n) { if (q.indexOf(n) !== -1 && others.indexOf(n) === -1) others.push(n); });
-    SYMBOLS.forEach(function (s) { if (q.indexOf(s) !== -1 && others.indexOf(s) === -1) others.push(s); });
-    shuffle(others);
-    others.forEach(function (o) { if (cands.indexOf(o) === -1) cands.push(o); });
+    let pool = SYMBOLS;
+    if (NAMES.indexOf(correct) !== -1) {
+      pool = NAMES;
+      NAMES.forEach(function (n) { if (q.indexOf(n) !== -1 && n !== correct && cands.indexOf(n) === -1) cands.push(n); });
+    } else if (ANIMALS.indexOf(correct) !== -1) {
+      pool = ANIMALS;
+      ANIMALS.forEach(function (n) { if (q.indexOf(n) !== -1 && n !== correct && cands.indexOf(n) === -1) cands.push(n); });
+    } else if (SYMBOLS.indexOf(correct) !== -1) {
+      SYMBOLS.forEach(function (s) { if (q.indexOf(s) !== -1 && s !== correct && cands.indexOf(s) === -1) cands.push(s); });
+    } else {
+      (q.match(/[一二三四五六七八九十0-9]+楼/g) || []).forEach(function (t) { if (t !== correct && cands.indexOf(t) === -1) cands.push(t); });
+    }
+    shuffle(cands);
     cands.forEach(function (c) { if (opts.length < 3 && opts.indexOf(c) === -1) opts.push(c); });
-    // 还不够再用通用池补齐
+    // 不够再用同类池补齐
     if (opts.length < 3) {
-      const pool = (correct.length <= 1) ? SYMBOLS : NAMES;
       const p = shuffle(pool.slice());
       for (let k = 0; k < p.length && opts.length < 3; k++) {
-        if (opts.indexOf(p[k]) === -1) opts.push(p[k]);
+        if (p[k] !== correct && opts.indexOf(p[k]) === -1) opts.push(p[k]);
       }
     }
     return shuffle(opts);
