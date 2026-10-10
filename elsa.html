@@ -3490,8 +3490,15 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
         seenQ[k] = 1;
         return true;
       });
-      // 每组从本题型的题库里随机抽 10 题：点「换一批」就会换一组新题
-      const items = shuffle(pool.slice()).slice(0, 10);
+      // 每组随机抽 10 题，并且优先抽「上一次没出现过的题」，保证「换一批」一定换新题
+      const seenKey = pk('eng_seen_v1') + '_' + engSem + '_' + t.key;
+      let prevQ = [];
+      try { prevQ = JSON.parse(lsGet('eng_seen_v1' + '_' + engSem + '_' + t.key) || '[]') || []; } catch (e) { prevQ = []; }
+      const prevSet = {};
+      prevQ.forEach(function (q) { prevSet[q] = 1; });
+      const freshPool = pool.filter(function (it) { return !prevSet[it.q]; });
+      const items = shuffle((freshPool.length >= 10 ? freshPool : pool).slice()).slice(0, 10);
+      try { localStorage.setItem(seenKey, JSON.stringify(items.map(function (it) { return it.q; }))); } catch (e) {}
       const gid = 'se' + ti;
       engSecItems[gid] = items;
       regGeneric(gid, t.title, items.map(function (it) { return { q: it.q, a: it.ans }; }));
