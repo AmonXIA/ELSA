@@ -2412,7 +2412,8 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     { key: '读音', title: '读音辨析' },
     { key: '首字母填空', title: '首字母填空' },
     { key: '选择', title: '选择题' },
-    { key: '语法', title: '语法（时态 · 词形 · 从句）' }
+    { key: '语法', title: '语法（时态 · 词形 · 从句）' },
+    { key: '句型填空', title: '句型填空（根据中文完成句子）' }
   ];
   let engSem = '初一上';
   function engSetSem(s) { engSem = s; refreshGeneric(); }
@@ -2556,7 +2557,32 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     mc('初二上', '语法', '语法：I ______ my homework already.（finish）', ['finish', 'finished', 'have finished', 'finishing'], 'have finished', 'already 常与现在完成时连用。'),
     mc('初二上', '语法', '语法：The window ______ by the boy yesterday.（break）', ['broke', 'was broken', 'is broken', 'breaks'], 'was broken', '窗户被打破，用一般过去时的被动语态。'),
     mc('初二上', '语法', '语法：He wants ______ a doctor.（be）', ['be', 'to be', 'being', 'was'], 'to be', 'want to do sth. 想要做某事。'),
-    mc('初二上', '语法', '语法：This is ______ book I have ever read.（interesting）', ['interesting', 'more interesting', 'the most interesting', 'most interesting'], 'the most interesting', 'I have ever read 表示范围，用最高级且加 the。')
+    mc('初二上', '语法', '语法：This is ______ book I have ever read.（interesting）', ['interesting', 'more interesting', 'the most interesting', 'most interesting'], 'the most interesting', 'I have ever read 表示范围，用最高级且加 the。'),
+    /* ---------- 句型填空（根据中文完成句子，首字母已给） ---------- */
+    fb('初一上', '句型填空', '根据中文完成句子：篮球是我最喜欢的爱好。Basketball is my f______ hobby.', 'favourite', 'favourite 意为“最喜欢的”，修饰 hobby。'),
+    fb('初一上', '句型填空', '根据中文完成句子：我每周和同学们在学校操场练习两次。I practise with my classmates on the school playground t______ a week.', 'twice', '一周两次用 twice a week。'),
+    fb('初一上', '句型填空', '根据中文完成句子：周末有时候我和爸爸一起在电视上看篮球比赛。S______ my father and I watch basketball games on TV together.', 'Sometimes', '“有时候”用 Sometimes，句首首字母大写。'),
+    fb('初一上', '句型填空', '根据中文完成句子：打篮球不仅让我更强壮、更健康，还教会我如何与他人合作。P______ basketball not only makes me stronger and healthier, but also teaches me how to work with o______.', 'Playing', '动名词作主语，句首首字母大写用 Playing。'),
+    fb('初一上', '句型填空', '根据中文完成句子：他因其精湛的球技而为人所知。He is f______ for his excellent skills.', 'famous', 'be famous for 因……而闻名。'),
+    fb('初一上', '句型填空', '根据中文完成句子：为了实现梦想，他非常努力。He works very hard to make his dream c______ true.', 'come', 'make one\'s dream come true 使梦想实现。'),
+    fb('初一上', '句型填空', '根据中文完成句子：将来我梦想成为一名体育老师。I dream of b______ a PE teacher in the future.', 'becoming', 'dream of doing sth. 梦想做某事，介词 of 后接动名词。'),
+    fb('初一上', '句型填空', '根据中文完成句子：他遇到困难时从不放弃。He never gives u______ when he is in trouble.', 'up', 'give up 放弃。'),
+    fb('初一上', '句型填空', '根据中文完成句子：这个有三层的礼堂是用来开会的。The hall w______ three floors is for meetings.', 'with', 'with 引导的介词短语作后置定语，表示“带有三层的”。'),
+    fb('初一上', '句型填空', '根据中文完成句子：我前面的戴眼镜男生太高了。The boy with glasses in f______ of me is too tall.', 'front', 'in front of 在……前面。'),
+    fb('初一上', '句型填空', '根据中文完成句子：他们的地理老师喜欢站在讲台前面。Their G______ teacher likes to stand in front of the teacher\'s desk.', 'Geography', '地理学科 Geography，句首作名词首字母大写。'),
+    fb('初一上', '句型填空', '根据中文完成句子：我们开心地划船。We have fun r______ a boat.', 'rowing', 'have fun doing sth. 做某事很开心。'),
+    fb('初一上', '句型填空', '根据中文完成句子：记日记能够帮我们记住事情。Keeping a diary h______ us remember things.', 'helps', '动名词作主语视为单数，谓语用 helps。'),
+    fb('初一上', '句型填空', '根据中文完成句子：这个女孩如此年幼以至于不能上学。The girl is so young t______ she can\'t go to school.', 'that', 'so…that… 如此……以至于……。'),
+    fb('初一上', '句型填空', '根据中文完成句子：一个带大窗户的食堂 a dining hall w______ big windows', 'with', 'with 表示“带有”，作后置定语。'),
+    fb('初一上', '句型填空', '根据中文完成句子：从不上课迟到 be n______ late for class', 'never', 'be never late for class 上课从不迟到。'),
+    fb('初一上', '句型填空', '根据中文完成句子：在公交车站上等他 wait for him at the bus s______', 'stop', '公交车站 bus stop。'),
+    fb('初一上', '句型填空', '根据中文完成句子：带领护士们参观医院 show the nurses a______ the hospital', 'around', 'show sb. around 带某人参观。'),
+    fb('初一上', '句型填空', '根据中文完成句子：欢迎回家 w______ home', 'welcome', '欢迎 welcome。'),
+    fb('初一上', '句型填空', '根据中文完成句子：我热爱绘画，它已经成为我生活中重要的一部分。It has become an important p______ of my life.', 'part', 'part 部分，an important part of…。'),
+    fb('初一上', '句型填空', '根据中文完成句子：绘画让我在忙碌一天之后感到放松。Painting makes me feel r______ after a busy day.', 'relaxed', 'feel relaxed 感到放松。'),
+    fb('初一上', '句型填空', '根据中文完成句子：他以画马闻名。He is famous for his p______ of horses.', 'paintings', 'paintings 画作（此处用复数）。'),
+    fb('初一上', '句型填空', '根据中文完成句子：他是我的榜样。He is my role m______.', 'model', 'role model 榜样。'),
+    fb('初一上', '句型填空', '根据中文完成句子：在将来，我想成为一名设计师。I would like to become a d______ in the future.', 'designer', 'designer 设计师。')
   ];
   const engSecItems = {};
   function buildEngSections() {
@@ -2669,6 +2695,44 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
       function () { const a = ri(20, 60); return { q: '简便计算：' + a + ' × 99 ＋ ' + a, ans: String(a * 100), key: [a * 100] }; },
       function () { const a = ri(11, 30), b = ri(3, 9); return { q: '简便计算：' + a + ' × ' + b + ' − ' + a + ' × ' + (b - 1), ans: String(a), key: [a] }; },
       function () { const k = ri(5, 20); return { q: '简便计算：' + (k + 1) + '² − ' + k + '²', ans: String(2 * k + 1), key: [2 * k + 1] }; }
+    ],
+    numtheory: [
+      function () { const r1 = ri(3, 7), r2 = ri(2, 5); let n = 1; while (!(n % 7 === r1 && n % 5 === r2)) n++; return { q: '一个正整数除以 7 余 ' + r1 + '，除以 5 余 ' + r2 + '，这个数最小是多少？', ans: String(n), key: [n] }; },
+      function () { const b = ri(3, 6), c = ri(5, 9); const cnt = Math.floor(100 / b) - Math.floor(100 / (b * c)); return { q: '1 到 100 中，能被 ' + b + ' 整除但不能被 ' + (b * c) + ' 整除的数有多少个？', ans: String(cnt), key: [cnt] }; },
+      function () { const g = pick([2, 3, 4]); const m = g * ri(2, 5); return { q: '两个数的最大公因数是 ' + g + '，最小公倍数是 ' + m + '，其中较大的一个数是多少？', ans: String(m), key: [m] }; },
+      function () { const d = ri(3, 5); const n = 9 * 100 + 10 * d + (14 - 9 - d); return { q: '一个三位数，百位是 9，各位数字都不为 0 且互不相同，三个数字之和是 15。这个三位数最大是多少？', ans: String(n), key: [n] }; },
+      function () { const k = ri(4, 12); return { q: '2 的 ' + k + ' 次方的个位数字是多少？', ans: String(Math.pow(2, k) % 10), key: [Math.pow(2, k) % 10] }; },
+      function () { const a = ri(2, 5), b = ri(2, 6); let n = 0; while (!((n + a) % 5 === 0 && (n - b) % 6 === 0)) n++; return { q: '一个正整数加上 ' + a + ' 能被 5 整除，减去 ' + b + ' 能被 6 整除，这个数最小是多少？', ans: String(n), key: [n] }; },
+      function () { return { q: '用 0、1、2、3 组成没有重复数字的三位数（百位不能为 0），共有多少个？', ans: '18', key: [18] }; },
+      function () { const p = pick([[4, 12], [6, 18], [4, 16], [6, 12]]); return { q: '两个数的最大公因数是 4，最小公倍数是 12，这两个数中较小的是多少？', ans: '4', key: [4] }; }
+    ],
+    cleverthink: [
+      function () { const n = 2 * ri(25, 50); return { q: '计算：1 − 2 ＋ 3 − 4 ＋ … ＋ ' + (n - 1) + ' − ' + n, ans: String(-n / 2), key: [-n / 2] }; },
+      function () { const n = ri(6, 12); return { q: '计算：1/(1×2) ＋ 1/(2×3) ＋ … ＋ 1/(' + n + '×' + (n + 1) + ')，结果的分子是多少（分母为 ' + (n + 1) + '）？', ans: String(n), key: [n] }; },
+      function () { const a = ri(20, 99); return { q: '简便计算：' + a + ' × ' + a + ' ＋ ' + a, ans: String(a * (a + 1)), key: [a * (a + 1)] }; },
+      function () { const n = pick([20, 50, 100]); return { q: '计算：1 ＋ 2 ＋ 3 ＋ … ＋ ' + n, ans: String(n * (n + 1) / 2), key: [n * (n + 1) / 2] }; },
+      function () { const n = pick([25, 50]); return { q: '计算：2 ＋ 4 ＋ 6 ＋ … ＋ ' + (2 * n), ans: String(n * (n + 1)), key: [n * (n + 1)] }; },
+      function () { const k = pick([2026, 2027, 2028]); return { q: '计算：' + k + ' × ' + (k + 1) + ' − ' + (k - 1) + ' × ' + (k + 2), ans: '2', key: [2] }; },
+      function () { const n = pick([4, 5, 6]); return { q: '计算：1/2 ＋ 1/4 ＋ 1/8 ＋ … （共 ' + n + ' 项），结果的分子是多少（分母为 2^' + n + '）？', ans: String(Math.pow(2, n) - 1), key: [Math.pow(2, n) - 1] }; },
+      function () { const n = ri(8, 15); return { q: '计算：(1 ＋ 2 ＋ … ＋ ' + n + ') − (1 ＋ 2 ＋ … ＋ ' + (n - 1) + ')', ans: String(n), key: [n] }; }
+    ],
+    backward: [
+      function () { const x = ri(3, 20), a = ri(3, 9), b = ri(2, 5), c = ri(10, 40); return { q: '一个数加上 ' + a + '，再乘 ' + b + '，减去 ' + (a * b + 5) + '，结果是 ' + (x * b + 5) + '。这个数是多少？', ans: String(x), key: [x] }; },
+      function () { return { q: '甲乙丙三人中有一人做了好事。甲说“不是我”，乙说“不是我”，丙说“是乙”，三人中只有一人说真话。做好事的是甲填 1、乙填 2、丙填 3，请填数字。', ans: '1', key: [1] }; },
+      function () { const m = ri(15, 30); return { q: '三个连续偶数的和是 ' + (3 * m) + '，其中最小的是多少？', ans: String(m - 2), key: [m - 2] }; },
+      function () { return { q: '一个两位数，个位数字是十位数字的 2 倍，两个数字之和是 9，这个两位数是多少？', ans: '36', key: [36] }; },
+      function () { const n = ri(3, 6); return { q: n + ' 个同学两两握手一次，一共握手多少次？', ans: String(n * (n - 1) / 2), key: [n * (n - 1) / 2] }; },
+      function () { const k = ri(4, 9); return { q: '一个数的 3 倍比它的 2 倍多 ' + k + '，这个数是多少？', ans: String(k), key: [k] }; },
+      function () { const x = ri(10, 40), a = ri(3, 9), b = ri(2, 6); return { q: '一个数减去 ' + a + '，再除以 ' + b + '，结果是 ' + ((x - a) / b >= 1 ? Math.round((x - a) / b) : 1) + '。这个数是多少？', ans: String(b * Math.round((x - a) / b) + a), key: [b * Math.round((x - a) / b) + a] }; },
+      function () { const n = ri(5, 8); return { q: '一根绳子剪 ' + n + ' 刀（每刀只剪一处），最多能剪成几段？', ans: String(n + 1), key: [n + 1] }; }
+    ],
+    extreme: [
+      function () { return { q: '用 1、2、3、4 各一次组成两个两位数，它们的乘积最大是多少？', ans: '1312', key: [1312] }; },
+      function () { return { q: '用 1、2、3、4 各一次组成两个两位数，它们的乘积最小是多少？', ans: '312', key: [312] }; },
+      function () { const s = ri(10, 20); return { q: '两个正整数的和是 ' + (2 * s) + '，它们的乘积最大是多少？', ans: String(s * s), key: [s * s] }; },
+      function () { const p = ri(10, 24); return { q: '用一根 ' + (2 * p) + ' 厘米长的铁丝围成一个长方形（长、宽为整数厘米），面积最大是多少平方厘米？', ans: String(p * p / 4), key: [p * p / 4] }; },
+      function () { return { q: '一个三位数，百位是 5，十位与个位数字之和是 8，这个三位数最大是多少？', ans: '580', key: [580] }; },
+      function () { const a = ri(10, 40); return { q: '把 ' + (2 * a) + ' 拆成两个正整数之和，它们的乘积最大是多少？', ans: String(a * a), key: [a * a] }; }
     ],
     equation: [
       function () { const x = ri(2, 9), a = ri(2, 6), b = ri(1, 15); return { q: '解方程：' + a + 'x ＋ ' + b + ' ＝ ' + (a * x + b) + '，x ＝ ？', ans: 'x ＝ ' + x, key: [x] }; },
@@ -2876,6 +2940,10 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     pattern: '找规律：先算相邻两项的差，判断是等差、等比，还是平方数、三角数（1,3,6,10…）。',
     stat: '总和＝平均数×个数；中位数要先把数排序再取中间；众数是出现次数最多的数。',
     clever: '巧算：用凑整、分配律、平方差；等差数列求和：1+3+5+…+(2n−1)=n²。',
+    numtheory: '数论题：先写出满足第一个条件的数，再逐个检验第二个条件；求个数时用「总数 − 重复的」。',
+    cleverthink: '思维巧算：先观察结构。1−2+3−4… 两两一组；1/(n(n+1))=1/n−1/(n+1) 可用裂项相消；a²+a=a(a+1)。',
+    backward: '倒推题：从结果出发，加变减、乘变除，一步步倒着算；逻辑题用假设法逐个检验。',
+    extreme: '最值题：两数之和一定时，越接近乘积越大（相等时最大）；组数时把大的数字放十位，但要注意搭配使两数接近。',
     factor: '因式分解：x²+(p+q)x+pq=(x+p)(x+q)；平方差 a²−b²=(a+b)(a−b)；完全平方 a²±2ab+b²=(a±b)²。',
     congruence: '全等三角形对应边、对应角相等；等腰三角形 1 条对称轴，等边三角形 3 条，正方形 4 条，长方形 2 条。',
     linearfunc: '一次函数 y=kx+b：与 y 轴交于 (0,b)，与 x 轴交于 (−b/k,0)；k>0 时 y 随 x 增大而增大。',
@@ -2908,8 +2976,8 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     { id: 'sc3', title: '巧算速算', badge: '初一', emoji: '⚡', pool: 'clever' }
   ];
   const SHAWN_TYPES = [
-    { id: 'st1', title: '有理数运算', grade: '初一', pool: 'rational' },
-    { id: 'st2', title: '整式与代数式', grade: '初一', pool: 'expr' },
+    { id: 'st1', title: '数论与余数', grade: '初一', pool: 'numtheory' },
+    { id: 'st2', title: '巧算与简算（思维）', grade: '初一', pool: 'cleverthink' },
     { id: 'st3', title: '一元一次方程', grade: '初一', pool: 'equation' },
     { id: 'st4', title: '一元一次不等式', grade: '初一', pool: 'ineq' },
     { id: 'st5', title: '二元一次方程组', grade: '初一', pool: 'system' },
@@ -2920,7 +2988,8 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     { id: 'st10', title: '几何图形（看图·作图）', grade: '初一', pool: 'geofig' },
     { id: 'st11', title: '找规律与数列', grade: '初一', pool: 'pattern' },
     { id: 'st12', title: '统计与平均数', grade: '初一', pool: 'stat' },
-    { id: 'st13', title: '巧算速算', grade: '初一', pool: 'clever' },
+    { id: 'st13', title: '倒推与逻辑', grade: '初一', pool: 'backward' },
+    { id: 'st14x', title: '最值与优化', grade: '初一', pool: 'extreme' },
     { id: 'st14', title: '因式分解', grade: '初二', pool: 'factor' },
     { id: 'st15', title: '全等与轴对称', grade: '初二', pool: 'congruence' },
     { id: 'st16', title: '一次函数', grade: '初二', pool: 'linearfunc' },
