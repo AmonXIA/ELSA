@@ -2078,9 +2078,10 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
         { id: 'sx-df', icon: '📕', title: '道法背诵', sub: '20 题', act: "openModule('sx-df')", goal: true, tint: '#fdeef6' },
         { id: 'sx-ls', icon: '📗', title: '历史背诵', sub: '20 题', act: "openModule('sx-ls')", goal: true, tint: '#fdf3e3' },
         { id: 'sx-dl', icon: '📘', title: '地理背诵', sub: '20 题', act: "openModule('sx-dl')", goal: true, tint: '#e6f6f4' },
-        { id: 'sx-oral', icon: '🗣️', title: '英语口语', sub: '朗读', act: "openModule('sx-oral')", goal: true, tint: '#eaf0fd' }
+        { id: 'sx-oral', icon: '🗣️', title: '英语口语', sub: '朗读', act: "openModule('sx-oral')", goal: true, tint: '#eaf0fd' },
+        { id: 'sx-chin', icon: '📜', title: '语文', sub: '知识点·古文', act: "openModule('sx-chin')", goal: true, tint: '#eef7ea' }
       ],
-      colors: { read: '#4f9cf7', sport: '#43b96a', 'sx-math': '#7c6cf0', 'sx-calc': '#3d7fd0', 'sx-eng': '#f0736c', 'sx-df': '#e0679a', 'sx-ls': '#cf9a2e', 'sx-dl': '#2fa3a0', 'sx-oral': '#4aa3c9' }
+      colors: { read: '#4f9cf7', sport: '#43b96a', 'sx-math': '#7c6cf0', 'sx-calc': '#3d7fd0', 'sx-eng': '#f0736c', 'sx-df': '#e0679a', 'sx-ls': '#cf9a2e', 'sx-dl': '#2fa3a0', 'sx-oral': '#4aa3c9', 'sx-chin': '#7ba05b' }
     }
   };
   function curProfile() { return PROFILES[PROFILE_ID] || PROFILES.elsa; }
@@ -2274,8 +2275,37 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     { q: '公民权利受到侵害时可以怎样维权？', a: '依法维权：协商、调解、投诉、仲裁、诉讼等' },
     { q: '法律区别于道德的最主要特征是？', a: '由国家强制力保证实施' }
   ];
-  function genShawnRecite(bank) {
+ function genShawnRecite(bank) {
     return shuffle(bank.slice()).slice(0, 20);
+  }
+  const CHIN_BANK = [
+    { q: '我国第一部诗歌总集是？', a: '《诗经》' },
+    { q: '“四书”指哪四部？', a: '《大学》《中庸》《论语》《孟子》' },
+    { q: '“唐宋八大家”中的唐代两位是？', a: '韩愈、柳宗元' },
+    { q: '我国第一部纪传体通史是？', a: '《史记》（司马迁著）' },
+    { q: '“诗仙”和“诗圣”分别是谁？', a: '李白（诗仙）、杜甫（诗圣）' },
+    { q: '《论语》是记录谁言行的书？', a: '孔子及其弟子的言行' },
+    { q: '“三顾茅庐”的主人公是？', a: '刘备与诸葛亮' },
+    { q: '常见的修辞手法有哪些（举三种）？', a: '比喻、拟人、排比（夸张、反问、设问等）' },
+    { q: '“床前明月光”的下一句是？', a: '疑是地上霜' },
+    { q: '《春晓》的作者是谁？', a: '孟浩然' },
+    { q: '“会当凌绝顶”的下一句是？', a: '一览众山小' },
+    { q: '“海内存知己”的下一句是？', a: '天涯若比邻' },
+    { q: '“不但……而且……”表示什么关系？', a: '递进关系' },
+    { q: '把字句和被字句可以互相改写吗？', a: '可以（意思不变，主语宾语位置调换）' },
+    { q: '古文中“走”的意思是什么？', a: '跑（今义是行走）' },
+    { q: '古文中“涕”的意思是什么？', a: '眼泪' },
+    { q: '古文中“妻子”指的是？', a: '妻子和儿女' },
+    { q: '古文中“去”常表示什么意思？', a: '离开' },
+    { q: '古文中“亡”常表示什么意思？', a: '逃亡（也有“通‘无’，没有”的用法）' },
+    { q: '古文中“是”常作什么词用？', a: '指示代词，意思是“这”' },
+    { q: '古文中“善”常表示什么？', a: '擅长、善于' },
+    { q: '古文中“或”常表示什么？', a: '有的人、有的（不是“或者”）' },
+    { q: '古文中“尝”的意思是什么？', a: '曾经' },
+    { q: '古文中“乃”的意思是什么？', a: '于是、才' }
+  ];
+  function genChin() {
+    return shuffle(CHIN_BANK.slice()).slice(0, 20);
   }
 
   const ORAL_LIST = [
@@ -2594,7 +2624,8 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     'sx-df': { id: 'sx-df', name: '道法背诵', title: '📕 道德与法治 · 知识背诵', kind: 'flash', gen: function () { return genShawnRecite(DF_BANK); }, tip: '先自己回想答案，再点开对照；背完点「完成背诵」。' },
     'sx-ls': { id: 'sx-ls', name: '历史背诵', title: '📗 历史 · 知识背诵', kind: 'flash', gen: function () { return genShawnRecite(LS_BANK); }, tip: '先自己回想答案，再点开对照；背完点「完成背诵」。' },
     'sx-dl': { id: 'sx-dl', name: '地理背诵', title: '📘 地理 · 知识背诵', kind: 'flash', gen: function () { return genShawnRecite(DL_BANK); }, tip: '先自己回想答案，再点开对照；背完点「完成背诵」。' },
-    'sx-oral': { id: 'sx-oral', name: '英语口语', title: '🗣️ 英语口语练习', kind: 'oral', gen: genShawnOral, tip: '大声朗读每一句，读完点「完成朗读」。' }
+    'sx-oral': { id: 'sx-oral', name: '英语口语', title: '🗣️ 英语口语练习', kind: 'oral', gen: genShawnOral, tip: '大声朗读每一句，读完点「完成朗读」。' },
+    'sx-chin': { id: 'sx-chin', name: '语文', title: '📜 语文 · 知识点与古文词义', kind: 'flash', gen: genChin, tip: '先自己回想答案，再点开对照；背完点「完成背诵」。' }
   };
   let curGeneric = null;
   function openModule(id) {
