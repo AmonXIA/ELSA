@@ -1240,11 +1240,32 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     return got.every((v, i) => v === exp[i]);
   }
   function parseNum(s) {
-    const t = String(s).replace(/[－—−–]/g, '-').replace(/[　\s]/g, '');
-    const m = t.match(/^(-?\d+)\/(-?\d+)$/);
-    if (m) return Number(m[1]) / Number(m[2]);
-    const v = Number(t.replace(/[^\d.\-]/g, ''));
-    return (t !== '' && !isNaN(v)) ? v : null;
+    // 统一的数值解析：支持分数 1/6、除号 3÷4、小数、负数、全角数字、带分数 1 1/2
+    let t = String(s)
+      .replace(/[０-９]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); })
+      .replace(/[－—−–ー]/g, '-')
+      .replace(/[÷／⁄∕]/g, '/')
+      .replace(/[．。]/g, '.')
+      .replace(/　/g, ' ')
+      .trim();
+    if (t === '') return null;
+    const mixed = t.match(/^(-?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+    if (mixed) {
+      const d = Number(mixed[3]);
+      if (!d) return null;
+      const sign = mixed[1].charAt(0) === '-' ? -1 : 1;
+      return sign * (Math.abs(Number(mixed[1])) + Number(mixed[2]) / d);
+    }
+    const flat = t.replace(/\s+/g, '');
+    const frac = flat.match(/^(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
+    if (frac) {
+      const d = Number(frac[2]);
+      if (d === 0) return null;
+      return Number(frac[1]) / d;
+    }
+    if (!/^[+-]?\d*(?:\.\d*)?$/.test(flat)) return null;
+    const v = Number(flat.replace(/^\+/, ''));
+    return isNaN(v) ? null : v;
   }
   function gcd(a, b) { return b ? gcd(b, a % b) : Math.abs(a); }
   function fracStr(n, d) { const g = gcd(n, d) || 1; n /= g; d /= g; return d === 1 ? String(n) : n + '/' + d; }
@@ -5351,8 +5372,8 @@ function reciteBodyHTML(cfg) {
 }
 
   const GENERIC_MODULES = {
-    'sx-math': { id: 'sx-math', name: '数学思维', title: '🧮 数学思维（初中 · 按知识大类）', kind: 'shawnmath', tip: '按 12 个知识大类练习，每类 10 题，点「批改本组」。' },
-    'sx-calc': { id: 'sx-calc', name: '数学计算', title: '✏️ 数学计算（初中 · 三组）', kind: 'shawncalc', tip: '有理数 / 整式 / 巧算 三组，每组 10 题，点「批改本组」。' },
+    'sx-math': { id: 'sx-math', name: '数学思维', title: '🧮 数学思维（初中 · 按知识大类）', kind: 'shawnmath', tip: '按 12 个知识大类练习，每类 10 题，点「批改本组」。分数写成 1/6 这样（手写或键盘都行），等值小数也算对。' },
+    'sx-calc': { id: 'sx-calc', name: '数学计算', title: '✏️ 数学计算（初中 · 三组）', kind: 'shawncalc', tip: '有理数 / 整式 / 巧算 三组，每组 10 题，点「批改本组」。分数写 1/6、小数写 0.75、负数写 -3，等值的写法都算对。' },
     'sx-eng': { id: 'sx-eng', name: '英语语法', title: '🔤 英语（译林版 · 学期 / 题型）', kind: 'engsec', gen: function () { return []; }, tip: '按学期切换到「初一上 / 初一下 / 初二上」，再按题型分组练习；答错会显示解析。' },
     'sx-df': { id: 'sx-df', name: '道法背诵', title: '📕 道德与法治（按学期 · 单元）', kind: 'recite', bank: 'df', tip: '按学期和单元整理，每个单元一组；先自己回想，再点开对照。' },
     'sx-ls': { id: 'sx-ls', name: '历史背诵', title: '📗 历史（按学期 · 单元）', kind: 'recite', bank: 'ls', tip: '按学期和单元整理，每个单元一组；先自己回想，再点开对照。' },
@@ -5498,7 +5519,7 @@ function reciteBodyHTML(cfg) {
       html += '<div class="calc-item" data-gi="' + gid + '-' + i + '"><div class="calc-main">' +
         '<div class="q">' + (i + 1) + '、' + fmtMath(it.q) + '</div>' +
         (it.svg ? '<div class="geofig">' + it.svg + '</div>' : '') +
-        '<div class="a-row"><input class="ans-input sm-input" data-g="' + gid + '" data-i="' + i + '" type="text" inputmode="numeric" placeholder="✏️" autocomplete="off"><span class="mark"></span></div>' +
+        '<div class="a-row"><input class="ans-input sm-input" data-g="' + gid + '" data-i="' + i + '" type="text" inputmode="text" placeholder="✏️ 如 1/6" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><span class="mark"></span></div>' +
         '<button class="add-wrong" data-type="' + gid + '" data-i="' + i + '">＋错题本</button>' +
         revealHTML(it.ans, it.exp || SHAWN_POOL_TIPS[t.pool]) + '</div>' +
         '<canvas class="scratch" aria-label="草稿区"></canvas></div>';
