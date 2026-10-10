@@ -850,6 +850,8 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
 .grade-bar button { border: 1px solid #d6e4f2; background: #fff; color: #3a6ea5; border-radius: 999px; padding: 5px 16px; cursor: pointer; font-size: 13px; font-family: inherit; }
 .grade-bar button.active { background: #3d7fd0; border-color: #3d7fd0; color: #fff; font-weight: 700; }
 .grade-bar button:hover { border-color: #3d7fd0; }
+/* 答案解析 */
+.reveal .exp { display: block; color: #6b7a8d; font-weight: 400; font-size: 0.94em; margin-top: 2px; }
 /* 计算题里的错题本按钮缩小，避免撑大 */
 .calc-item .add-wrong { display: inline-block; margin: 6px 0 0; font-size: 11px; padding: 1px 9px; line-height: 1.7; }
 .calc-item > .add-wrong { align-self: flex-start; }
@@ -2402,6 +2404,99 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
   let chinGrade = '初一';
   function chinSetGrade(g) { chinGrade = g; refreshGeneric(); }
   function genChinGraded() { const b = chinGrade === '初二' ? CHIN_8 : chinGrade === '初三' ? CHIN_9 : CHIN_7; return shuffle(b.slice()).slice(0, 12); }
+  /* ===== 英语：按学期 × 题型分组 ===== */
+  const ENG_TYPES = [
+    { key: '读音', title: '读音辨析' },
+    { key: '首字母填空', title: '首字母填空' },
+    { key: '选择', title: '选择题' },
+    { key: '语法', title: '语法（时态 · 词形 · 从句）' }
+  ];
+  let engSem = '初一上';
+  function engSetSem(s) { engSem = s; refreshGeneric(); }
+  const ENG_ITEMS = [
+    { sem: '初一上', type: '读音', q: '下列单词中 a 的读音与其他三个不同的是', options: ['name', 'cake', 'cat', 'grade'], ans: 'cat', exp: 'cat 中 a 读 /æ/，其余三个读 /eɪ/。' },
+    { sem: '初一上', type: '读音', q: '下列单词中 o 的读音与其他三个不同的是', options: ['go', 'no', 'dog', 'home'], ans: 'dog', exp: 'dog 中 o 读 /ɒ/，其余三个读 /əʊ/。' },
+    { sem: '初一上', type: '读音', q: '下列单词中 i 的读音与其他三个不同的是', options: ['bike', 'five', 'big', 'nice'], ans: 'big', exp: 'big 中 i 读 /ɪ/，其余三个读 /aɪ/。' },
+    { sem: '初一上', type: '首字母填空', q: '首字母填空：My father is a d______. He works in a hospital.', ans: 'doctor', exp: '在医院工作的父亲是医生，doctor。' },
+    { sem: '初一上', type: '首字母填空', q: '首字母填空：There are twelve m______ in a year.', ans: 'months', exp: '一年有 12 个月，month 复数是 months。' },
+    { sem: '初一上', type: '首字母填空', q: '首字母填空：We have four l______ in the morning.', ans: 'lessons', exp: '上午有四节课，lesson 复数是 lessons。' },
+    { sem: '初一上', type: '选择', q: '选择：There ______ a book and two pens on the desk.', options: ['is', 'are', 'be', 'have'], ans: 'is', exp: 'There be 句型就近一致，离 be 最近的是 a book（单数），用 is。' },
+    { sem: '初一上', type: '选择', q: '选择：Would you like ______ tea?', options: ['some', 'any', 'many', 'a'], ans: 'some', exp: '表示请求、建议的问句用 some，tea 不可数。' },
+    { sem: '初一上', type: '选择', q: '选择：It ______ me two hours to do my homework every day.', options: ['take', 'takes', 'took', 'taking'], ans: 'takes', exp: 'It takes sb. some time to do sth.；主语是 it，一般现在时用第三人称单数 takes。' },
+    { sem: '初一上', type: '语法', q: '语法：She often ______ TV in the evening.（watch）', options: ['watch', 'watches', 'watching', 'watched'], ans: 'watches', exp: '一般现在时，主语 she 是第三人称单数，动词加 -es。' },
+    { sem: '初一上', type: '语法', q: '语法：Look! The children ______ football on the playground.', options: ['play', 'plays', 'are playing', 'played'], ans: 'are playing', exp: 'Look! 提示用现在进行时，主语 children 是复数，用 are playing。' },
+    { sem: '初一上', type: '语法', q: '语法：There is ______ orange on the table.（填 a 或 an）', options: ['a', 'an', 'the', 'some'], ans: 'an', exp: 'orange 以元音音素 /ɒ/ 开头，不定冠词用 an。' },
+    { sem: '初一下', type: '读音', q: '下列单词中 -ed 读音与其他三个不同的是', options: ['played', 'wanted', 'lived', 'opened'], ans: 'wanted', exp: 'wanted 的 -ed 读 /ɪd/，其余读 /d/（清辅音后读 /t/）。' },
+    { sem: '初一下', type: '读音', q: '下列单词中 -s 读音与其他三个不同的是', options: ['books', 'cats', 'dogs', 'maps'], ans: 'dogs', exp: 'dogs 的 -s 读 /z/，其余在清辅音后读 /s/。' },
+    { sem: '初一下', type: '首字母填空', q: '首字母填空：It is raining. Take an u______ with you.', ans: 'umbrella', exp: '下雨要带雨伞，umbrella。' },
+    { sem: '初一下', type: '首字母填空', q: '首字母填空：The giraffe has a long n______.', ans: 'neck', exp: '长颈鹿脖子长，neck。' },
+    { sem: '初一下', type: '选择', q: '选择：He is good ______ playing the piano.', options: ['at', 'in', 'for', 'with'], ans: 'at', exp: 'be good at 表示“擅长”，后接动名词。' },
+    { sem: '初一下', type: '选择', q: '选择：There ______ some milk in the glass.', options: ['is', 'are', 'have', 'has'], ans: 'is', exp: 'milk 不可数，There be 用 is。' },
+    { sem: '初一下', type: '语法', q: '语法：My birthday is ______ May.', options: ['in', 'on', 'at', 'to'], ans: 'in', exp: '月份前用介词 in（具体某天用 on，钟点用 at）。' },
+    { sem: '初一下', type: '语法', q: '语法：We go to school ______ Monday.', options: ['in', 'on', 'at', 'for'], ans: 'on', exp: '星期前用介词 on。' },
+    { sem: '初一下', type: '语法', q: '语法：He can ______ English very well.', options: ['speak', 'speaks', 'speaking', 'spoke'], ans: 'speak', exp: '情态动词 can 后面跟动词原形。' },
+    { sem: '初一下', type: '语法', q: '语法：It is time ______ class.', options: ['to', 'for', 'of', 'in'], ans: 'for', exp: 'It is time for + 名词；It is time to + 动词。' },
+    { sem: '初二上', type: '读音', q: '下列单词中 th 读音与其他三个不同的是', options: ['three', 'thank', 'this', 'thin'], ans: 'this', exp: 'this 的 th 读 /ð/，其余读 /θ/。' },
+    { sem: '初二上', type: '读音', q: '下列单词中 ea 读音与其他三个不同的是', options: ['tea', 'bread', 'meat', 'sea'], ans: 'bread', exp: 'bread 的 ea 读 /e/，其余读 /iː/。' },
+    { sem: '初二上', type: '首字母填空', q: '首字母填空：Beijing is the c______ of China.', ans: 'capital', exp: '北京是中国的首都，capital。' },
+    { sem: '初二上', type: '首字母填空', q: '首字母填空：He does well in math. He is very c______.', ans: 'clever', exp: '数学好说明聪明，clever。' },
+    { sem: '初二上', type: '选择', q: '选择：This book is ______ than that one.', options: ['interesting', 'more interesting', 'most interesting', 'interested'], ans: 'more interesting', exp: 'than 提示用比较级；多音节词前加 more。' },
+    { sem: '初二上', type: '选择', q: '选择：He is the ______ student in our class.', options: ['tall', 'taller', 'tallest', 'the tallest'], ans: 'tallest', exp: 'in our class 表示范围，用最高级 tallest，前面已有 the。' },
+    { sem: '初二上', type: '语法', q: '语法：I ______ to Beijing last year.', options: ['go', 'went', 'going', 'am going'], ans: 'went', exp: 'last year 是过去时间，用一般过去时 went。' },
+    { sem: '初二上', type: '语法', q: '语法：My father ______ TV when I got home.', options: ['watched', 'was watching', 'watches', 'watch'], ans: 'was watching', exp: '“当我到家时爸爸正在看电视”，用过去进行时 was watching。' },
+    { sem: '初二上', type: '语法', q: '语法：If it ______ tomorrow, we will stay at home.', options: ['rain', 'rains', 'will rain', 'rained'], ans: 'rains', exp: 'if 引导条件状语从句时“主将从现”：主句用将来时，从句用一般现在时。' }
+  ];
+  const engSecItems = {};
+  function buildEngSections() {
+    let html = '<div class="grade-bar">' + ['初一上', '初一下', '初二上'].map(function (g) {
+      return '<button class="' + (g === engSem ? 'active' : '') + '" onclick="engSetSem(\'' + g + '\')">' + g + '</button>';
+    }).join('') + '</div>';
+    ENG_TYPES.forEach(function (t, ti) {
+      const items = ENG_ITEMS.filter(function (it) { return it.sem === engSem && it.type === t.key; });
+      const gid = 'se' + ti;
+      engSecItems[gid] = items;
+      regGeneric(gid, t.title, items.map(function (it) { return { q: it.q, a: it.ans }; }));
+      html += '<section class="type" id="' + gid + '">';
+      html += '<h2><span class="num">' + (ti + 1) + '</span>' + escapeHtml(t.title) + ' <span class="badge">' + escapeHtml(engSem) + '</span></h2>';
+      html += '<div class="mod-toolbar"><button class="primary-btn" onclick="gradeEng(\'' + gid + '\')">✔ 批改本组</button> <span class="sec-score" id="' + gid + '-score"></span></div>';
+      html += '<div class="mod-body text">';
+      items.forEach(function (it, i) {
+        var inner = '<div class="q">' + (i + 1) + '、' + escapeHtml(it.q) + '</div>';
+        if (it.options) { inner += '<div class="mc">' + it.options.map(function (o) { return '<button class="mc-opt" data-i="' + i + '">' + escapeHtml(o) + '</button>'; }).join('') + '</div><span class="mark"></span>'; }
+        else { inner += '<div class="a-row"><input class="ans-input g-input" data-i="' + i + '" type="text" placeholder="✏️ 写单词" autocomplete="off" spellcheck="false"><span class="mark"></span></div>'; }
+        html += '<div class="calc-item" data-gi="' + gid + '-' + i + '"><div class="calc-main">' + inner +
+          '<button class="add-wrong" data-type="' + gid + '" data-i="' + i + '">＋错题本</button>' + revealHTML(it.ans, it.exp) + '</div></div>';
+      });
+      html += '</div></section>';
+    });
+    return html;
+  }
+  function gradeEng(gid) {
+    const items = engSecItems[gid] || [];
+    let total = 0, correct = 0;
+    items.forEach(function (it, i) {
+      total++;
+      let ok = false;
+      if (it.options) {
+        const sel = document.querySelector('#' + gid + ' .mc-opt.sel[data-i="' + i + '"]');
+        ok = sel ? gradeText(sel.textContent, it.ans) : false;
+      } else {
+        const inp = document.querySelector('#' + gid + ' .g-input[data-i="' + i + '"]');
+        ok = inp ? gradeText(inp.value, it.ans) : false;
+      }
+      if (ok) correct++;
+      const card = document.querySelector('.calc-item[data-gi="' + gid + '-' + i + '"]');
+      if (card) {
+        card.classList.remove('right', 'wrong');
+        card.classList.add(ok ? 'right' : 'wrong');
+        const mk = card.querySelector('.mark'); if (mk) mk.textContent = ok ? '✓' : '✗';
+        if (!ok) { const r = card.querySelector('.reveal'); if (r) r.style.display = 'block'; }
+      }
+    });
+    setText(gid + '-score', correct + ' / ' + total);
+    const ab = accBonus(total > 0 ? correct / total : 0);
+    completeModule('sx-eng', '英语语法', ab, '正确率+' + ab);
+  }
 
   const ORAL_LIST = [
     'Good morning! How are you doing today?',
@@ -2655,6 +2750,33 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
   };
   SHAWN_POOLS.all = [];
   Object.keys(SHAWN_POOLS).forEach(function (k) { if (k !== 'all') SHAWN_POOLS.all = SHAWN_POOLS.all.concat(SHAWN_POOLS[k]); });
+  const SHAWN_POOL_TIPS = {
+    rational: '有理数运算：先定符号，再算绝对值；同号取相同符号，异号取绝对值较大数的符号。乘方注意负号个数（负数的偶次方为正、奇次方为负）。',
+    expr: '整式与代数式：先化简再代入。平方差 a²−b²=(a+b)(a−b)；完全平方 a²±2ab+b²=(a±b)²。',
+    equation: '一元一次方程：移项要变号，最后系数化为 1（两边同除以系数）。',
+    ineq: '解不等式与解方程类似，但两边同乘（或除）负数时，不等号方向要改变。',
+    system: '二元一次方程组：用代入或加减消元，先求出一个未知数，再回代求另一个。',
+    travel: '行程问题：路程＝速度×时间。相遇用速度和，追及用速度差，顺水＝船速＋水速。',
+    work: '工程问题：把总量看作 1，效率＝1÷天数，合作效率＝各自效率之和。浓度＝溶质÷溶液。',
+    sumdiff: '和差问题：(和＋差)÷2＝大数；和倍问题：小数＝和÷(倍数＋1)；年龄差永远不变。',
+    geometry: '三角形内角和 180°；补角之和 180°，余角之和 90°；n 边形内角和 (n−2)×180°；外角和 360°。',
+    geofig: '看图题：先把图中已知条件标出来，再用对顶角、同旁内角、等腰或全等关系求未知量。',
+    pattern: '找规律：先算相邻两项的差，判断是等差、等比，还是平方数、三角数（1,3,6,10…）。',
+    stat: '总和＝平均数×个数；中位数要先把数排序再取中间；众数是出现次数最多的数。',
+    clever: '巧算：用凑整、分配律、平方差；等差数列求和：1+3+5+…+(2n−1)=n²。',
+    factor: '因式分解：x²+(p+q)x+pq=(x+p)(x+q)；平方差 a²−b²=(a+b)(a−b)；完全平方 a²±2ab+b²=(a±b)²。',
+    congruence: '全等三角形对应边、对应角相等；等腰三角形 1 条对称轴，等边三角形 3 条，正方形 4 条，长方形 2 条。',
+    linearfunc: '一次函数 y=kx+b：与 y 轴交于 (0,b)，与 x 轴交于 (−b/k,0)；k>0 时 y 随 x 增大而增大。',
+    pythagoras: '勾股定理：a²+b²=c²（c 是斜边）。常用勾股数：3-4-5、6-8-10、5-12-13、8-15-17。',
+    quadratic: '一元二次方程：两根之和＝−b/a，两根之积＝c/a；判别式 Δ=b²−4ac。',
+    quadfunc: '二次函数 y=ax²+bx+c：对称轴 x=−b/(2a)，与 y 轴交于 (0,c)；a>0 时开口向上、有最小值。',
+    circle: '圆的周长 2πr、面积 πr²；同弧所对圆周角＝圆心角的一半；直径所对的圆周角是 90°。',
+    trig: 'sinA＝对边/斜边，cosA＝邻边/斜边，tanA＝对边/邻边；sin30°=0.5，tan45°=1。',
+    all: '先判断属于哪个知识点，再选方法：计算先化简，几何先标条件，应用题先找等量关系。'
+  };
+  function revealHTML(ans, exp) {
+    return '<div class="reveal">答案：' + escapeHtml(ans) + (exp ? '<span class="exp">解析：' + escapeHtml(exp) + '</span>' : '') + '</div>';
+  }
   function genFromPool(pool, n) {
     const out = [], seen = {};
     let guard = 0;
@@ -2715,7 +2837,7 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
   const GENERIC_MODULES = {
     'sx-math': { id: 'sx-math', name: '数学思维', title: '🧮 数学思维（初中 · 按知识大类）', kind: 'shawnmath', tip: '按 12 个知识大类练习，每类 10 题，点「批改本组」。' },
     'sx-calc': { id: 'sx-calc', name: '数学计算', title: '✏️ 数学计算（初中 · 三组）', kind: 'shawncalc', tip: '有理数 / 整式 / 巧算 三组，每组 10 题，点「批改本组」。' },
-    'sx-eng': { id: 'sx-eng', name: '英语语法', title: '🔤 英语语法（译林版 · 按年级）', kind: 'eng', gen: genEnglish, tip: '选择题选出选项；首字母填空写完整单词，点「批改本组」。' },
+    'sx-eng': { id: 'sx-eng', name: '英语语法', title: '🔤 英语（译林版 · 学期 / 题型）', kind: 'engsec', gen: function () { return []; }, tip: '按学期切换到「初一上 / 初一下 / 初二上」，再按题型分组练习；答错会显示解析。' },
     'sx-df': { id: 'sx-df', name: '道法背诵', title: '📕 道德与法治 · 知识背诵', kind: 'flash', gen: function () { return genShawnRecite(DF_BANK); }, tip: '先自己回想答案，再点开对照；背完点「完成背诵」。' },
     'sx-ls': { id: 'sx-ls', name: '历史背诵', title: '📗 历史 · 知识背诵', kind: 'flash', gen: function () { return genShawnRecite(LS_BANK); }, tip: '先自己回想答案，再点开对照；背完点「完成背诵」。' },
     'sx-dl': { id: 'sx-dl', name: '地理背诵', title: '📘 地理 · 知识背诵', kind: 'flash', gen: function () { return genShawnRecite(DL_BANK); }, tip: '先自己回想答案，再点开对照；背完点「完成背诵」。' },
@@ -2775,6 +2897,8 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
       html += buildShawnSections(SHAWN_TYPES, 'sm');
     } else if (cfg.kind === 'shawncalc') {
       html += buildShawnSections(SHAWN_CALC, 'sc');
+    } else if (cfg.kind === 'engsec') {
+      html += buildEngSections();
     } else if (cfg.kind === 'practice') {
       regGeneric(mid, cfg.name, items.map(function (it) { return { q: it.q, a: it.ans }; }));
       html += '<div class="mod-body text">';
@@ -2849,7 +2973,7 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
         (it.svg ? '<div class="geofig">' + it.svg + '</div>' : '') +
         '<div class="a-row"><input class="ans-input sm-input" data-g="' + gid + '" data-i="' + i + '" type="text" inputmode="numeric" placeholder="✏️" autocomplete="off"><span class="mark"></span></div>' +
         '<button class="add-wrong" data-type="' + gid + '" data-i="' + i + '">＋错题本</button>' +
-        '<div class="reveal">答案：' + escapeHtml(it.ans) + '</div></div>' +
+        revealHTML(it.ans, it.exp || SHAWN_POOL_TIPS[t.pool]) + '</div>' +
         '<canvas class="scratch" aria-label="草稿区"></canvas></div>';
     });
     html += '</div>';
