@@ -1,5 +1,5 @@
 /* Elsa数学小练 · Service Worker（离线缓存） */
-const CACHE = 'elsa-math-v1';
+const CACHE = 'elsa-math-v2';
 const ASSETS = [
   './elsa.html',
   './manifest.webmanifest',
@@ -30,6 +30,27 @@ self.addEventListener('activate', function (e) {
 self.addEventListener('fetch', function (e) {
   const req = e.request;
   if (req.method !== 'GET') return;
+
+  const accept = req.headers.get('accept') || '';
+  const isHTML = req.mode === 'navigate' || accept.indexOf('text/html') !== -1 || /\.html($|\?)/.test(req.url);
+
+  // 页面（HTML）：网络优先 —— 在线时总是拿最新版，离线再回退缓存
+  if (isHTML) {
+    e.respondWith(
+      fetch(req).then(function (res) {
+        const copy = res.clone();
+        caches.open(CACHE).then(function (c) { c.put(req, copy); }).catch(function () {});
+        return res;
+      }).catch(function () {
+        return caches.match(req, { ignoreSearch: true }).then(function (hit) {
+          return hit || caches.match('./elsa.html');
+        });
+      })
+    );
+    return;
+  }
+
+  // 其他静态资源：缓存优先
   e.respondWith(
     caches.match(req, { ignoreSearch: true }).then(function (hit) {
       if (hit) return hit;
@@ -37,8 +58,6 @@ self.addEventListener('fetch', function (e) {
         const copy = res.clone();
         caches.open(CACHE).then(function (c) { c.put(req, copy); }).catch(function () {});
         return res;
-      }).catch(function () {
-        return caches.match('./elsa.html');
       });
     })
   );
