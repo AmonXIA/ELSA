@@ -842,6 +842,9 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
 /* 底部导航项较多时可横向滚动 */
 .bottom-nav { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .bottom-nav button { flex: 1 0 auto; min-width: 58px; }
+/* 几何图形题配图 */
+.geofig { margin: 8px 0 4px; }
+.geofig svg { display: block; max-width: 100%; height: auto; }
 </style></head>
 <body>
 
@@ -1364,7 +1367,7 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     });
     list.innerHTML = html;
   }
-  function updateWrongBadge() { const b = document.getElementById('wb-badge'); if (b) b.textContent = wrongBook.length; }
+  function updateWrongBadge() { document.querySelectorAll('.wb-badge').forEach(function (b) { b.textContent = wrongBook.length; }); }
   function updateAddedMarks() {
     document.querySelectorAll('.add-wrong').forEach(btn => {
       const typeId = btn.getAttribute('data-type');
@@ -2406,6 +2409,42 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
       function () { const k = ri(3, 8); return { q: '找规律填数：' + k + '，' + k * 2 + '，' + k * 3 + '，' + k * 4 + '，____', ans: String(k * 5), key: [k * 5] }; },
       function () { const n = ri(3, 8); return { q: '第 n 个数是 2n，当 n ＝ ' + n + ' 时，这个数是多少？', ans: String(2 * n), key: [2 * n] }; }
     ],
+    geofig: [
+      function () { const x = ri(20, 70);
+        const svg = '<svg viewBox="0 0 180 100" width="150" height="84"><line x1="15" y1="85" x2="165" y2="85" stroke="#555" stroke-width="2"/><line x1="15" y1="85" x2="95" y2="15" stroke="#555" stroke-width="2"/><path d="M15 67 h18 v18" fill="none" stroke="#c2688f" stroke-width="1.5"/><text x="44" y="80" font-size="13" fill="#333">∠1</text><text x="80" y="58" font-size="13" fill="#333">∠2</text></svg>';
+        return { q: '如图，∠1 与 ∠2 互余（和为 90°），∠1 ＝ ' + x + '°，∠2 是多少度？', ans: String(90 - x), key: [90 - x], svg: svg }; },
+      function () { const a = ri(30, 80), b = ri(30, 70);
+        const svg = '<svg viewBox="0 0 180 110" width="150" height="92"><polygon points="20,90 160,90 70,18" fill="none" stroke="#555" stroke-width="2"/><text x="26" y="104" font-size="12" fill="#c2688f">' + a + '°</text><text x="132" y="104" font-size="12" fill="#c2688f">' + b + '°</text><text x="64" y="36" font-size="13" fill="#333">?</text></svg>';
+        return { q: '如图，三角形的两个内角分别是 ' + a + '° 和 ' + b + '°，第三个内角是多少度？', ans: String(180 - a - b), key: [180 - a - b], svg: svg }; },
+      function () {
+        const svg = '<svg viewBox="0 0 180 100" width="150" height="84"><polygon points="90,10 20,90 160,90" fill="none" stroke="#555" stroke-width="2"/><line x1="90" y1="10" x2="57" y2="90" stroke="#555" stroke-width="1.5"/><line x1="90" y1="10" x2="123" y2="90" stroke="#555" stroke-width="1.5"/></svg>';
+        return { q: '数一数：下图中共有多少个三角形？', ans: '6', key: [6], svg: svg }; },
+      function () { const x = ri(50, 130);
+        const svg = '<svg viewBox="0 0 180 110" width="150" height="92"><line x1="15" y1="35" x2="165" y2="35" stroke="#555" stroke-width="2"/><line x1="15" y1="80" x2="165" y2="80" stroke="#555" stroke-width="2"/><line x1="45" y1="100" x2="140" y2="15" stroke="#555" stroke-width="2"/><text x="112" y="30" font-size="12" fill="#c2688f">' + x + '°</text><text x="112" y="75" font-size="13" fill="#333">?</text></svg>';
+        return { q: '如图，两直线平行，一个同旁内角是 ' + x + '°，另一个同旁内角是多少度？', ans: String(180 - x), key: [180 - x], svg: svg }; },
+      function () { const top = 2 * ri(15, 45);
+        const svg = '<svg viewBox="0 0 180 110" width="150" height="92"><polygon points="90,15 30,95 150,95" fill="none" stroke="#555" stroke-width="2"/><text x="76" y="40" font-size="12" fill="#c2688f">' + top + '°</text><text x="36" y="88" font-size="13" fill="#333">?</text><text x="128" y="88" font-size="13" fill="#333">?</text></svg>';
+        return { q: '如图，等腰三角形的顶角是 ' + top + '°，它的一个底角是多少度？', ans: String((180 - top) / 2), key: [(180 - top) / 2], svg: svg }; },
+      function () { const a = ri(5, 20), b = ri(2, 12);
+        const svg = '<svg viewBox="0 0 180 110" width="150" height="92"><rect x="30" y="25" width="120" height="65" fill="none" stroke="#555" stroke-width="2"/><text x="72" y="20" font-size="12" fill="#c2688f">' + a + ' cm</text><text x="154" y="62" font-size="12" fill="#c2688f">' + b + '</text></svg>';
+        return { q: '如图，长方形的长是 ' + a + ' 厘米，宽是 ' + b + ' 厘米，它的周长是多少厘米？', ans: String(2 * (a + b)), key: [2 * (a + b)], svg: svg }; },
+      function () { const n = ri(4, 7);
+        let dots = '';
+        for (let k = 0; k < n; k++) { dots += '<circle cx="' + (20 + k * (140 / (n - 1))) + '" cy="25" r="4" fill="#c2688f"/>'; }
+        const svg = '<svg viewBox="0 0 180 45" width="150" height="38"><line x1="20" y1="25" x2="160" y2="25" stroke="#555" stroke-width="2"/>' + dots + '</svg>';
+        return { q: '数一数：下图一条线段上有 ' + n + ' 个点，共能数出多少条线段？', ans: String(n * (n - 1) / 2), key: [n * (n - 1) / 2], svg: svg }; },
+      function () { const r = ri(2, 5);
+        let rays = '';
+        for (let k = 0; k < r; k++) { const ang = Math.PI / 2 - (k + 1) * (Math.PI / 2) / (r + 1); rays += '<line x1="15" y1="90" x2="' + Math.round(15 + 120 * Math.cos(ang)) + '" y2="' + Math.round(90 - 120 * Math.sin(ang)) + '" stroke="#555" stroke-width="2"/>'; }
+        const svg = '<svg viewBox="0 0 150 100" width="130" height="87"><line x1="15" y1="90" x2="145" y2="90" stroke="#555" stroke-width="2"/>' + rays + '<text x="18" y="82" font-size="12" fill="#333">O</text></svg>';
+        return { q: '如图，从一个角的顶点 O 出发，在角内画了 ' + r + ' 条射线，图中共有多少个角？', ans: String((r + 1) * (r + 2) / 2), key: [(r + 1) * (r + 2) / 2], svg: svg }; },
+      function () {
+        const svg = '<svg viewBox="0 0 180 110" width="150" height="92"><rect x="55" y="25" width="70" height="70" fill="none" stroke="#555" stroke-width="2"/><line x1="90" y1="15" x2="90" y2="105" stroke="#c2688f" stroke-dasharray="5 4"/><line x1="45" y1="60" x2="135" y2="60" stroke="#c2688f" stroke-dasharray="5 4"/></svg>';
+        return { q: '如图是正方形，它一共有几条对称轴？', ans: '4', key: [4], svg: svg }; },
+      function () {
+        const svg = '<svg viewBox="0 0 180 100" width="150" height="84"><line x1="20" y1="70" x2="160" y2="70" stroke="#555" stroke-width="2"/><circle cx="90" cy="30" r="5" fill="#c2688f"/><text x="82" y="24" font-size="12" fill="#333">A</text><line x1="90" y1="30" x2="90" y2="70" stroke="#c2688f" stroke-dasharray="5 4"/><path d="M90 58 h12 v12" fill="none" stroke="#c2688f" stroke-width="1.5"/></svg>';
+        return { q: '如图，过直线外一点 A 画这条直线的垂线，能画出几条？', ans: '1', key: [1], svg: svg }; }
+    ],
     stat: [
       function () { const m = ri(70, 95), n = ri(4, 8); return { q: n + ' 个数的平均数是 ' + m + '，它们的总和是多少？', ans: String(m * n), key: [m * n] }; },
       function () { const m = ri(70, 95), s = ri(200, 999); return { q: '5 个数的平均数是 ' + m + '，前 4 个数的和是 ' + s + '，第 5 个数是多少？', ans: String(5 * m - s), key: [5 * m - s] }; },
@@ -2445,7 +2484,8 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     { id: 'st9', title: '图形与角', badge: '初一', pool: 'geometry' },
     { id: 'st10', title: '找规律与数列', badge: '初一', pool: 'pattern' },
     { id: 'st11', title: '统计与平均数', badge: '初一', pool: 'stat' },
-    { id: 'st12', title: '巧算速算', badge: '初一', pool: 'clever' }
+    { id: 'st12', title: '巧算速算', badge: '初一', pool: 'clever' },
+    { id: 'st13', title: '几何图形（看图·作图）', badge: '初一', pool: 'geofig' }
   ];
 
   /* 通用模块的题目登记表（用于错题本） */
@@ -2497,6 +2537,11 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     if (cfg.kind === 'oral') {
       html += '<button class="primary" onclick="finishGeneric()">✔ 完成朗读</button> ';
     }
+    if (cfg.kind === 'shawnmath' || cfg.kind === 'shawncalc') {
+      html += '<button onclick="shawnShowAll(true)">展开全部答案</button> ';
+      html += '<button onclick="shawnShowAll(false)">收起全部答案</button> ';
+      html += '<button onclick="openWrongBook()">📓 错题本 <span class="wb-badge"></span></button> ';
+    }
     html += '<button onclick="refreshGeneric()">🎲 换一批</button>';
     tb.innerHTML = html;
   }
@@ -2546,29 +2591,53 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     }
     wrap.innerHTML = html;
     updateAddedMarks();
+    updateWrongBadge();
   }
   const shawnKeys = {};
+  function shawnSectionInner(t, ti, prefix) {
+    const gid = prefix + '-' + t.id;
+    const items = genFromPool(SHAWN_POOLS[t.pool], 10);
+    shawnKeys[gid] = items.map(function (it) { return it.key; });
+    regGeneric(gid, t.title, items.map(function (it) { return { q: it.q, a: it.ans }; }));
+    let html = '<h2><span class="num">' + ti + '</span>' + escapeHtml(t.title) + ' <span class="badge">' + escapeHtml(t.badge) + '</span></h2>';
+    html += '<div class="mod-toolbar"><button class="primary-btn" onclick="gradeShawn(\'' + prefix + '\',\'' + t.id + '\')">✔ 批改本组</button> <button onclick="refreshShawnSection(\'' + prefix + '\',\'' + t.id + '\')">🎲 换一批</button> <span class="sec-score" id="' + gid + '-score"></span></div>';
+    html += '<div class="mod-body text" id="' + gid + '-body">';
+    const ansList = [];
+    items.forEach(function (it, i) {
+      ansList.push('<li>' + escapeHtml(it.ans) + '</li>');
+      html += '<div class="calc-item" data-gi="' + gid + '-' + i + '"><div class="calc-main">' +
+        '<div class="q">' + (i + 1) + '、' + escapeHtml(it.q) + '</div>' +
+        (it.svg ? '<div class="geofig">' + it.svg + '</div>' : '') +
+        '<div class="a-row"><input class="ans-input sm-input" data-g="' + gid + '" data-i="' + i + '" type="text" inputmode="numeric" placeholder="✏️" autocomplete="off"><span class="mark"></span></div>' +
+        '<div class="reveal">答案：' + escapeHtml(it.ans) + '</div></div>' +
+        '<button class="add-wrong" data-type="' + gid + '" data-i="' + i + '">＋错题本</button></div>';
+    });
+    html += '</div>';
+    html += '<details class="answers"><summary>查看本组答案</summary><ol class="answer-list">' + ansList.join('') + '</ol></details>';
+    return html;
+  }
   function buildShawnSections(types, prefix) {
+    const toc = [];
     let html = '';
     types.forEach(function (t, ti) {
-      const gid = prefix + '-' + t.id;
-      const items = genFromPool(SHAWN_POOLS[t.pool], 10);
-      shawnKeys[gid] = items.map(function (it) { return it.key; });
-      regGeneric(gid, t.title, items.map(function (it) { return { q: it.q, a: it.ans }; }));
-      html += '<section class="type">';
-      html += '<h2><span class="num">' + (ti + 1) + '</span>' + escapeHtml(t.title) + ' <span class="badge">' + escapeHtml(t.badge) + '</span></h2>';
-      html += '<div class="mod-toolbar"><button class="primary-btn" onclick="gradeShawn(\'' + prefix + '\',\'' + t.id + '\')">✔ 批改本组</button> <span class="sec-score" id="' + gid + '-score"></span></div>';
-      html += '<div class="mod-body text">';
-      items.forEach(function (it, i) {
-        html += '<div class="calc-item" data-gi="' + gid + '-' + i + '"><div class="calc-main">' +
-          '<div class="q">' + (i + 1) + '、' + escapeHtml(it.q) + '</div>' +
-          '<div class="a-row"><input class="ans-input sm-input" data-g="' + gid + '" data-i="' + i + '" type="text" inputmode="numeric" placeholder="✏️" autocomplete="off"><span class="mark"></span></div>' +
-          '<div class="reveal">答案：' + escapeHtml(it.ans) + '</div></div>' +
-          '<button class="add-wrong" data-type="' + gid + '" data-i="' + i + '">＋错题本</button></div>';
-      });
-      html += '</div></section>';
+      toc.push('<a href="#' + prefix + '-' + t.id + '">' + (ti + 1) + ' ' + escapeHtml(t.title) + '</a>');
+      html += '<section class="type" id="' + prefix + '-' + t.id + '">' + shawnSectionInner(t, ti + 1, prefix) + '</section>';
     });
-    return html;
+    return '<nav class="toc"><h2>目录</h2><div class="links">' + toc.join('') + '</div></nav>' + html;
+  }
+  function refreshShawnSection(prefix, tid) {
+    const arr = prefix === 'sm' ? SHAWN_TYPES : SHAWN_CALC;
+    const t = arr.find(function (x) { return x.id === tid; });
+    const sec = document.getElementById(prefix + '-' + tid);
+    if (!t || !sec) return;
+    sec.innerHTML = shawnSectionInner(t, arr.indexOf(t) + 1, prefix);
+    updateAddedMarks();
+    toast('已换一批');
+  }
+  function shawnShowAll(open) {
+    const c = document.getElementById('module-content');
+    if (!c) return;
+    c.querySelectorAll('.mod-body').forEach(function (b) { b.classList.toggle('show-ans', open); });
   }
   function gradeShawn(prefix, tid) {
     const gid = prefix + '-' + tid;
