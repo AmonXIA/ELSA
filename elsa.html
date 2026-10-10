@@ -762,6 +762,9 @@ body.fs-full > .wrap {
   border-radius: 999px; padding: 4px 12px; cursor: pointer; font-size: 12px; font-family: inherit;
 }
 .p-switch button.active { background: #f39bbd; border-color: #f39bbd; color: #fff; font-weight: 700; }
+.p-switch button { display: inline-flex; align-items: center; gap: 4px; }
+.p-ico { width: 18px; height: 18px; flex: 0 0 auto; }
+.p-switch button.active .p-ico { filter: drop-shadow(0 0 1px #fff); }
 @media (min-width: 768px) { .p-switch button { font-size: 14px; padding: 6px 16px; } }
 /* 背诵卡片 / 口语列表 */
 .tag { display: inline-block; background: #f2e9f7; color: #8b6ba8; border-radius: 999px; padding: 1px 9px; font-size: 12px; margin-right: 6px; }
@@ -876,8 +879,8 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
   <div class="brand">
     <span>✨ <span id="brand-text">Elsa 的每日数学小练</span></span>
     <span class="p-switch">
-      <button type="button" data-p="elsa" onclick="switchProfile('elsa')">❄️ Elsa</button>
-      <button type="button" data-p="shawn" onclick="switchProfile('shawn')">🚀 Shawn</button>
+      <button type="button" data-p="elsa" onclick="switchProfile('elsa')"><svg class="p-ico" viewBox="0 0 24 24"><path d="M12 2.6l1.5 2.3 2.2-1.3-.4 2.6 2.6-.4-1.2 2.2L12 8.2l-4.7-.2-1.2-2.2 2.6.4-.4-2.6 2.2 1.3z" fill="#8fc0ea"/><circle cx="12" cy="14.8" r="5.8" fill="#ffe8d7"/><path d="M6.2 14.8c0-4.4 2.6-6.6 5.8-6.6s5.8 2.2 5.8 6.6c0-1.7-.7-2.7-1.5-3.4-1.2 1.1-2.7 1.5-4.3 1.5s-3.1-.4-4.3-1.5c-.8.7-1.5 1.7-1.5 3.4z" fill="#eedd8f"/><circle cx="10" cy="14.9" r=".9" fill="#46566a"/><circle cx="14" cy="14.9" r=".9" fill="#46566a"/><path d="M10.5 17.6c.9.8 2 .8 3 0" stroke="#dd8f8f" stroke-width=".9" fill="none" stroke-linecap="round"/></svg> Elsa</button>
+      <button type="button" data-p="shawn" onclick="switchProfile('shawn')"><svg class="p-ico" viewBox="0 0 24 24"><g fill="#fff" stroke="#c9d4e0" stroke-width=".6"><circle cx="7.8" cy="14.4" r="3.6"/><circle cx="11.8" cy="11.9" r="4"/><circle cx="15.7" cy="14.2" r="3.5"/><circle cx="11.8" cy="16.1" r="3.6"/></g><ellipse cx="18.3" cy="12.8" rx="3.5" ry="3.2" fill="#3b3b3b"/><path d="M15.9 9.9l-1.7-1.4M20.3 9.6l1.7-1.7" stroke="#3b3b3b" stroke-width="1.5" stroke-linecap="round"/><circle cx="17.3" cy="12.2" r=".9" fill="#fff"/><circle cx="19.8" cy="12.2" r=".9" fill="#fff"/><rect x="8.2" y="18.7" width="1.8" height="3.1" rx=".9" fill="#3b3b3b"/><rect x="13.2" y="18.7" width="1.8" height="3.1" rx=".9" fill="#3b3b3b"/></svg> Shawn</button>
     </span>
   </div>
   <div class="hero-top">
