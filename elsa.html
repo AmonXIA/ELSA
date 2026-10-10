@@ -2304,9 +2304,104 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     { q: '古文中“尝”的意思是什么？', a: '曾经' },
     { q: '古文中“乃”的意思是什么？', a: '于是、才' }
   ];
-  function genChin() {
+ function genChin() {
     return shuffle(CHIN_BANK.slice()).slice(0, 20);
   }
+  /* ===== 英语题库（按译林版年级语法重点） ===== */
+  const ENG_7 = [
+    { q: '首字母填空：My father is a d______. He works in a hospital.', ans: 'doctor' },
+    { q: '首字母填空：There are twelve m______ in a year.', ans: 'months' },
+    { q: '首字母填空：We have four l______ in the morning.', ans: 'lessons' },
+    { q: '首字母填空：Summer is hot and winter is cold. Autumn is c______.', ans: 'cool' },
+    { q: '选择：There ______ a book and two pens on the desk.', options: ['is', 'are', 'be', 'have'], ans: 'is' },
+    { q: '选择：She often ______ TV in the evening.', options: ['watch', 'watches', 'watching', 'watched'], ans: 'watches' },
+    { q: '选择：Look! The children ______ football on the playground.', options: ['play', 'plays', 'are playing', 'played'], ans: 'are playing' },
+    { q: '选择：I have ______ orange and ______ apple.', options: ['a; an', 'an; a', 'a; a', 'an; an'], ans: 'an; a' },
+    { q: '选择：This is ______ book. Please give it to me.', options: ['I', 'my', 'me', 'mine'], ans: 'my' },
+    { q: '选择：______ your brother like music?', options: ['Do', 'Does', 'Is', 'Are'], ans: 'Does' },
+    { q: '选择：We go to school ______ Monday.', options: ['in', 'on', 'at', 'for'], ans: 'on' },
+    { q: '选择：My birthday is ______ May.', options: ['in', 'on', 'at', 'to'], ans: 'in' },
+    { q: '选择：He can ______ English very well.', options: ['speak', 'speaks', 'speaking', 'spoke'], ans: 'speak' },
+    { q: '选择：______ is your favourite subject?', options: ['What', 'Who', 'Where', 'How'], ans: 'What' },
+    { q: '选择：Would you like ______ tea?', options: ['some', 'any', 'many', 'a'], ans: 'some' }
+  ];
+  const ENG_8 = [
+    { q: '选择：I ______ to Beijing last year.', options: ['go', 'went', 'going', 'am going'], ans: 'went' },
+    { q: '选择：This book is ______ than that one.', options: ['interesting', 'more interesting', 'most interesting', 'interested'], ans: 'more interesting' },
+    { q: '选择：He is the ______ student in our class.', options: ['tall', 'taller', 'tallest', 'the tallest'], ans: 'tallest' },
+    { q: '选择：We ______ visit the museum tomorrow.', options: ['are going to', 'went', 'visit', 'was'], ans: 'are going to' },
+    { q: '选择：I want ______ a doctor in the future.', options: ['be', 'to be', 'being', 'was'], ans: 'to be' },
+    { q: '选择：My father ______ TV when I got home.', options: ['watched', 'was watching', 'watches', 'watch'], ans: 'was watching' },
+    { q: '选择：If it ______ tomorrow, we will stay at home.', options: ['rain', 'rains', 'will rain', 'rained'], ans: 'rains' },
+    { q: '选择：I ______ here since 2020.', options: ['live', 'lived', 'have lived', 'living'], ans: 'have lived' },
+    { q: '选择：He asked me ______ I had finished my homework.', options: ['that', 'if', 'what', 'when'], ans: 'if' },
+    { q: '选择：He is old enough ______ to school.', options: ['go', 'to go', 'going', 'went'], ans: 'to go' },
+    { q: '首字母填空：Beijing is the c______ of China.', ans: 'capital' },
+    { q: '首字母填空：He does well in math. He is very c______.', ans: 'clever' }
+  ];
+  const ENG_9 = [
+    { q: '选择：He ______ already finished his homework.', options: ['have', 'has', 'had', 'is'], ans: 'has' },
+    { q: '选择：The homework ______ by the students yesterday.', options: ['finished', 'was finished', 'is finished', 'finishes'], ans: 'was finished' },
+    { q: '选择：The girl ______ is wearing a red dress is my sister.', options: ['who', 'which', 'whom', 'what'], ans: 'who' },
+    { q: '选择：Do you know when ______ ?', options: ['will he come', 'he will come', 'does he come', 'did he come'], ans: 'he will come' },
+    { q: '选择：I do not know ______ to do next.', options: ['what', 'how', 'which', 'that'], ans: 'what' },
+    { q: '选择：If I ______ you, I would take the job.', options: ['am', 'was', 'were', 'be'], ans: 'were' },
+    { q: '选择：English ______ in many countries.', options: ['speaks', 'is spoken', 'spoke', 'speaking'], ans: 'is spoken' },
+    { q: '选择：It is important ______ us to protect the environment.', options: ['of', 'for', 'to', 'with'], ans: 'for' },
+    { q: '选择：Neither Tom nor I ______ good at math.', options: ['am', 'is', 'are', 'be'], ans: 'am' },
+    { q: '选择：They ______ in this city for ten years.', options: ['live', 'lived', 'have lived', 'living'], ans: 'have lived' },
+    { q: '首字母填空：The Great Wall is one of the w______ of the world.', ans: 'wonders' },
+    { q: '首字母填空：He made a great d______ to study abroad.', ans: 'decision' }
+  ];
+  let engGrade = '初一';
+  function engSetGrade(g) { engGrade = g; refreshGeneric(); }
+  function genEnglish() { const b = engGrade === '初二' ? ENG_8 : engGrade === '初三' ? ENG_9 : ENG_7; return shuffle(b.slice()).slice(0, 15); }
+  /* ===== 语文题库（按课本年级，引用原文） ===== */
+  const CHIN_7 = [
+    { q: '《春》中“盼望着，盼望着，东风来了，春天的脚步近了”用了什么修辞手法？', a: '反复、拟人' },
+    { q: '《济南的冬天》中“冬天要是不刮风，便觉得是奇迹”，作者是谁？', a: '老舍（舒庆春）' },
+    { q: '《论语》中“学而不思则罔，思而不学则殆”的“罔”是什么意思？', a: '迷惑（迷惘而无所得）' },
+    { q: '《诫子书》中“静以修身，俭以养德”告诉我们什么道理？', a: '用宁静修养身心，用节俭培养品德' },
+    { q: '《狼》中“狼亦黠矣，而顷刻两毙”的“黠”是什么意思？', a: '狡猾' },
+    { q: '《木兰诗》中“万里赴戎机，关山度若飞”的“戎机”指什么？', a: '战事、战争' },
+    { q: '《卖油翁》中“陈康肃公善射，当世无双”的“善”是什么意思？', a: '擅长、善于' },
+    { q: '《春》中“小草偷偷地从土里钻出来”的“偷偷地”写出了什么？', a: '小草悄然而生的情态，用了拟人的手法' },
+    { q: '《秋天的怀念》的作者是谁？', a: '史铁生' },
+    { q: '《闻王昌龄左迁龙标遥有此寄》中“我寄愁心与明月，随君直到夜郎西”表达了什么情感？', a: '对友人的关切与思念' },
+    { q: '《陋室铭》中“斯是陋室，惟吾德馨”的“馨”是什么意思？', a: '香气，这里指品德高尚' },
+    { q: '《爱莲说》中“出淤泥而不染，濯清涟而不妖”赞美了莲的什么品质？', a: '洁身自好、不慕名利' }
+  ];
+  const CHIN_8 = [
+    { q: '《三峡》中“两岸连山，略无阙处”的“阙”是什么意思？', a: '通“缺”，空隙、缺口' },
+    { q: '《答谢中书书》的作者是谁？', a: '陶弘景' },
+    { q: '《记承天寺夜游》中“庭下如积水空明，水中藻、荇交横，盖竹柏影也”把月光比作什么？', a: '把月光比作积水，把竹柏的影子比作藻、荇' },
+    { q: '《与朱元思书》中“急湍甚箭，猛浪若奔”用了什么修辞手法？', a: '比喻、夸张' },
+    { q: '《富贵不能淫》中“富贵不能淫，贫贱不能移，威武不能屈”称赞的是什么人？', a: '大丈夫' },
+    { q: '《生于忧患，死于安乐》中“必先苦其心志”的“苦”是什么意思？', a: '使……痛苦（使动用法）' },
+    { q: '《桃花源记》中“芳草鲜美，落英缤纷”的“落英”指什么？', a: '落花' },
+    { q: '《小石潭记》中“潭中鱼可百许头，皆若空游无所依”写出了什么？', a: '潭水的清澈透明' },
+    { q: '《核舟记》中“舟首尾长约八分有奇”的“奇”是什么意思？', a: '零数、余数' },
+    { q: '《马说》中“千里马常有，而伯乐不常有”的寓意是什么？', a: '人才常有，而能识别人才的人不常有' },
+    { q: '《岳阳楼记》中“先天下之忧而忧，后天下之乐而乐”表现了什么？', a: '以天下为己任的忧乐观' },
+    { q: '《醉翁亭记》中“醉翁之意不在酒”的“意”是什么意思？', a: '情趣、意趣' }
+  ];
+  const CHIN_9 = [
+    { q: '《沁园春·雪》中“俱往矣，数风流人物，还看今朝”的作者是谁？', a: '毛泽东' },
+    { q: '《故乡》中“其实地上本没有路，走的人多了，也便成了路”的作者是谁？', a: '鲁迅' },
+    { q: '《我的叔叔于勒》的作者是哪国作家？', a: '法国（莫泊桑）' },
+    { q: '《范进中举》选自哪部小说？', a: '《儒林外史》（吴敬梓）' },
+    { q: '《智取生辰纲》选自哪部小说？', a: '《水浒传》（施耐庵）' },
+    { q: '《出师表》中“先帝不以臣卑鄙”的“卑鄙”古义是什么？', a: '身份低微、见识短浅（不同于今义）' },
+    { q: '《陈涉世家》中“会天大雨，道不通”的“会”是什么意思？', a: '适逢、恰巧遇到' },
+    { q: '《唐雎不辱使命》中“秦王怫然怒”的“怫然”是什么意思？', a: '盛怒的样子' },
+    { q: '《鱼我所欲也》中“舍生而取义者也”表达了什么观点？', a: '在“生”与“义”不能兼得时，应舍生取义' },
+    { q: '《曹刿论战》中“一鼓作气，再而衰，三而竭”说明了什么道理？', a: '做事要趁士气正盛时一鼓作气、抓住时机' },
+    { q: '《邹忌讽齐王纳谏》中“邹忌讽齐王”的“讽”是什么意思？', a: '用委婉的话劝告' },
+    { q: '《送东阳马生序》中“余幼时即嗜学”的“嗜”是什么意思？', a: '特别爱好、喜欢' }
+  ];
+  let chinGrade = '初一';
+  function chinSetGrade(g) { chinGrade = g; refreshGeneric(); }
+  function genChinGraded() { const b = chinGrade === '初二' ? CHIN_8 : chinGrade === '初三' ? CHIN_9 : CHIN_7; return shuffle(b.slice()).slice(0, 12); }
 
   const ORAL_LIST = [
     'Good morning! How are you doing today?',
@@ -2620,14 +2715,24 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
   const GENERIC_MODULES = {
     'sx-math': { id: 'sx-math', name: '数学思维', title: '🧮 数学思维（初中 · 按知识大类）', kind: 'shawnmath', tip: '按 12 个知识大类练习，每类 10 题，点「批改本组」。' },
     'sx-calc': { id: 'sx-calc', name: '数学计算', title: '✏️ 数学计算（初中 · 三组）', kind: 'shawncalc', tip: '有理数 / 整式 / 巧算 三组，每组 10 题，点「批改本组」。' },
-    'sx-eng': { id: 'sx-eng', name: '英语语法', title: '🔤 英语语法易错题', kind: 'mcq', gen: genShawnEnglish, tip: '选出正确的选项，点「批改本组」。' },
+    'sx-eng': { id: 'sx-eng', name: '英语语法', title: '🔤 英语语法（译林版 · 按年级）', kind: 'eng', gen: genEnglish, tip: '选择题选出选项；首字母填空写完整单词，点「批改本组」。' },
     'sx-df': { id: 'sx-df', name: '道法背诵', title: '📕 道德与法治 · 知识背诵', kind: 'flash', gen: function () { return genShawnRecite(DF_BANK); }, tip: '先自己回想答案，再点开对照；背完点「完成背诵」。' },
     'sx-ls': { id: 'sx-ls', name: '历史背诵', title: '📗 历史 · 知识背诵', kind: 'flash', gen: function () { return genShawnRecite(LS_BANK); }, tip: '先自己回想答案，再点开对照；背完点「完成背诵」。' },
     'sx-dl': { id: 'sx-dl', name: '地理背诵', title: '📘 地理 · 知识背诵', kind: 'flash', gen: function () { return genShawnRecite(DL_BANK); }, tip: '先自己回想答案，再点开对照；背完点「完成背诵」。' },
     'sx-oral': { id: 'sx-oral', name: '英语口语', title: '🗣️ 英语口语练习', kind: 'oral', gen: genShawnOral, tip: '大声朗读每一句，读完点「完成朗读」。' },
-    'sx-chin': { id: 'sx-chin', name: '语文', title: '📜 语文 · 知识点与古文词义', kind: 'flash', gen: genChin, tip: '先自己回想答案，再点开对照；背完点「完成背诵」。' }
+    'sx-chin': { id: 'sx-chin', name: '语文', title: '📜 语文 · 知识点与古文词义', kind: 'flash', gen: genChinGraded, tip: '先自己回想答案，再点开对照（题干均取自课本原文）；背完点「完成背诵」。' }
   };
-  let curGeneric = null;
+ let curGeneric = null;
+  function gradeText(input, ans) {
+    const a = String(ans).toLowerCase().replace(/[\s'’\-.]/g, '');
+    const b = String(input).toLowerCase().replace(/[\s'’\-.]/g, '');
+    return a !== '' && a === b;
+  }
+  function gradeBarHTML(cur, fnName) {
+    return '<div class="grade-bar">' + ['初一', '初二', '初三'].map(function (g) {
+      return '<button class="' + (g === cur ? 'active' : '') + '" onclick="' + fnName + '(\'' + g + '\')">' + g + '</button>';
+    }).join('') + '</div>';
+  }
   function openModule(id) {
     const cfg = GENERIC_MODULES[id];
     if (!cfg) return;
@@ -2692,7 +2797,24 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
           '<button class="add-wrong" data-type="' + mid + '" data-i="' + i + '">＋错题本</button></div>';
       });
       html += '</div>';
+    } else if (cfg.kind === 'eng') {
+      html += gradeBarHTML(engGrade, 'engSetGrade');
+      regGeneric(mid, cfg.name, items.map(function (it) { return { q: it.q, a: it.ans }; }));
+      html += '<div class="mod-body text">';
+      items.forEach(function (it, i) {
+        var inner = '<div class="q">' + (i + 1) + '、' + escapeHtml(it.q) + '</div>';
+        if (it.options) {
+          inner += '<div class="mc">' + it.options.map(function (o) { return '<button class="mc-opt" data-i="' + i + '">' + escapeHtml(o) + '</button>'; }).join('') + '</div><span class="mark"></span>';
+        } else {
+          inner += '<div class="a-row"><input class="ans-input g-input" data-i="' + i + '" type="text" placeholder="✏️ 写单词" autocomplete="off" spellcheck="false"><span class="mark"></span></div>';
+        }
+        html += '<div class="calc-item" data-gi="' + i + '"><div class="calc-main">' + inner +
+          '<div class="reveal">答案：' + escapeHtml(it.ans) + '</div></div>' +
+          '<button class="add-wrong" data-type="' + mid + '" data-i="' + i + '">＋错题本</button></div>';
+      });
+      html += '</div>';
     } else if (cfg.kind === 'flash') {
+      if (mid === 'sx-chin') html += gradeBarHTML(chinGrade, 'chinSetGrade');
       regGeneric(mid, cfg.name, items.map(function (it) { return { q: it.q, a: it.a }; }));
       html += '<div class="flash-list">';
       items.forEach(function (it, i) {
@@ -2803,6 +2925,14 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
       if (cfg.kind === 'mcq') {
         const sel = document.querySelector('.mc .mc-opt.sel[data-i="' + i + '"]');
         ok = sel ? (sel.textContent === it.ans) : false;
+      } else if (cfg.kind === 'eng') {
+        if (it.options) {
+          const sel = document.querySelector('.mc .mc-opt.sel[data-i="' + i + '"]');
+          ok = sel ? gradeText(sel.textContent, it.ans) : false;
+        } else {
+          const inp = document.querySelector('.g-input[data-i="' + i + '"]');
+          ok = inp ? gradeText(inp.value, it.ans) : false;
+        }
       } else {
         const inp = document.querySelector('.g-input[data-i="' + i + '"]');
         ok = inp ? gradeOne(inp.value, it.key) : false;
