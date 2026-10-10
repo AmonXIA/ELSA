@@ -1589,13 +1589,13 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     ['日', '一', '二', '三', '四', '五', '六'].forEach(w => { html += '<div class="cal-wd">' + w + '</div>'; });
     html += '</div><div class="cal-grid">';
     for (let i = 0; i < startWeekday; i++) html += '<div class="cal-day empty"></div>';
+    const pcolors = curProfile().colors;
     for (let d = 1; d <= daysInMonth; d++) {
       const key = dateKey(new Date(y, m, d));
       const rec = stats.days[key];
       const mods = rec && rec.modules ? rec.modules : {};
       const doneKeys = Object.keys(mods).filter(k => mods[k]);
       let dots = '';
-      const pcolors = curProfile().colors;
       Object.keys(pcolors).forEach(mid => { if (mods[mid]) dots += '<i class="dot" style="background:' + pcolors[mid] + '"></i>'; });
       const cls = 'cal-day' + (d === now.getDate() ? ' today' : '') + (doneKeys.length === 0 ? ' missed' : '');
       html += '<div class="' + cls + '"><span class="cal-num">' + d + '</span><div class="cal-dots">' + dots + '</div></div>';
