@@ -845,6 +845,11 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
 /* 几何图形题配图 */
 .geofig { margin: 8px 0 4px; }
 .geofig svg { display: block; max-width: 100%; height: auto; }
+/* 年级筛选 */
+.grade-bar { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 6px; }
+.grade-bar button { border: 1px solid #d6e4f2; background: #fff; color: #3a6ea5; border-radius: 999px; padding: 5px 16px; cursor: pointer; font-size: 13px; font-family: inherit; }
+.grade-bar button.active { background: #3d7fd0; border-color: #3d7fd0; color: #fff; font-weight: 700; }
+.grade-bar button:hover { border-color: #3d7fd0; }
 </style></head>
 <body>
 
@@ -2409,6 +2414,67 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
       function () { const k = ri(3, 8); return { q: '找规律填数：' + k + '，' + k * 2 + '，' + k * 3 + '，' + k * 4 + '，____', ans: String(k * 5), key: [k * 5] }; },
       function () { const n = ri(3, 8); return { q: '第 n 个数是 2n，当 n ＝ ' + n + ' 时，这个数是多少？', ans: String(2 * n), key: [2 * n] }; }
     ],
+    factor: [
+      function () { const p = ri(1, 9), q = ri(1, 9), a = p + q, b = p * q; return { q: '把 x² ＋ ' + a + 'x ＋ ' + b + ' 分解成 (x ＋ p)(x ＋ q)（p、q 为正整数），求 p ＋ q。', ans: String(a), key: [a] }; },
+      function () { const p = ri(1, 9), q = ri(1, 9), a = p + q, b = p * q; return { q: '把 x² ＋ ' + a + 'x ＋ ' + b + ' 分解成 (x ＋ p)(x ＋ q)（p、q 为正整数），求 p × q。', ans: String(b), key: [b] }; },
+      function () { const k = ri(1, 9), p = ri(1, 9), q = ri(1, 9); return { q: '已知 x² ＋ ' + (p + q) + 'x ＋ ' + (p * q) + ' ＝ (x ＋ p)(x ＋ q)。当 x ＝ ' + k + ' 时，求该式的值。', ans: String((k + p) * (k + q)), key: [(k + p) * (k + q)] }; },
+      function () { const a = ri(5, 15), b = ri(2, 9); return { q: '当 a ＝ ' + a + '，b ＝ ' + b + ' 时，求 a² − b² 的值。', ans: String(a * a - b * b), key: [a * a - b * b] }; },
+      function () { const a = ri(5, 15), b = ri(2, 9); return { q: '当 a ＝ ' + a + '，b ＝ ' + b + ' 时，求 a² ＋ 2ab ＋ b² 的值。', ans: String((a + b) * (a + b)), key: [(a + b) * (a + b)] }; },
+      function () { const a = ri(5, 15), b = ri(2, 9); return { q: '当 a ＝ ' + a + '，b ＝ ' + b + ' 时，求 a² − 2ab ＋ b² 的值。', ans: String((a - b) * (a - b)), key: [(a - b) * (a - b)] }; }
+    ],
+    congruence: [
+      function () { return { q: '等腰三角形（非等边）有几条对称轴？', ans: '1', key: [1] }; },
+      function () { return { q: '等边三角形有几条对称轴？', ans: '3', key: [3] }; },
+      function () { return { q: '正方形有几条对称轴？', ans: '4', key: [4] }; },
+      function () { return { q: '长方形（非正方形）有几条对称轴？', ans: '2', key: [2] }; },
+      function () { const a = ri(30, 80), b = ri(30, 70); return { q: '两个三角形全等，其中一个三角形的两个内角分别是 ' + a + '° 和 ' + b + '°，另一个三角形对应位置的第三个内角是多少度？', ans: String(180 - a - b), key: [180 - a - b] }; },
+      function () { const x = ri(3, 12); return { q: '点 P 在线段 AB 的垂直平分线上，PA ＝ ' + x + ' cm，PB 是多少 cm？', ans: String(x), key: [x] }; }
+    ],
+    linearfunc: [
+      function () { const k = ri(2, 6), b = ri(1, 12), x = ri(2, 8); return { q: '一次函数 y ＝ ' + k + 'x ＋ ' + b + '，当 x ＝ ' + x + ' 时，y 是多少？', ans: String(k * x + b), key: [k * x + b] }; },
+      function () { const k = ri(2, 6), b = ri(1, 12); return { q: '一次函数 y ＝ ' + k + 'x ＋ ' + b + ' 的图象与 y 轴交点的纵坐标是多少？', ans: String(b), key: [b] }; },
+      function () { const k = ri(2, 6), b = ri(2, 12); const x = b / k; if (x % 1 !== 0) return { q: '一次函数 y ＝ 2x − 6 的图象与 x 轴交点的横坐标是多少？', ans: '3', key: [3] }; return { q: '一次函数 y ＝ ' + k + 'x − ' + b + ' 的图象与 x 轴交点的横坐标是多少？', ans: String(x), key: [x] }; },
+      function () { const k = ri(2, 6), b = ri(1, 9); return { q: '一次函数 y ＝ kx ＋ ' + b + ' 的图象经过点 (1, ' + (k + b) + ')，k 是多少？', ans: String(k), key: [k] }; },
+      function () { const m = ri(2, 5), b = ri(1, 9), x = ri(2, 6); return { q: '一次函数 y ＝ kx ＋ ' + b + ' 经过点 (' + x + ', ' + (m * x + b) + ')，k 是多少？', ans: String(m), key: [m] }; },
+      function () { return { q: '一次函数 y ＝ 3x − 5 中，y 随 x 增大而增大还是减小？（增大填 1，减小填 0）', ans: '1', key: [1] }; }
+    ],
+    pythagoras: [
+      function () { const t = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15], [8, 15, 17], [7, 24, 25]]); return { q: '直角三角形的两条直角边分别是 ' + t[0] + ' 和 ' + t[1] + '，斜边长是多少？', ans: String(t[2]), key: [t[2]] }; },
+      function () { const t = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15], [8, 15, 17]]); return { q: '直角三角形的斜边是 ' + t[2] + '，一条直角边是 ' + t[0] + '，另一条直角边是多少？', ans: String(t[1]), key: [t[1]] }; },
+      function () { const t = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15]]); return { q: '直角三角形的两条直角边是 ' + t[0] + ' 和 ' + t[1] + '，它的面积是多少？', ans: String(t[0] * t[1] / 2), key: [t[0] * t[1] / 2] }; },
+      function () { const t = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15]]); return { q: '直角三角形两直角边为 ' + t[0] + '、' + t[1] + '，斜边为 ' + t[2] + '，斜边上的高是多少？', ans: String(+(t[0] * t[1] / t[2]).toFixed(2)), key: [t[0] * t[1] / t[2]] }; },
+      function () { const s = ri(3, 9); return { q: '等腰直角三角形的两条直角边都是 ' + s + '，斜边是多少？（保留整数，√2 ≈ 1.414）', ans: String(Math.round(s * 1.414)), key: [Math.round(s * 1.414)] }; }
+    ],
+    quadratic: [
+      function () { const r = ri(2, 12); return { q: '解方程：x² ＝ ' + (r * r) + '（x ＞ 0），x ＝ ？', ans: String(r), key: [r] }; },
+      function () { const r = ri(3, 12), a = ri(1, 6); return { q: '解方程：(x ＋ ' + a + ')² ＝ ' + (r * r) + '（x ＞ 0），x ＝ ？', ans: String(r - a), key: [r - a] }; },
+      function () { const r = ri(1, 9), s = ri(2, 9), lo = Math.min(r, s), hi = Math.max(r, s); return { q: '方程 x² − ' + (r + s) + 'x ＋ ' + (r * s) + ' ＝ 0 的一个根是 ' + lo + '，另一个根是多少？', ans: String(hi), key: [hi] }; },
+      function () { const r = ri(2, 9), s = ri(2, 9); return { q: '方程 x² − ' + (r + s) + 'x ＋ ' + (r * s) + ' ＝ 0 的两根之和是多少？', ans: String(r + s), key: [r + s] }; },
+      function () { const a = ri(1, 3), b = ri(2, 9), c = ri(1, 5); return { q: '方程 ' + a + 'x² ＋ ' + b + 'x ＋ ' + c + ' ＝ 0 的判别式 Δ ＝ b² − 4ac 是多少？', ans: String(b * b - 4 * a * c), key: [b * b - 4 * a * c] }; },
+      function () { const r = ri(2, 9), s = ri(2, 9); return { q: '方程 x² − ' + (r + s) + 'x ＋ ' + (r * s) + ' ＝ 0 的两根之积是多少？', ans: String(r * s), key: [r * s] }; }
+    ],
+    quadfunc: [
+      function () { const a = ri(1, 3), b = ri(1, 5), c = ri(1, 9), x = ri(1, 5); const y = a * x * x - b * x + c; return { q: '二次函数 y ＝ ' + a + 'x² − ' + b + 'x ＋ ' + c + '，当 x ＝ ' + x + ' 时，y 是多少？', ans: String(y), key: [y] }; },
+      function () { const a = ri(1, 3), m = ri(1, 6); return { q: '二次函数 y ＝ ' + a + 'x² − ' + (2 * a * m) + 'x ＋ 1 的对称轴是 x 等于多少？', ans: String(m), key: [m] }; },
+      function () { const c = ri(1, 9); return { q: '二次函数 y ＝ 2x² ＋ 3x ＋ ' + c + ' 的图象与 y 轴交点的纵坐标是多少？', ans: String(c), key: [c] }; },
+      function () { const a = ri(1, 3), m = ri(1, 6); return { q: '二次函数 y ＝ ' + a + 'x² − ' + (2 * a * m) + 'x ＋ 1 的顶点横坐标是多少？', ans: String(m), key: [m] }; },
+      function () { return { q: '二次函数 y ＝ 2x² ＋ 3x ＋ 1（a ＞ 0），它有最小值还是最大值？（最小填 1，最大填 0）', ans: '1', key: [1] }; }
+    ],
+    circle: [
+      function () { const r = ri(1, 10); return { q: '圆的半径是 ' + r + ' cm，周长是多少 cm？（π 取 3.14）', ans: String(+(2 * 3.14 * r).toFixed(2)), key: [+(2 * 3.14 * r).toFixed(2)] }; },
+      function () { const r = ri(1, 10); return { q: '圆的半径是 ' + r + ' cm，面积是多少 cm²？（π 取 3.14）', ans: String(+(3.14 * r * r).toFixed(2)), key: [+(3.14 * r * r).toFixed(2)] }; },
+      function () { const c = 2 * ri(30, 80); return { q: '同弧所对的圆周角等于圆心角的一半。若圆心角是 ' + c + '°，对应的圆周角是多少度？', ans: String(c / 2), key: [c / 2] }; },
+      function () { return { q: '半圆（直径）所对的圆周角是多少度？', ans: '90', key: [90] }; },
+      function () { const d = ri(2, 12); return { q: '圆的直径是 ' + d + ' cm，半径是多少 cm？', ans: String(d / 2), key: [d / 2] }; }
+    ],
+    trig: [
+      function () { return { q: 'sin 30° 的值是多少？（填小数，如 0.5）', ans: '0.5', key: [0.5] }; },
+      function () { return { q: 'cos 60° 的值是多少？（填小数）', ans: '0.5', key: [0.5] }; },
+      function () { return { q: 'tan 45° 的值是多少？', ans: '1', key: [1] }; },
+      function () { return { q: 'sin 60° 的值是多少？（保留两位小数，√3 ≈ 1.732）', ans: '0.87', key: [0.87] }; },
+      function () { const t = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13]]); return { q: '直角三角形中，∠A 的对边是 ' + t[0] + '，斜边是 ' + t[2] + '，sin A 是多少？（填小数）', ans: String(+(t[0] / t[2]).toFixed(2)), key: [+(t[0] / t[2]).toFixed(2)] }; },
+      function () { const t = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13]]); return { q: '直角三角形中，∠A 的邻边是 ' + t[1] + '，斜边是 ' + t[2] + '，cos A 是多少？（填小数）', ans: String(+(t[1] / t[2]).toFixed(2)), key: [+(t[1] / t[2]).toFixed(2)] }; }
+    ],
     geofig: [
       function () { const x = ri(20, 70);
         const svg = '<svg viewBox="0 0 180 100" width="150" height="84"><line x1="15" y1="85" x2="165" y2="85" stroke="#555" stroke-width="2"/><line x1="15" y1="85" x2="95" y2="15" stroke="#555" stroke-width="2"/><path d="M15 67 h18 v18" fill="none" stroke="#c2688f" stroke-width="1.5"/><text x="44" y="80" font-size="13" fill="#333">∠1</text><text x="80" y="58" font-size="13" fill="#333">∠2</text></svg>';
@@ -2454,6 +2520,8 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
       function () { const a = ri(60, 90); return { q: '一组数据：' + a + '，' + (a + 4) + '，' + (a + 8) + '，' + (a + 12) + '。它们的平均数是多少？', ans: String(a + 6), key: [a + 6] }; }
     ]
   };
+  SHAWN_POOLS.all = [];
+  Object.keys(SHAWN_POOLS).forEach(function (k) { if (k !== 'all') SHAWN_POOLS.all = SHAWN_POOLS.all.concat(SHAWN_POOLS[k]); });
   function genFromPool(pool, n) {
     const out = [], seen = {};
     let guard = 0;
@@ -2473,19 +2541,28 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     { id: 'sc3', title: '巧算速算', badge: '初一', emoji: '⚡', pool: 'clever' }
   ];
   const SHAWN_TYPES = [
-    { id: 'st1', title: '有理数运算', badge: '初一', pool: 'rational' },
-    { id: 'st2', title: '整式与代数式', badge: '初一', pool: 'expr' },
-    { id: 'st3', title: '一元一次方程', badge: '初一', pool: 'equation' },
-    { id: 'st4', title: '一元一次不等式', badge: '初一', pool: 'ineq' },
-    { id: 'st5', title: '二元一次方程组', badge: '初一', pool: 'system' },
-    { id: 'st6', title: '行程应用题', badge: '初一', pool: 'travel' },
-    { id: 'st7', title: '工程与浓度', badge: '初一', pool: 'work' },
-    { id: 'st8', title: '和差倍分与年龄', badge: '初一', pool: 'sumdiff' },
-    { id: 'st9', title: '图形与角', badge: '初一', pool: 'geometry' },
-    { id: 'st10', title: '找规律与数列', badge: '初一', pool: 'pattern' },
-    { id: 'st11', title: '统计与平均数', badge: '初一', pool: 'stat' },
-    { id: 'st12', title: '巧算速算', badge: '初一', pool: 'clever' },
-    { id: 'st13', title: '几何图形（看图·作图）', badge: '初一', pool: 'geofig' }
+    { id: 'st1', title: '有理数运算', grade: '初一', pool: 'rational' },
+    { id: 'st2', title: '整式与代数式', grade: '初一', pool: 'expr' },
+    { id: 'st3', title: '一元一次方程', grade: '初一', pool: 'equation' },
+    { id: 'st4', title: '一元一次不等式', grade: '初一', pool: 'ineq' },
+    { id: 'st5', title: '二元一次方程组', grade: '初一', pool: 'system' },
+    { id: 'st6', title: '行程应用题', grade: '初一', pool: 'travel' },
+    { id: 'st7', title: '工程与浓度', grade: '初一', pool: 'work' },
+    { id: 'st8', title: '和差倍分与年龄', grade: '初一', pool: 'sumdiff' },
+    { id: 'st9', title: '图形与角', grade: '初一', pool: 'geometry' },
+    { id: 'st10', title: '几何图形（看图·作图）', grade: '初一', pool: 'geofig' },
+    { id: 'st11', title: '找规律与数列', grade: '初一', pool: 'pattern' },
+    { id: 'st12', title: '统计与平均数', grade: '初一', pool: 'stat' },
+    { id: 'st13', title: '巧算速算', grade: '初一', pool: 'clever' },
+    { id: 'st14', title: '因式分解', grade: '初二', pool: 'factor' },
+    { id: 'st15', title: '全等与轴对称', grade: '初二', pool: 'congruence' },
+    { id: 'st16', title: '一次函数', grade: '初二', pool: 'linearfunc' },
+    { id: 'st17', title: '勾股定理', grade: '初二', pool: 'pythagoras' },
+    { id: 'st18', title: '一元二次方程', grade: '初三', pool: 'quadratic' },
+    { id: 'st19', title: '二次函数', grade: '初三', pool: 'quadfunc' },
+    { id: 'st20', title: '圆', grade: '初三', pool: 'circle' },
+    { id: 'st21', title: '锐角三角函数', grade: '初三', pool: 'trig' },
+    { id: 'st22', title: '综合练习', grade: '综合', pool: 'all' }
   ];
 
   /* 通用模块的题目登记表（用于错题本） */
@@ -2599,7 +2676,7 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     const items = genFromPool(SHAWN_POOLS[t.pool], 10);
     shawnKeys[gid] = items.map(function (it) { return it.key; });
     regGeneric(gid, t.title, items.map(function (it) { return { q: it.q, a: it.ans }; }));
-    let html = '<h2><span class="num">' + ti + '</span>' + escapeHtml(t.title) + ' <span class="badge">' + escapeHtml(t.badge) + '</span></h2>';
+    let html = '<h2><span class="num">' + ti + '</span>' + escapeHtml(t.title) + ' <span class="badge">' + escapeHtml(t.grade || t.badge || '') + '</span></h2>';
     html += '<div class="mod-toolbar"><button class="primary-btn" onclick="gradeShawn(\'' + prefix + '\',\'' + t.id + '\')">✔ 批改本组</button> <button onclick="refreshShawnSection(\'' + prefix + '\',\'' + t.id + '\')">🎲 换一批</button> <span class="sec-score" id="' + gid + '-score"></span></div>';
     html += '<div class="mod-body text" id="' + gid + '-body">';
     const ansList = [];
@@ -2616,14 +2693,30 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     html += '<details class="answers"><summary>查看本组答案</summary><ol class="answer-list">' + ansList.join('') + '</ol></details>';
     return html;
   }
+  let shawnGrade = '初一';
+  function shawnFilter(g) {
+    shawnGrade = g;
+    renderGenericBody();
+    toast('已切换到「' + g + '」');
+  }
   function buildShawnSections(types, prefix) {
+    const grades = ['初一', '初二', '初三', '综合', '全部'];
+    const list = (prefix === 'sm' && shawnGrade !== '全部')
+      ? types.filter(function (t) { return t.grade === shawnGrade; })
+      : types;
+    let bar = '';
+    if (prefix === 'sm') {
+      bar = '<div class="grade-bar">' + grades.map(function (g) {
+        return '<button class="' + (g === shawnGrade ? 'active' : '') + '" onclick="shawnFilter(\'' + g + '\')">' + g + '</button>';
+      }).join('') + '</div>';
+    }
     const toc = [];
     let html = '';
-    types.forEach(function (t, ti) {
+    list.forEach(function (t, ti) {
       toc.push('<a href="#' + prefix + '-' + t.id + '">' + (ti + 1) + ' ' + escapeHtml(t.title) + '</a>');
-      html += '<section class="type" id="' + prefix + '-' + t.id + '">' + shawnSectionInner(t, ti + 1, prefix) + '</section>';
+      html += '<section class="type" data-grade="' + t.grade + '" id="' + prefix + '-' + t.id + '">' + shawnSectionInner(t, ti + 1, prefix) + '</section>';
     });
-    return '<nav class="toc"><h2>目录</h2><div class="links">' + toc.join('') + '</div></nav>' + html;
+    return bar + '<nav class="toc"><h2>目录</h2><div class="links">' + toc.join('') + '</div></nav>' + html;
   }
   function refreshShawnSection(prefix, tid) {
     const arr = prefix === 'sm' ? SHAWN_TYPES : SHAWN_CALC;
