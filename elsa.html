@@ -465,6 +465,7 @@
   }
   /* 常驻错题本入口（右上角，两个工作区都能随时打开） */
   .wb-btn { right: 60px; font-size: 18px; }
+  .ai-btn { right: 108px; font-size: 20px; }
   .wb-btn .wb-badge {
     position: absolute;
     top: -4px; right: -4px;
@@ -1053,6 +1054,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
 <button class="fs-btn" id="fs-btn" onclick="toggleFullscreen()" title="切换全屏">⛶</button>
     html += '<button class="ai-settings-btn">⚙️ AI 设置</button> ';
 <button class="fs-btn wb-btn" id="wb-quick-btn" onclick="openWrongBook()" title="错题本" aria-label="错题本">📓<span class="wb-badge" id="wb-badge-quick">0</span></button>
+<button class="fs-btn ai-btn" id="ai-quick-btn" onclick="openAiSettings()" title="AI 读草稿设置" aria-label="AI 读草稿设置">⚙️</button>
 
 <header class="hero">
   <div class="brand">
@@ -1669,7 +1671,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     if (rev) { const mm = rev.textContent.match(/答案：([\s\S]*?)(解析：|$)/); if (mm) return mm[1].trim(); }
     return '';
   }
-  function analyzeDraft(btn) {
+  function analyzeDraft(btn, done) {
     const card = btn.closest('.calc-item') || btn.closest('.vcol');
     if (!card) return;
     const cv = card.querySelector('canvas.scratch');
@@ -1704,7 +1706,34 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       out.textContent = t ? ('🤖 ' + String(t).trim()) : ('🤖 返回异常：' + JSON.stringify(d).slice(0, 200));
     }).catch(function (e) {
       out.textContent = '🤖 请求失败：' + (e && e.message ? e.message : e) + '（可检查网络、接口地址和 Key）';
-    }).then(function () { btn.disabled = false; });
+    }).then(function () { btn.disabled = false; if (done) done(); });
+  }
+  // 一键读完这一组所有有草稿的题目
+  function analyzeSectionDrafts(prefix, tid) {
+    const gid = prefix + '-' + tid;
+    const cards = Array.prototype.slice.call(document.querySelectorAll('.calc-item[data-gi^="' + gid + '-"]'));
+    const targets = cards.filter(function (c) {
+      const cv = c.querySelector('canvas.scratch');
+      return !!(cv && cv._inked);
+    });
+    if (!targets.length) { toast('这一组还没有草稿：先在草稿区写过程，再点我'); return; }
+    const cfg = aiCfg();
+    if (!cfg.key) { openAiSettings(); toast('请先填写接口地址与 API Key'); return; }
+    toast('正在逐题读草稿，共 ' + targets.length + ' 题…');
+    let i = 0;
+    (function next() {
+      if (i >= targets.length) { toast('这组草稿批改完成'); return; }
+      const card = targets[i++];
+      let btn = card.querySelector('.ai-draft');
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ai-draft';
+        btn.textContent = '🔍 让 AI 读我的草稿，指出错在哪一步';
+        (card.querySelector('.calc-main') || card).appendChild(btn);
+      }
+      analyzeDraft(btn, next);
+    })();
   }
   document.addEventListener('click', function (e) {
     if (!e.target.closest) return;
@@ -5974,7 +6003,7 @@ function reciteBodyHTML(cfg) {
     shawnKeys[gid] = items.map(function (it) { return it.key; });
     regGeneric(gid, t.title, items.map(function (it) { return { q: it.q, a: it.ans }; }));
     let html = '<h2><span class="num">' + ti + '</span>' + escapeHtml(t.title) + ' <span class="badge">' + escapeHtml(t.grade || t.badge || '') + '</span></h2>';
-    html += '<div class="mod-toolbar"><button class="primary-btn" onclick="gradeShawn(\'' + prefix + '\',\'' + t.id + '\')">✔ 批改本组</button> <button onclick="refreshShawnSection(\'' + prefix + '\',\'' + t.id + '\')">🎲 换一批</button> ' + scratchToolsHTML() + ' <span class="sec-score" id="' + gid + '-score"></span></div>';
+    html += '<div class="mod-toolbar"><button class="primary-btn" onclick="gradeShawn(\'' + prefix + '\',\'' + t.id + '\')">✔ 批改本组</button> <button onclick="analyzeSectionDrafts(\'' + prefix + '\',\'' + t.id + '\')">🔍 AI 批改草稿</button> <button onclick="refreshShawnSection(\'' + prefix + '\',\'' + t.id + '\')">🎲 换一批</button> ' + scratchToolsHTML() + ' <span class="sec-score" id="' + gid + '-score"></span></div>';
     html += '<div class="mod-body text onecol" id="' + gid + '-body">';
     const ansList = [];
     items.forEach(function (it, i) {
