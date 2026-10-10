@@ -1093,12 +1093,25 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
       .replace(/[、，,和与\s]+/g, ' ');
     return (t.match(/-?\d+(?:\.\d+)?/g) || []).map(Number).sort((a, b) => a - b);
   }
-  function gradeOne(input, key) {
+ function gradeOne(input, key) {
+    if (key.length === 1 && typeof key[0] === 'string') {
+      const a = parseNum(key[0]), b = parseNum(input);
+      if (a !== null && b !== null) return Math.abs(a - b) < 0.01;
+    }
     const got = Array.from(new Set(normalizeNums(input)));
     const exp = Array.from(new Set(key)).sort((a, b) => a - b);
     if (got.length !== exp.length) return false;
     return got.every((v, i) => v === exp[i]);
   }
+  function parseNum(s) {
+    const t = String(s).replace(/[－—−–]/g, '-').replace(/[　\s]/g, '');
+    const m = t.match(/^(-?\d+)\/(-?\d+)$/);
+    if (m) return Number(m[1]) / Number(m[2]);
+    const v = Number(t.replace(/[^\d.\-]/g, ''));
+    return (t !== '' && !isNaN(v)) ? v : null;
+  }
+  function gcd(a, b) { return b ? gcd(b, a % b) : Math.abs(a); }
+  function fracStr(n, d) { const g = gcd(n, d) || 1; n /= g; d /= g; return d === 1 ? String(n) : n + '/' + d; }
 
  // ===== 多孩子工作区：当前孩子 + 存储命名空间 =====
  const PROFILE_KEY = 'elsa_profile_v1';
@@ -2670,7 +2683,15 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
       function () { const a = ri(2, 9); return { q: '计算：(−' + a + ')²', ans: String(a * a), key: [a * a] }; },
       function () { const a = ri(2, 5); return { q: '计算：(−' + a + ')³', ans: String(-(a * a * a)), key: [-(a * a * a)] }; },
       function () { const a = ri(2, 9), b = ri(2, 9), c = ri(1, 9); return { q: '计算：(−' + a + ') ＋ ' + b + ' − (−' + c + ')', ans: String(b + c - a), key: [b + c - a] }; },
-      function () { const a = ri(2, 6), b = ri(2, 6), c = ri(2, 9); return { q: '计算：−' + a + ' × ' + b + ' ＋ ' + c, ans: String(c - a * b), key: [c - a * b] }; }
+      function () { const a = ri(2, 6), b = ri(2, 6), c = ri(2, 9); return { q: '计算：−' + a + ' × ' + b + ' ＋ ' + c, ans: String(c - a * b), key: [c - a * b] }; },
+      function () { const a = ri(11, 45) / 10, b = ri(11, 45) / 10; const v = Math.round((b - a) * 10) / 10; return { q: '计算：(−' + a + ') ＋ ' + b, ans: String(v), key: [v] }; },
+      function () { const a = ri(2, 9) / 10, b = ri(11, 25) / 10; const v = Math.round(-(a * b) * 100) / 100; return { q: '计算：' + a + ' × (−' + b + ')', ans: String(v), key: [v] }; },
+      function () { const k = ri(2, 6), b = ri(2, 9) / 10, a = Math.round(b * k * 10) / 10; return { q: '计算：(−' + a + ') ÷ ' + b, ans: String(-k), key: [-k] }; },
+      function () { const a = ri(15, 45) / 10, b = ri(10, 30) / 10; const v = Math.round((a - b) * 10) / 10; return { q: '计算：|−' + a + '| − ' + b, ans: String(v), key: [v] }; },
+      function () { const a = ri(2, 6), b = ri(2, 6); return { q: '计算：1/' + a + ' ＋ 1/' + b + '（结果写成最简分数）', ans: fracStr(a + b, a * b), key: [fracStr(a + b, a * b)] }; },
+      function () { const a = ri(2, 6); return { q: '计算：1 − 1/' + a + '（结果写成最简分数）', ans: fracStr(a - 1, a), key: [fracStr(a - 1, a)] }; },
+      function () { const a = ri(2, 5), b = ri(2, 5); return { q: '计算：' + a + '/' + (a + 1) + ' × ' + (a + 1) + '/' + b + '（结果写成最简分数）', ans: fracStr(a, b), key: [fracStr(a, b)] }; },
+      function () { const a = ri(2, 5), k = ri(2, 4), b = a * k; return { q: '计算：1/' + a + ' ÷ 1/' + b, ans: String(k), key: [k] }; }
     ],
     expr: [
       function () { const k = ri(2, 6), a = ri(2, 5), b = ri(1, 4), c = ri(1, 3); return { q: '当 x ＝ ' + k + ' 时，求 ' + a + 'x ＋ ' + b + 'x − ' + c + 'x 的值。', ans: String((a + b - c) * k), key: [(a + b - c) * k] }; },
@@ -2971,7 +2992,7 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     return out;
   }
   const SHAWN_CALC = [
-    { id: 'sc1', title: '有理数运算', badge: '初一', emoji: '➕', pool: 'rational' },
+    { id: 'sc1', title: '有理数运算（含小数 · 分数）', badge: '初一', emoji: '➕', pool: 'rational' },
     { id: 'sc2', title: '整式运算', badge: '初一', emoji: '🧩', pool: 'expr' },
     { id: 'sc3', title: '巧算速算', badge: '初一', emoji: '⚡', pool: 'clever' }
   ];
