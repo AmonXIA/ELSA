@@ -1066,7 +1066,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   </div>
   <div class="hero-top">
     <div class="greet">
-      <h1>下午好，<span id="child-name" onclick="setName()">小朋友</span> 👋</h1>
+      <h1><span id="greet-hi">下午好</span>，<span id="child-name" onclick="setName()">小朋友</span> 👋</h1>
       <p id="greet-sub">今天也和我们一起收集星星吧！</p>
     </div>
     <div class="star-jar">
@@ -2828,9 +2828,23 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
         '<div class="ms">' + escapeHtml(m.sub) + '</div></button>';
     }).join('');
   }
+  // 按时间动态问候（夜里提醒睡觉）
+  function greetWord(h) {
+    const t = (h === undefined || h === null) ? new Date().getHours() : h;
+    if (t >= 5 && t < 9) return '早上好';
+    if (t >= 9 && t < 12) return '上午好';
+    if (t >= 12 && t < 14) return '中午好';
+    if (t >= 14 && t < 18) return '下午好';
+    if (t >= 18 && t < 22) return '晚上好';
+    return '夜深了，该睡觉啦';
+  }
+  function refreshGreeting() { setText('greet-hi', greetWord()); }
+  setInterval(refreshGreeting, 60000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) refreshGreeting(); });
   function applyProfile() {
     const p = curProfile();
     document.body.classList.toggle('theme-shawn', PROFILE_ID === 'shawn');
+    refreshGreeting();
     setText('brand-text', p.brand);
     setText('greet-sub', p.sub);
     setText('child-name', childName());
