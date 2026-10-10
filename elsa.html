@@ -1631,7 +1631,8 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       + '<label class="ai-field">接口地址<input id="ai-url" type="text" placeholder="https://api.openai.com/v1/chat/completions"></label>'
       + '<label class="ai-field">模型名称<input id="ai-model" type="text" placeholder="gpt-4o-mini"></label>'
       + '<label class="ai-field">API Key<input id="ai-key" type="password" placeholder="sk-..."></label>'
-      + '<div class="modal-foot" style="border-top:none;padding:4px 0 0;"><button class="primary" id="ai-save" type="button">保存</button></div>'
+      + '<div class="modal-foot" style="border-top:none;padding:4px 0 0;"><button class="primary" id="ai-save" type="button">保存</button> <button id="ai-test" type="button">测试连接</button></div>'
+      + '<div id="ai-test-out" class="ai-result" style="display:none;"></div>'
       + '</div></div>';
     document.body.appendChild(m);
     m.querySelector('.modal-close').addEventListener('click', function () { m.classList.remove('show'); });
@@ -1644,6 +1645,21 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       });
       m.classList.remove('show');
       toast('已保存，之后点「让 AI 读草稿」就能批改了');
+    });
+    m.querySelector('#ai-test').addEventListener('click', function () {
+      const out = m.querySelector('#ai-test-out');
+      const c = {
+        url: m.querySelector('#ai-url').value.trim(),
+        model: m.querySelector('#ai-model').value.trim(),
+        key: m.querySelector('#ai-key').value.trim()
+      };
+      out.style.display = 'block';
+      out.textContent = '⏳ 正在测试…';
+      aiPost(c, [{ type: 'text', text: '回复两个字：正常' }]).then(function (t) {
+        out.textContent = '✅ 连接正常，模型回复：' + t;
+      }).catch(function (e) {
+        out.textContent = '❌ ' + e.message;
+      });
     });
     return m;
   }
@@ -1671,6 +1687,53 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     if (rev) { const mm = rev.textContent.match(/答案：([\s\S]*?)(解析：|$)/); if (mm) return mm[1].trim(); }
     return '';
   }
+  // 统一请求：把 HTTP 状态和接口返回的原始错误显示出来，便于排查
+  function aiEndpoint(u) {
+    let url = (u || 'https://api.openai.com/v1/chat/completions').trim();
+    if (/\/v1\/?$/.test(url)) url = url.replace(/\/$/, '') + '/chat/completions';
+    return url;
+  }
+  function aiPost(cfg, content) {
+    const url = aiEndpoint(cfg.url);
+    const body = { model: cfg.model || 'gpt-4o-mini', max_tokens: 500, messages: [{ role: 'user', content: content }] };
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
+      body: JSON.stringify(body)
+    }).catch(function (e) {
+      throw new Error('连不上接口（' + (e && e.name ? e.name : 'network') + '）。常见原因：接口地址写错、没联网，或者该服务不允许网页直接调用（CORS）。地址：' + url);
+    }).then(function (res) {
+      return res.text().then(function (raw) {
+        let data = null;
+        try { data = JSON.parse(raw); } catch (e) {}
+        if (!res.ok) {
+          let msg = '';
+          if (data && data.error) msg = data.error.message || JSON.stringify(data.error);
+          else msg = raw.slice(0, 200);
+          throw new Error('接口返回 HTTP ' + res.status + '：' + msg);
+        }
+        let t = '';
+        try { t = data.choices[0].message.content; } catch (e) {}
+        if (!t) throw new Error('返回内容无法解析：' + raw.slice(0, 200));
+        return String(t).trim();
+      });
+    });
+  }
+  // 草稿图片很大，先缩到宽 1000 以内再上传，避免请求过大被拒
+  function shrinkCanvas(cv) {
+    const maxW = 1000;
+    const w = cv.width, h = cv.height;
+    if (w <= maxW) return cv.toDataURL('image/png');
+    const scale = maxW / w;
+    const c2 = document.createElement('canvas');
+    c2.width = Math.round(w * scale);
+    c2.height = Math.round(h * scale);
+    const g = c2.getContext('2d');
+    g.fillStyle = '#ffffff';
+    g.fillRect(0, 0, c2.width, c2.height);
+    g.drawImage(cv, 0, 0, c2.width, c2.height);
+    return c2.toDataURL('image/jpeg', 0.85);
+  }
   function analyzeDraft(btn, done) {
     const card = btn.closest('.calc-item') || btn.closest('.vcol');
     if (!card) return;
@@ -1685,27 +1748,19 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     if (!out) { out = document.createElement('div'); out.className = 'ai-result'; (card.querySelector('.calc-main') || card).appendChild(out); }
     out.textContent = '🤖 正在读你的草稿…';
     btn.disabled = true;
-    const url = cfg.url || 'https://api.openai.com/v1/chat/completions';
     const prompt = '你是初中数学老师。题目：' + q + '。正确答案：' + ans + '。图里是学生的手写解题草稿。'
       + '请逐步核对：先一句话说明他哪几步是对的，然后明确指出他算错的是第几步、他写成了什么、正确应该是什么，最后给出正确的解题过程。'
       + '用不超过 120 字的中文回答，直接说结论，不要客套。';
-    fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
-      body: JSON.stringify({
-        model: cfg.model || 'gpt-4o-mini',
-        max_tokens: 400,
-        messages: [{ role: 'user', content: [
-          { type: 'text', text: prompt },
-          { type: 'image_url', image_url: { url: cv.toDataURL('image/png') } }
-        ] }]
-      })
-    }).then(function (r) { return r.json(); }).then(function (d) {
-      let t = '';
-      try { t = d.choices[0].message.content; } catch (e) {}
-      out.textContent = t ? ('🤖 ' + String(t).trim()) : ('🤖 返回异常：' + JSON.stringify(d).slice(0, 200));
+    let img = '';
+    try { img = shrinkCanvas(cv); } catch (e) { img = ''; }
+    if (!img) { out.textContent = '🤖 这一格草稿读取失败，请重新写一下再试'; btn.disabled = false; if (done) done(); return; }
+    aiPost(cfg, [
+      { type: 'text', text: prompt },
+      { type: 'image_url', image_url: { url: img } }
+    ]).then(function (t) {
+      out.textContent = '🤖 ' + t;
     }).catch(function (e) {
-      out.textContent = '🤖 请求失败：' + (e && e.message ? e.message : e) + '（可检查网络、接口地址和 Key）';
+      out.textContent = '🤖 出错：' + (e && e.message ? e.message : e);
     }).then(function () { btn.disabled = false; if (done) done(); });
   }
   // 一键读完这一组所有有草稿的题目
