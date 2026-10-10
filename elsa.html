@@ -855,6 +855,10 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
 .grade-bar button:hover { border-color: #3d7fd0; }
 /* 答案解析 */
 .reveal .exp { display: block; color: #6b7a8d; font-weight: 400; font-size: 0.94em; margin-top: 2px; }
+/* 标准分数写法（上下叠放） */
+.frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.08; margin: 0 3px; font-size: 0.9em; }
+.frac .fnum { border-bottom: 1.4px solid currentColor; padding: 0 3px; }
+.frac .fden { padding: 0 3px; }
 /* 计算题里的错题本按钮缩小，避免撑大 */
 .calc-item .add-wrong { display: inline-block; margin: 6px 0 0; font-size: 11px; padding: 1px 9px; line-height: 1.7; }
 .calc-item > .add-wrong { align-self: flex-start; }
@@ -1864,7 +1868,7 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     items.forEach((it, i) => {
       html += '<div class="calc-item" data-type="' + typeId + '" data-i="' + i + '">'
         + '<div class="calc-main">'
-        + '<div class="q">' + (i + 1) + '、' + escapeHtml(it.q) + '</div>'
+        + '<div class="q">' + (i + 1) + '、' + fmtMath(it.q) + '</div>'
         + '<div class="a-row"><input class="ans-input" data-type="' + typeId + '" data-i="' + i + '" type="text" inputmode="numeric" placeholder="✏️ 写答案" autocomplete="off"><span class="mark"></span></div>'
         + '<div class="reveal">答案：' + escapeHtml(it.ans) + '</div>'
         + '</div>'
@@ -2975,8 +2979,13 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     trig: 'sinA＝对边/斜边，cosA＝邻边/斜边，tanA＝对边/邻边；sin30°=0.5，tan45°=1。',
     all: '先判断属于哪个知识点，再选方法：计算先化简，几何先标条件，应用题先找等量关系。'
   };
-  function revealHTML(ans, exp) {
-    return '<div class="reveal">答案：' + escapeHtml(ans) + (exp ? '<span class="exp">解析：' + escapeHtml(exp) + '</span>' : '') + '</div>';
+ function revealHTML(ans, exp) {
+    return '<div class="reveal">答案：' + fmtMath(ans) + (exp ? '<span class="exp">解析：' + fmtMath(exp) + '</span>' : '') + '</div>';
+  }
+  function fmtMath(s) {
+    return escapeHtml(s).replace(/(\d+)\s*\/\s*(\d+)/g, function (m, a, b) {
+      return '<span class="frac"><span class="fnum">' + a + '</span><span class="fden">' + b + '</span></span>';
+    });
   }
   function genFromPool(pool, n) {
     const out = [], seen = {};
@@ -3171,7 +3180,7 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     items.forEach(function (it, i) {
       ansList.push('<li>' + escapeHtml(it.ans) + '</li>');
       html += '<div class="calc-item" data-gi="' + gid + '-' + i + '"><div class="calc-main">' +
-        '<div class="q">' + (i + 1) + '、' + escapeHtml(it.q) + '</div>' +
+        '<div class="q">' + (i + 1) + '、' + fmtMath(it.q) + '</div>' +
         (it.svg ? '<div class="geofig">' + it.svg + '</div>' : '') +
         '<div class="a-row"><input class="ans-input sm-input" data-g="' + gid + '" data-i="' + i + '" type="text" inputmode="numeric" placeholder="✏️" autocomplete="off"><span class="mark"></span></div>' +
         '<button class="add-wrong" data-type="' + gid + '" data-i="' + i + '">＋错题本</button>' +
