@@ -708,6 +708,32 @@
 body.scratch-eraser .scratch { cursor: cell; background: #fff7f4; border-color: #f0cfc2; }
 .mod-toolbar .st-mode.active { background: #e7f0fd; border-color: #8db6e8; color: #24557f; font-weight: 700; }
 body.theme-shawn .mod-toolbar .st-mode.active { background: #dbe9fb; border-color: #8db6e8; color: #23507f; }
+/* 每个草稿区右上角的浮动按钮（画笔 / 橡皮擦 / 清空这一格） */
+.calc-item .scratch-box { position: relative; flex: 1 1 100%; width: 100%; margin-top: 8px; }
+.calc-item .scratch-box .scratch { flex: none; width: 100%; max-width: none; height: 150px; margin-top: 0; }
+.scratch-tools { position: absolute; top: 6px; right: 8px; display: flex; gap: 6px; z-index: 3; }
+.scratch-tools .st-mini {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid #e3d0e2;
+  background: rgba(255,255,255,.94);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(95,75,82,.12);
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
+body.theme-shawn .scratch-tools .st-mini { border-color: #d6e4f2; }
+.scratch-tools .st-mini.active { background: #dbe9fb; border-color: #8db6e8; color: #23507f; }
+@media (min-width: 768px) {
+  .calc-item .scratch-box .scratch { height: 200px; }
+  .scratch-tools { top: 8px; right: 10px; gap: 8px; }
+  .scratch-tools .st-mini { width: 42px; height: 42px; font-size: 20px; }
+}
 </style><style>
 /* ===== iPad（含 11 英寸 Pro）优化：填满宽度 + 放大字号，减轻用眼 ===== */
 @media (min-width: 768px) {
@@ -1945,9 +1971,39 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     clearScratch(host);
     toast('草稿已清空');
   }
+  function clearOneScratch(cv) {
+    const c = cv.getContext('2d');
+    c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, cv.width, cv.height); c.restore();
+  }
+  // 在每个草稿区右上角放一组浮动按钮，滚动到哪儿都能就地换笔 / 擦除
+  function decorateScratch(cv) {
+    if (!cv.parentNode || cv.parentNode.classList.contains('scratch-box')) return;
+    const box = document.createElement('div');
+    box.className = 'scratch-box';
+    cv.parentNode.insertBefore(box, cv);
+    box.appendChild(cv);
+    const tools = document.createElement('div');
+    tools.className = 'scratch-tools';
+    tools.innerHTML =
+      '<button type="button" class="st-mini st-mode' + (scratchMode === 'pen' ? ' active' : '') + '" data-mode="pen" title="画笔" aria-label="画笔">✏️</button>' +
+      '<button type="button" class="st-mini st-mode' + (scratchMode === 'eraser' ? ' active' : '') + '" data-mode="eraser" title="橡皮擦" aria-label="橡皮擦">🧽</button>' +
+      '<button type="button" class="st-mini st-wipe" title="清空这一格" aria-label="清空这一格">🧹</button>';
+    function pick(m) {
+      return function (e) { e.preventDefault(); e.stopPropagation(); setScratchMode(m); };
+    }
+    tools.querySelector('[data-mode="pen"]').addEventListener('click', pick('pen'));
+    tools.querySelector('[data-mode="eraser"]').addEventListener('click', pick('eraser'));
+    tools.querySelector('.st-wipe').addEventListener('click', function (e) {
+      e.preventDefault(); e.stopPropagation();
+      clearOneScratch(cv);
+      toast('这一格草稿已清空');
+    });
+    box.appendChild(tools);
+  }
   function setupScratch(cv) {
     if (cv._scratchReady) return;
     cv._scratchReady = true;
+    decorateScratch(cv);
     let ctx = null, drawing = false, lastX = 0, lastY = 0;
     const PEN_COLOR = '#7d6672', PEN_WIDTH = 2, ERASER_WIDTH = 16;
     function erasing() { return scratchMode === 'eraser'; }
