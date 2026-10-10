@@ -1532,14 +1532,49 @@ body.fs-full > .wrap {
 
   /* ============ 思维题批改 ============ */
   const thinkKeys = {};
-  const SYMBOLS = ['○', '△', '□', '●', '★', '☆', '▲', '黑', '白', '大', '小', '右', '左', '前', '后'];
-  function makeOptions(a) {
+  const SYMBOLS = ['○', '△', '□', '●', '★', '☆', '▲', '▼', '■', '黑', '白', '大', '小', '上', '下', '右', '左', '前', '后'];
+  function permutations(arr) {
+    if (arr.length <= 1) return [arr.slice()];
+    const out = [];
+    for (let i = 0; i < arr.length; i++) {
+      const rest = arr.slice(0, i).concat(arr.slice(i + 1));
+      permutations(rest).forEach(function (p) { out.push([arr[i]].concat(p)); });
+    }
+    return out;
+  }
+  function makeOptions(q, a) {
     const correct = String(a).replace(/（.*$/, '').trim();
-    const pool = (correct.length <= 1) ? SYMBOLS : NAMES;
     const opts = [correct];
-    for (let k = 0; k < 8 && opts.length < 3; k++) {
-      const c = pool[ri(0, pool.length - 1)];
-      if (opts.indexOf(c) === -1) opts.push(c);
+    const parts = correct.split(/[、,，]/).map(function (s) { return s.trim(); }).filter(Boolean);
+    // 答案由多个元素组成（如颜色顺序）→ 用它的排列做干扰项
+    if (parts.length > 1) {
+      const perms = permutations(parts);
+      for (let k = 0; k < perms.length && opts.length < 3; k++) {
+        const s = perms[k].join('、');
+        if (opts.indexOf(s) === -1) opts.push(s);
+      }
+      return shuffle(opts);
+    }
+    // 干扰项优先取题目里出现过的同类元素（更有迷惑性）
+    q = q || '';
+    const cands = [];
+    shuffle((q.match(/[一二三四五六七八九十0-9]+楼/g) || []).slice()).forEach(function (t) {
+      if (cands.indexOf(t) === -1) cands.push(t);
+    });
+    const others = [];
+    NAMES.forEach(function (n) { if (q.indexOf(n) !== -1 && others.indexOf(n) === -1) others.push(n); });
+    ANIMALS.forEach(function (n) { if (q.indexOf(n) !== -1 && others.indexOf(n) === -1) others.push(n); });
+    SYMBOLS.forEach(function (s) { if (q.indexOf(s) !== -1 && others.indexOf(s) === -1) others.push(s); });
+    shuffle(others);
+    others.forEach(function (o) { if (cands.indexOf(o) === -1) cands.push(o); });
+    cands.forEach(function (c) { if (opts.length < 3 && opts.indexOf(c) === -1) opts.push(c); });
+    // 还不够再用通用池补齐
+    if (opts.length < 3) {
+      const pool = (correct.length <= 1) ? SYMBOLS : NAMES;
+      const p = shuffle(pool.slice());
+      for (let k = 0; k < p.length && opts.length < 3; k++) {
+        if (opts.indexOf(p[k]) === -1) opts.push(p[k]);
+      }
     }
     return shuffle(opts);
   }
@@ -1591,7 +1626,7 @@ body.fs-full > .wrap {
       } else {
         const key = String(p.a).replace(/（.*$/, '').trim();
         thinkKeys[t.id].push({ type: 'mc', key: key });
-        item += '<div class="mc">' + makeOptions(p.a).map(o => '<button class="mc-opt" data-type="' + t.id + '" data-i="' + i + '">' + escapeHtml(o) + '</button>').join('') + '</div><span class="mark"></span>';
+        item += '<div class="mc">' + makeOptions(p.q, p.a).map(o => '<button class="mc-opt" data-type="' + t.id + '" data-i="' + i + '">' + escapeHtml(o) + '</button>').join('') + '</div><span class="mark"></span>';
       }
       item += '<div class="reveal">答案：' + escapeHtml(p.a) + '</div><button class="add-wrong" data-type="' + t.id + '" data-i="' + i + '">＋错题本</button></li>';
       ol += item;
