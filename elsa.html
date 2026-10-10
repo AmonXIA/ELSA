@@ -2321,7 +2321,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             if (sc && sc._inked && r.innerHTML.indexOf('请对照上面的步骤') < 0) {
-              r.innerHTML += '<span class="exp">📝 你在这一格有草稿：请对照上面的步骤，从第一步开始找出算错的地方（常见错因：去括号没变号、乘方符号、除以分数忘记取倒数）。</span>';
+              r.innerHTML += '<span class="exp">📝 你在这一格有草稿：请对照上面的步骤，从第一步开始找出算错的地方。常见错因：去括号没变号、乘方符号、除以分数忘记取倒数、加减法进位借位算错。如果你用的方法和上面不同也没关系，只要每一步都对，结果一定相同——把两步之间的数字重新算一遍。</span>';
             }
           }
         }
@@ -3111,7 +3111,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             if (sc && sc._inked && r.innerHTML.indexOf('对照草稿') < 0) {
-              r.innerHTML += '<span class="exp">📝 你在这一格有草稿：请对照上面的步骤，从第一步开始找出算错的地方（常见错因：去括号没变号、乘方符号、除以分数忘记取倒数）。</span>';
+              r.innerHTML += '<span class="exp">📝 你在这一格有草稿：请对照上面的步骤，从第一步开始找出算错的地方。常见错因：去括号没变号、乘方符号、除以分数忘记取倒数、加减法进位借位算错。如果你用的方法和上面不同也没关系，只要每一步都对，结果一定相同——把两步之间的数字重新算一遍。</span>';
             }
           }
         }
@@ -3153,9 +3153,9 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       function () { const m = pick([3, 7, 9]), a = ri(15, 85) / 10, b = Math.round((10 - a) * 10) / 10; return { q: '计算：(−' + a + ') × ' + m + '/10 ＋ ' + b + ' × (−' + m + '/10)', ans: String(-m), key: [-m], exp: '逆用乘法分配律：原式 ＝ (−' + a + ' ＋ ' + b + ') × ' + m + '/10 ＝ −10 × ' + m + '/10 ＝ −' + m + '。' }; },
       function () { const m = pick([3, 7, 9]), a = ri(105, 895) / 100, b = Math.round((10 - a) * 100) / 100; return { q: '计算：(−' + a + ') × ' + m + '/10 ＋ ' + b + ' × (−' + m + '/10)', ans: String(-m), key: [-m], exp: '两项都有因式 ' + m + '/10，逆用分配律：原式 ＝ (−' + a + ' ＋ ' + b + ') × ' + m + '/10 ＝ −10 × ' + m + '/10 ＝ −' + m + '。' }; },
       function () { const m = pick([3, 9]), a = ri(12, 38) / 10, b = Math.round((5 - a) * 10) / 10; return { q: '计算：(−' + a + ') × ' + m + '/5 ＋ ' + b + ' × (−' + m + '/5)', ans: String(-m), key: [-m], exp: '逆用分配律：原式 ＝ (−' + a + ' ＋ ' + b + ') × ' + m + '/5 ＝ −5 × ' + m + '/5 ＝ −' + m + '。' }; },
-      function () { const q = 55, k = ri(20, 48), p = ri(3, 40); return { q: '计算：' + k + ' ' + p + '/' + q + ' × (−' + q + ')', ans: String(-(k * q + p)), key: [-(k * q + p)], exp: '带分数化成假分数：' + k + ' ' + p + '/' + q + ' ＝ ' + (k * q + p) + '/' + q + '； 分母与 −' + q + ' 约掉，得 −' + (k * q + p) + '。' }; },
-      function () { const q = 56, k = ri(20, 48), p = ri(3, 40); return { q: '计算：' + k + ' ' + p + '/' + q + ' × (−' + q + ')', ans: String(-(k * q + p)), key: [-(k * q + p)], exp: '带分数化成假分数：' + k + ' ' + p + '/' + q + ' ＝ ' + (k * q + p) + '/' + q + '； 与 −' + q + ' 约分得 −' + (k * q + p) + '。' }; },
-      function () { const q = 75, k = ri(20, 48), p = ri(3, 50); return { q: '计算：' + k + ' ' + p + '/' + q + ' × (−' + q + ')', ans: String(-(k * q + p)), key: [-(k * q + p)], exp: '带分数化成假分数：' + k + ' ' + p + '/' + q + ' ＝ ' + (k * q + p) + '/' + q + '； 分母正好约掉，答案 −' + (k * q + p) + '。' }; },
+      function () { const q = 55, k = ri(20, 48), p = ri(3, 40); return { q: '计算：' + k + ' ' + p + '/' + q + ' × (−' + q + ')', ans: String(-(k * q + p)), key: [-(k * q + p)], exp: '方法一（化假分数）：' + k + ' ' + p + '/' + q + ' ＝ ' + (k * q + p) + '/' + q + '，分母与 −' + q + ' 约掉，得 −' + (k * q + p) + '。方法二（拆成整数 ＋ 分数）：' + k + '×(−' + q + ') ＋ ' + p + '/' + q + '×(−' + q + ') ＝ −' + (k * q) + ' − ' + p + ' ＝ −' + (k * q + p) + '。注意 −' + (k * q) + ' − ' + p + ' 这一步容易算错，别把位数加错。' }; },
+      function () { const q = 56, k = ri(20, 48), p = ri(3, 40); return { q: '计算：' + k + ' ' + p + '/' + q + ' × (−' + q + ')', ans: String(-(k * q + p)), key: [-(k * q + p)], exp: '方法一（化假分数）：' + k + ' ' + p + '/' + q + ' ＝ ' + (k * q + p) + '/' + q + '，与 −' + q + ' 约分得 −' + (k * q + p) + '。方法二（拆成整数 ＋ 分数）：' + k + '×(−' + q + ') ＋ ' + p + '/' + q + '×(−' + q + ') ＝ −' + (k * q) + ' − ' + p + ' ＝ −' + (k * q + p) + '。' }; },
+      function () { const q = 75, k = ri(20, 48), p = ri(3, 50); return { q: '计算：' + k + ' ' + p + '/' + q + ' × (−' + q + ')', ans: String(-(k * q + p)), key: [-(k * q + p)], exp: '方法一（化假分数）：' + k + ' ' + p + '/' + q + ' ＝ ' + (k * q + p) + '/' + q + '，分母正好约掉，答案 −' + (k * q + p) + '。方法二（拆成整数 ＋ 分数）：' + k + '×(−' + q + ') ＋ ' + p + '/' + q + '×(−' + q + ') ＝ −' + (k * q) + ' − ' + p + ' ＝ −' + (k * q + p) + '。' }; },
       function () { const t = pick([[8, 6, 4], [2, 3, 4], [4, 6, 8]]), s = t[0], u = t[1], w = t[2], k = ri(2, 8), q = ri(2, 9), p = ri(1, 20), I = 24 / s + 24 / u - 24 / w; return { q: '计算：[' + p + '/' + q + ' − (1/' + s + ' ＋ 1/' + u + ' − 1/' + w + ') × 24] ÷ ' + k, ans: fracStr(p - I * q, q * k), key: [fracStr(p - I * q, q * k)], exp: '括号里先用 24 分别乘：24×1/' + s + ' ＋ 24×1/' + u + ' − 24×1/' + w + ' ＝ ' + (24 / s) + ' ＋ ' + (24 / u) + ' − ' + (24 / w) + ' ＝ ' + I + '； 再算 ' + p + '/' + q + ' − ' + I + ' ＝ ' + fracStr(p - I * q, q) + '； 最后 ÷ ' + k + '（即乘 1/' + k + '）＝ ' + fracStr(p - I * q, q * k) + '。' }; },
       function () { const t = pick([[3, 4, 6], [6, 8, 12]]), s = t[0], u = t[1], w = t[2], k = ri(2, 8), q = ri(2, 9), p = ri(1, 20), I = 24 / s + 24 / u - 24 / w; return { q: '计算：[' + p + '/' + q + ' − (1/' + s + ' ＋ 1/' + u + ' − 1/' + w + ') × 24] ÷ ' + k, ans: fracStr(p - I * q, q * k), key: [fracStr(p - I * q, q * k)], exp: '括号内用 24 分别乘各项：' + (24 / s) + ' ＋ ' + (24 / u) + ' − ' + (24 / w) + ' ＝ ' + I + '； ' + p + '/' + q + ' − ' + I + ' ＝ ' + fracStr(p - I * q, q) + '； 再除以 ' + k + '：' + fracStr(p - I * q, q * k) + '。' }; },
       function () { const t = pick([[2, 4, 8], [4, 12, 6]]), s = t[0], u = t[1], w = t[2], k = ri(3, 9), q = ri(3, 9), p = ri(1, 25), I = 24 / s + 24 / u - 24 / w; return { q: '计算：[' + p + '/' + q + ' − (1/' + s + ' ＋ 1/' + u + ' − 1/' + w + ') × 24] ÷ ' + k, ans: fracStr(p - I * q, q * k), key: [fracStr(p - I * q, q * k)], exp: '先把括号内的分数分别乘 24：' + I + '； 再算 ' + p + '/' + q + ' − ' + I + ' ＝ ' + fracStr(p - I * q, q) + '； 除以 ' + k + ' 得 ' + fracStr(p - I * q, q * k) + '。' }; },
@@ -5777,7 +5777,7 @@ function reciteBodyHTML(cfg) {
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             if (sc && sc._inked && r.innerHTML.indexOf('请对照上面的步骤') < 0) {
-              r.innerHTML += '<span class="exp">📝 你在这一格有草稿：请对照上面的步骤，从第一步开始找出算错的地方（常见错因：去括号没变号、乘方符号、除以分数忘记取倒数）。</span>';
+              r.innerHTML += '<span class="exp">📝 你在这一格有草稿：请对照上面的步骤，从第一步开始找出算错的地方。常见错因：去括号没变号、乘方符号、除以分数忘记取倒数、加减法进位借位算错。如果你用的方法和上面不同也没关系，只要每一步都对，结果一定相同——把两步之间的数字重新算一遍。</span>';
             }
           }
         }
@@ -5820,7 +5820,7 @@ function reciteBodyHTML(cfg) {
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             if (sc && sc._inked && r.innerHTML.indexOf('请对照上面的步骤') < 0) {
-              r.innerHTML += '<span class="exp">📝 你在这一格有草稿：请对照上面的步骤，从第一步开始找出算错的地方（常见错因：去括号没变号、乘方符号、除以分数忘记取倒数）。</span>';
+              r.innerHTML += '<span class="exp">📝 你在这一格有草稿：请对照上面的步骤，从第一步开始找出算错的地方。常见错因：去括号没变号、乘方符号、除以分数忘记取倒数、加减法进位借位算错。如果你用的方法和上面不同也没关系，只要每一步都对，结果一定相同——把两步之间的数字重新算一遍。</span>';
             }
           }
         }
