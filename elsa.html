@@ -754,17 +754,111 @@ body.fs-full > .wrap {
 @media (min-width: 768px) {
   body.fs-full > .wrap { max-width: 1180px; margin: 0 auto; }
 }
+/* 多孩子工作区切换 */
+.brand { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.p-switch { display: inline-flex; gap: 6px; }
+.p-switch button {
+  border: 1px solid #e6d9e5; background: #fff; color: #8a6f85;
+  border-radius: 999px; padding: 4px 12px; cursor: pointer; font-size: 12px; font-family: inherit;
+}
+.p-switch button.active { background: #f39bbd; border-color: #f39bbd; color: #fff; font-weight: 700; }
+@media (min-width: 768px) { .p-switch button { font-size: 14px; padding: 6px 16px; } }
+/* 背诵卡片 / 口语列表 */
+.tag { display: inline-block; background: #f2e9f7; color: #8b6ba8; border-radius: 999px; padding: 1px 9px; font-size: 12px; margin-right: 6px; }
+.flash-list { display: grid; gap: 10px; }
+.flash-item { background: #fffafd; border: 1px solid #f0e4ec; border-radius: 14px; padding: 12px 16px; }
+.flash-item summary { cursor: pointer; font-size: 17px; color: #5f4b52; list-style: none; }
+.flash-item summary::-webkit-details-marker { display: none; }
+.flash-item summary::before { content: "▸ "; color: #c99fc0; }
+.flash-item[open] summary::before { content: "▾ "; }
+.flash-a { margin-top: 8px; padding: 10px 12px; background: #f7f2fb; border-radius: 10px; color: #5b4a63; font-size: 16px; }
+.oral-list { font-size: 18px; line-height: 1.9; color: #5f4b52; padding-left: 22px; }
+.oral-list li { margin: 6px 0; }
+@media (min-width: 768px) {
+  .flash-item summary { font-size: 19px; }
+  .flash-a { font-size: 18px; }
+  .oral-list { font-size: 21px; }
+}
+/* ===== Shawn 主题（蓝 / 青，区别于 Elsa 的粉色） ===== */
+body.theme-shawn {
+  --pink: #3d7fd0; --purple: #3aa6a0; --ice: #3d7fd0;
+  --ink: #2f4260; --muted: #7b8ba0; --line: #e2e9f2; --bg: #f4f8fc; --card: #ffffff;
+}
+body.theme-shawn {
+  background: radial-gradient(ellipse at 0% 10%, #e6f0ff 0, transparent 45%), radial-gradient(ellipse at 100% 30%, #e2f7f2 0, transparent 45%), #f4f8fc;
+}
+body.theme-shawn header.hero {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjM2MCIgdmlld0JveD0iMCAwIDEyMDAgMzYwIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9InMiIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNjZmU4ZmYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmM2ZiZmYiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2MzZTU5YSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzllZDA3MyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjM2MCIgZmlsbD0idXJsKCNzKSIvPjxnIGZpbGw9IiNmZmYiIG9wYWNpdHk9Ii45MiI+PGVsbGlwc2UgY3g9IjE3MCIgY3k9Ijc4IiByeD0iNjIiIHJ5PSIyNiIvPjxlbGxpcHNlIGN4PSIyMjYiIGN5PSI2OCIgcng9IjQ2IiByeT0iMjIiLz48ZWxsaXBzZSBjeD0iNzAwIiBjeT0iNjAiIHJ4PSI1OCIgcnk9IjI0Ii8+PGVsbGlwc2UgY3g9Ijc1NCIgY3k9IjUyIiByeD0iNDIiIHJ5PSIyMCIvPjwvZz48cGF0aCBkPSJNMCAyNTIgUTMyMCAxOTIgNjQwIDIzOCBUMTIwMCAyMjggVjM2MCBIMCBaIiBmaWxsPSJ1cmwoI2cpIi8+PHBhdGggZD0iTTAgMzAyIFE0MDAgMjYwIDgyMCAzMDIgVDEyMDAgMjk0IFYzNjAgSDAgWiIgZmlsbD0iIzkzYzk2YSIgb3BhY2l0eT0iLjgiLz48ZyBzdHJva2U9IiNlZmRjYjgiIHN0cm9rZS13aWR0aD0iNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48cGF0aCBkPSJNMTE4IDI2NHY4NE0yMDggMjYwdjg4TTI5OCAyNjR2ODRNMzg4IDI2MHY4OCIvPjwvZz48ZyBmaWxsPSIjZjZlOWNmIj48cmVjdCB4PSI5NCIgeT0iMjkwIiB3aWR0aD0iMzMwIiBoZWlnaHQ9IjExIiByeD0iNSIvPjxyZWN0IHg9Ijk0IiB5PSIzMTgiIHdpZHRoPSIzMzAiIGhlaWdodD0iMTEiIHJ4PSI1Ii8+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDkzMCwxOTYpIj48cmVjdCB4PSItNDAiIHk9Ijc0IiB3aWR0aD0iMTMiIGhlaWdodD0iNDAiIHJ4PSI2IiBmaWxsPSIjM2EzYTNhIi8+PHJlY3QgeD0iLTE0IiB5PSI3NiIgd2lkdGg9IjEzIiBoZWlnaHQ9IjQwIiByeD0iNiIgZmlsbD0iIzNhM2EzYSIvPjxyZWN0IHg9IjE0IiB5PSI3NiIgd2lkdGg9IjEzIiBoZWlnaHQ9IjQwIiByeD0iNiIgZmlsbD0iIzNhM2EzYSIvPjxyZWN0IHg9IjQwIiB5PSI3NCIgd2lkdGg9IjEzIiBoZWlnaHQ9IjQwIiByeD0iNiIgZmlsbD0iIzNhM2EzYSIvPjxnIGZpbGw9IiNmZmYiPjxjaXJjbGUgY3g9Ii00NiIgY3k9IjI2IiByPSIyNyIvPjxjaXJjbGUgY3g9Ii0xNCIgY3k9IjEwIiByPSIzMSIvPjxjaXJjbGUgY3g9IjIwIiBjeT0iOCIgcj0iMzEiLz48Y2lyY2xlIGN4PSI1MiIgY3k9IjI0IiByPSIyNyIvPjxjaXJjbGUgY3g9Ii0yIiBjeT0iNDQiIHI9IjM0Ii8+PGNpcmNsZSBjeD0iNDIiIGN5PSI0NiIgcj0iMjgiLz48Y2lyY2xlIGN4PSItNDIiIGN5PSI0OCIgcj0iMjYiLz48L2c+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNzAsMjIpIj48ZWxsaXBzZSBjeD0iLTI2IiBjeT0iLTEwIiByeD0iMTMiIHJ5PSI4IiBmaWxsPSIjMzMzIiB0cmFuc2Zvcm09InJvdGF0ZSgtMjUgLTI2IC0xMCkiLz48ZWxsaXBzZSBjeD0iMjYiIGN5PSItMTAiIHJ4PSIxMyIgcnk9IjgiIGZpbGw9IiMzMzMiIHRyYW5zZm9ybT0icm90YXRlKDI1IDI2IC0xMCkiLz48ZWxsaXBzZSBjeD0iMCIgY3k9IjAiIHJ4PSIyOCIgcnk9IjIzIiBmaWxsPSIjMzMzIi8+PGNpcmNsZSBjeD0iLTEwIiBjeT0iLTYiIHI9IjYuNSIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjEwIiBjeT0iLTYiIHI9IjYuNSIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9Ii05IiBjeT0iLTUiIHI9IjMiIGZpbGw9IiMyMjIiLz48Y2lyY2xlIGN4PSIxMSIgY3k9Ii01IiByPSIzIiBmaWxsPSIjMjIyIi8+PHBhdGggZD0iTS04IDkgUTAgMTYgOCA5IiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMi42IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L2c+PC9nPjwvc3ZnPg==");
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  box-shadow: 0 12px 35px #3a6ea512;
+}
+body.theme-shawn header.hero::after { content: "★"; color: #9dc0e4; }
+body.theme-shawn .brand { color: #4a6f9e; }
+body.theme-shawn .greet p, body.theme-shawn header.hero p { color: #5d7a9b; }
+body.theme-shawn #child-name { text-decoration-color: #7fa6cf; }
+body.theme-shawn .hero-art { display: none; }
+body.theme-shawn .hero-top { padding-right: 0; min-height: 0; }
+body.theme-shawn .star-jar { background: #ffffffb0; border-color: #ffffff; }
+body.theme-shawn .jar-title { color: #6b86a5; }
+body.theme-shawn .jar-today { color: #3d7fd0; border-left-color: #dfe8f2; }
+body.theme-shawn .jar-star b { color: #d9a423; }
+body.theme-shawn .jar-dia b { color: #2f96c9; }
+body.theme-shawn .num { background: linear-gradient(135deg, #4c8ede, #38a5b8); }
+body.theme-shawn .badge { background: #e8f1fb; color: #3a6ea5; border-color: #d6e4f2; }
+body.theme-shawn .primary-btn, body.theme-shawn .task-btn.primary, body.theme-shawn .controls button.primary { background: linear-gradient(135deg, #4a86d8, #38a5a0); border-color: transparent; color: #fff; }
+body.theme-shawn .task-btn, body.theme-shawn .controls button, body.theme-shawn .mod-toolbar button, body.theme-shawn .refresh button, body.theme-shawn .points-bar button { border-color: #d6e4f2; color: #3a6ea5; }
+body.theme-shawn .ans-input { border-color: #d9e4f0; }
+body.theme-shawn .ans-input:focus { border-color: #4a86d8; box-shadow: 0 0 0 3px #4a86d81a; }
+body.theme-shawn .mc-opt { border-color: #d6e4f2; }
+body.theme-shawn .mc-opt.sel { background: #3d7fd0; border-color: #3d7fd0; color: #fff; }
+body.theme-shawn .calc-item, body.theme-shawn .vcol { background: #fbfdff; border-color: #e4ecf5; }
+body.theme-shawn .vcol .vinput { border-color: #d9e4f0; background: #f6faff; }
+body.theme-shawn .vcol .vmk { border-color: #cfe0ef; color: #3a6ea5; }
+body.theme-shawn .cal-day.today { background: #e8f1fb; box-shadow: inset 0 0 0 1.5px #6aa0d8; }
+body.theme-shawn .cal-day.missed { background: #f4f8fc; }
+body.theme-shawn .goal-num { background: #e8f1fb; color: #3a6ea5; }
+body.theme-shawn .goal-list li.done .tick { background: #4a86d8; border-color: #4a86d8; }
+body.theme-shawn .garden-card { background: linear-gradient(135deg, #eef7ff, #f7fdfb); }
+body.theme-shawn .garden-card::after { color: #a9c8e8; }
+body.theme-shawn .tag { background: #e8f1fb; color: #3a6ea5; }
+body.theme-shawn .flash-item { background: #fbfdff; border-color: #e4ecf5; }
+body.theme-shawn .flash-a { background: #eef5fd; color: #33506f; }
+body.theme-shawn .chore-item { border-color: #d6e4f2; }
+body.theme-shawn .bottom-nav { background: #fdfefff0; box-shadow: 0 8px 35px #3a6ea51c, 0 0 0 1px #e2e9f2; }
+body.theme-shawn .bottom-nav button.active { background: #e8f1fb; color: #2f6bb8; }
+body.theme-shawn .fs-btn { color: #4a86d8; border-color: #dbe7f3; }
+body.theme-shawn .p-switch button.active { background: #4a86d8; border-color: #4a86d8; }
+body.theme-shawn .intro { color: #7b8ba0; }
+body.theme-shawn .q, body.theme-shawn .q-text { color: #2f4260; }
+body.theme-shawn .reveal { color: #3a6ea5; }
+body.theme-shawn .module-card:nth-child(1) { background: #e9f2fd; }
+body.theme-shawn .module-card:nth-child(2) { background: #e9f7f3; }
+body.theme-shawn .module-card:nth-child(3) { background: #eef0fd; }
+body.theme-shawn .module-card:nth-child(4) { background: #e8f4fb; }
+body.theme-shawn .module-card:nth-child(5) { background: #eef7f2; }
+body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
+/* 底部导航项较多时可横向滚动 */
+.bottom-nav { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.bottom-nav button { flex: 1 0 auto; min-width: 58px; }
 </style></head>
 <body>
 
 <button class="fs-btn" id="fs-btn" onclick="toggleFullscreen()" title="切换全屏">⛶</button>
 
 <header class="hero">
-  <div class="brand">✨ Elsa 的每日数学小练</div>
+  <div class="brand">
+    <span>✨ <span id="brand-text">Elsa 的每日数学小练</span></span>
+    <span class="p-switch">
+      <button type="button" data-p="elsa" onclick="switchProfile('elsa')">❄️ Elsa</button>
+      <button type="button" data-p="shawn" onclick="switchProfile('shawn')">🚀 Shawn</button>
+    </span>
+  </div>
   <div class="hero-top">
     <div class="greet">
       <h1>下午好，<span id="child-name" onclick="setName()">小朋友</span> 👋</h1>
-      <p>今天也和我们一起收集星星吧！</p>
+      <p id="greet-sub">今天也和我们一起收集星星吧！</p>
     </div>
     <div class="star-jar">
       <div class="jar-title">我的星星罐</div>
@@ -798,13 +892,7 @@ body.fs-full > .wrap {
       </div>
     </div>
     <div class="section-label"><h2>今天，进步一点点</h2><span>五件小事 · 满满成长</span></div>
-    <div class="module-grid">
-      <button type="button" class="module-card" onclick="showPage('read')"><span class="mi">📖</span><div class="mt">阅读</div><div class="ms">15 分钟</div></button>
-      <button type="button" class="module-card" onclick="showPage('sport')"><span class="mi">🏃</span><div class="mt">运动</div><div class="ms">30 分钟</div></button>
-      <button type="button" class="module-card" onclick="showPage('chore')"><span class="mi">🧹</span><div class="mt">做家务</div><div class="ms">整理房间</div></button>
-      <button type="button" class="module-card" onclick="showPage('calc')"><span class="mi">✏️</span><div class="mt">计算小练</div><div class="ms">30 题</div></button>
-      <button type="button" class="module-card" onclick="showPage('think')"><span class="mi">🧠</span><div class="mt">思维小练</div><div class="ms">12 类</div></button>
-    </div>
+    <div class="module-grid" id="module-grid"></div>
     <div class="card calendar-card">
       <div class="card-head">📅 我的坚持日历</div>
       <div id="calendar"></div>
@@ -881,20 +969,20 @@ body.fs-full > .wrap {
       <h2>目录</h2>
       <div class="links" id="toc-links"></div>
     </nav>
-    <div id="sections"></div>
+<div id="sections"></div>
   </div>
 
-  <footer>Elsa 的每日数学小练 · 阅读 / 运动 / 家务 / 计算 / 思维 · 加油！</footer>
+  <!-- 通用模块页（多科目 / 多孩子） -->
+  <div class="page" id="page-module" style="display:none">
+    <h2 class="page-title" id="module-title"></h2>
+    <div class="controls" id="module-toolbar"></div>
+    <div id="module-content"></div>
+  </div>
+
+  <footer id="foot-text">Elsa 的每日数学小练 · 阅读 / 运动 / 家务 / 计算 / 思维 · 加油！</footer>
 </div>
 
-<nav class="bottom-nav">
-  <button data-page="dashboard" class="active" onclick="showPage('dashboard')">🏠<span>首页</span></button>
-  <button data-page="read" onclick="showPage('read')">📖<span>阅读</span></button>
-  <button data-page="sport" onclick="showPage('sport')">🏃<span>运动</span></button>
-  <button data-page="chore" onclick="showPage('chore')">🧹<span>家务</span></button>
-  <button data-page="calc" onclick="showPage('calc')">✏️<span>计算</span></button>
-  <button data-page="think" onclick="showPage('think')">🧠<span>思维</span></button>
-</nav>
+<nav class="bottom-nav" id="bottom-nav"></nav>
 
 <div class="modal-backdrop" id="wb-modal">
   <div class="modal-panel">
@@ -978,9 +1066,11 @@ body.fs-full > .wrap {
     el._t = setTimeout(() => { el.className = ''; }, 1800);
   }
   function normalizeNums(s) {
-    const t = String(s).replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+    const t = String(s)
+      .replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+      .replace(/[－—−–]/g, '-')
       .replace(/[、，,和与\s]+/g, ' ');
-    return (t.match(/\d+/g) || []).map(Number).sort((a, b) => a - b);
+    return (t.match(/-?\d+(?:\.\d+)?/g) || []).map(Number).sort((a, b) => a - b);
   }
   function gradeOne(input, key) {
     const got = Array.from(new Set(normalizeNums(input)));
@@ -989,7 +1079,25 @@ body.fs-full > .wrap {
     return got.every((v, i) => v === exp[i]);
   }
 
-  const NAMES = ['小明','小红','小刚','小华','小丽','小军','小方','小云','小静','小王','小张','小李','小美','小东'];
+ // ===== 多孩子工作区：当前孩子 + 存储命名空间 =====
+ const PROFILE_KEY = 'elsa_profile_v1';
+ let PROFILE_ID = (function () {
+   try {
+     const q = (location.search.match(/[?&]p=(elsa|shawn)\b/) || [])[1];
+     if (q) { try { localStorage.setItem(PROFILE_KEY, q); } catch (e2) {} return q; }
+     return localStorage.getItem(PROFILE_KEY) || 'elsa';
+   } catch (e) { return 'elsa'; }
+ })();
+ function pk(base) { return base + '::' + PROFILE_ID; }
+ function lsGet(base) {
+   try {
+     var v = localStorage.getItem(pk(base));
+     if (v === null && PROFILE_ID === 'elsa') v = localStorage.getItem(base); // 兼容升级前的旧数据
+     return v;
+   } catch (e) { return null; }
+ }
+
+ const NAMES = ['小明','小红','小刚','小华','小丽','小军','小方','小云','小静','小王','小张','小李','小美','小东'];
   const ANIMALS = ['小猫','小狗','小兔','小鸟','小马'];
   const COLORS = ['红','黄','蓝','绿','白','紫'];
 
@@ -1179,14 +1287,13 @@ body.fs-full > .wrap {
   /* ============ 错题本（思维小练） ============ */
   const WB_KEY = 'sxmath_wrongbook_v1';
   let wrongBook = loadWrongBook();
-  function loadWrongBook() { try { const v = localStorage.getItem(WB_KEY); return v ? JSON.parse(v) : []; } catch (e) { return []; } }
-  function saveWrongBook() { try { localStorage.setItem(WB_KEY, JSON.stringify(wrongBook)); } catch (e) {} }
+  function loadWrongBook() { try { const v = localStorage.getItem(pk(WB_KEY)); return v ? JSON.parse(v) : []; } catch (e) { return []; } }
+  function saveWrongBook() { try { localStorage.setItem(pk(WB_KEY), JSON.stringify(wrongBook)); } catch (e) {} }
   function addWrong(typeId, i) {
-    const t = TYPES.find(x => x.id === typeId);
-    const p = currentProblems[typeId] && currentProblems[typeId][i];
-    if (!t || !p) return;
+    const p = findProblem(typeId, i);
+    if (!p) return;
     if (wrongBook.some(w => w.typeId === typeId && w.q === p.q)) return;
-    wrongBook.push({ id: 'wb' + Date.now() + Math.random().toString(36).slice(2, 7), typeId, typeTitle: t.title, q: p.q, a: p.a, time: new Date().toLocaleString() });
+    wrongBook.push({ id: 'wb' + Date.now() + Math.random().toString(36).slice(2, 7), typeId, typeTitle: p.title, q: p.q, a: p.a, time: new Date().toLocaleString() });
     saveWrongBook(); updateAddedMarks(); updateWrongBadge(); toast('已加入错题本');
   }
   function removeWrong(id) { wrongBook = wrongBook.filter(w => w.id !== id); saveWrongBook(); renderWrongBook(); updateAddedMarks(); updateWrongBadge(); }
@@ -1262,7 +1369,7 @@ body.fs-full > .wrap {
     document.querySelectorAll('.add-wrong').forEach(btn => {
       const typeId = btn.getAttribute('data-type');
       const i = +btn.getAttribute('data-i');
-      const p = currentProblems[typeId] && currentProblems[typeId][i];
+      const p = findProblem(typeId, i);
       if (!p) return;
       const exists = wrongBook.some(w => w.typeId === typeId && w.q === p.q);
       btn.textContent = exists ? '已收录' : '＋错题本';
@@ -1277,8 +1384,8 @@ body.fs-full > .wrap {
   let stats = loadStats();
   function todayKey() { const d = new Date(); return dateKey(d); }
   function dateKey(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
-  function loadStats() { try { const v = localStorage.getItem(PTS_KEY); const d = v ? JSON.parse(v) : {}; return { points: d.points || 0, diamonds: d.diamonds || 0, bestAvg: (typeof d.bestAvg === 'number') ? d.bestAvg : null, days: d.days || {} }; } catch (e) { return { points: 0, diamonds: 0, bestAvg: null, days: {} }; } }
-  function saveStats() { try { localStorage.setItem(PTS_KEY, JSON.stringify(stats)); } catch (e) {} }
+  function loadStats() { try { const v = localStorage.getItem(pk(PTS_KEY)); const d = v ? JSON.parse(v) : {}; return { points: d.points || 0, diamonds: d.diamonds || 0, bestAvg: (typeof d.bestAvg === 'number') ? d.bestAvg : null, days: d.days || {} }; } catch (e) { return { points: 0, diamonds: 0, bestAvg: null, days: {} }; } }
+  function saveStats() { try { localStorage.setItem(pk(PTS_KEY), JSON.stringify(stats)); } catch (e) {} }
   function isPracticed(key) { const r = stats.days[key]; return !!(r && (r.checkin || (r.modules && Object.keys(r.modules).length))); }
   function computeStreak() {
     let d = new Date();
@@ -1287,12 +1394,12 @@ body.fs-full > .wrap {
     while (isPracticed(dateKey(d))) { n++; d.setDate(d.getDate() - 1); }
     return n;
   }
-  function childName() { try { return localStorage.getItem(NAME_KEY) || '小朋友'; } catch (e) { return '小朋友'; } }
+  function childName() { try { return localStorage.getItem(pk(NAME_KEY)) || curProfile().name; } catch (e) { return '小朋友'; } }
   function setName() {
     const cur = childName();
     const n = prompt('小朋友叫什么名字呀？', cur);
     if (!n || !n.trim()) return;
-    try { localStorage.setItem(NAME_KEY, n.trim()); } catch (e) {}
+    try { localStorage.setItem(pk(NAME_KEY), n.trim()); } catch (e) {}
     setText('child-name', n.trim());
   }
   function gardenStage(points) {
@@ -1370,13 +1477,9 @@ body.fs-full > .wrap {
     const fill = document.getElementById('garden-fill'); if (fill) fill.style.width = g.pct + '%';
     setText('garden-pct', g.pct + '%');
     setText('garden-gifts', stats.diamonds);
-    const goals = [
-      { label: '阅读 15 分钟', done: moduleDone('read') },
-      { label: '运动 30 分钟', done: moduleDone('sport') },
-      { label: '做家务', done: moduleDone('chore') },
-      { label: '计算小练', done: moduleDone('calc') },
-      { label: '思维小练', done: moduleDone('think') },
-    ];
+    const goals = curProfile().modules.filter(function (mm) { return mm.goal; }).map(function (mm) {
+      return { label: mm.title, done: moduleDone(mm.id) };
+    });
     const list = document.getElementById('goal-list');
     if (list) list.innerHTML = goals.map(g => '<li class="' + (g.done ? 'done' : '') + '"><span class="tick">' + (g.done ? '✓' : '') + '</span>' + g.label + '</li>').join('');
     setText('goal-progress', goals.filter(g => g.done).length + '/' + goals.length);
@@ -1416,8 +1519,8 @@ body.fs-full > .wrap {
   /* ============ 阅读记录 ============ */
   const READ_KEY = 'math_read_log_v1';
   let readLog = loadReadLog();
-  function loadReadLog() { try { const v = localStorage.getItem(READ_KEY); return v ? JSON.parse(v) : []; } catch (e) { return []; } }
-  function saveReadLog() { try { localStorage.setItem(READ_KEY, JSON.stringify(readLog)); } catch (e) {} }
+  function loadReadLog() { try { const v = localStorage.getItem(pk(READ_KEY)); return v ? JSON.parse(v) : []; } catch (e) { return []; } }
+  function saveReadLog() { try { localStorage.setItem(pk(READ_KEY), JSON.stringify(readLog)); } catch (e) {} }
   function initReadDate() { const el = document.getElementById('read-date'); if (el && !el.value) el.value = todayKey(); }
   function saveRead() {
     const book = (document.getElementById('read-book').value || '').trim();
@@ -1476,11 +1579,14 @@ body.fs-full > .wrap {
       const mods = rec && rec.modules ? rec.modules : {};
       const doneKeys = Object.keys(mods).filter(k => mods[k]);
       let dots = '';
-      Object.keys(MODULE_COLORS).forEach(mid => { if (mods[mid]) dots += '<i class="dot" style="background:' + MODULE_COLORS[mid] + '"></i>'; });
+      const pcolors = curProfile().colors;
+      Object.keys(pcolors).forEach(mid => { if (mods[mid]) dots += '<i class="dot" style="background:' + pcolors[mid] + '"></i>'; });
       const cls = 'cal-day' + (d === now.getDate() ? ' today' : '') + (doneKeys.length === 0 ? ' missed' : '');
       html += '<div class="' + cls + '"><span class="cal-num">' + d + '</span><div class="cal-dots">' + dots + '</div></div>';
     }
-    html += '</div><div class="cal-legend">' + Object.keys(MODULE_COLORS).map(k => '<span class="lg"><i class="dot" style="background:' + MODULE_COLORS[k] + '"></i>' + ({read:'阅读',sport:'运动',chore:'家务',calc:'计算',think:'思维'})[k] + '</span>').join('') + '</div>';
+    const plabels = {};
+    curProfile().modules.forEach(function (mm) { plabels[mm.id] = mm.title; });
+    html += '</div><div class="cal-legend">' + Object.keys(pcolors).map(function (k) { return '<span class="lg"><i class="dot" style="background:' + pcolors[k] + '"></i>' + (plabels[k] || k) + '</span>'; }).join('') + '</div>';
     el.innerHTML = html;
   }
   function startTimer(id) {
@@ -1926,8 +2032,604 @@ body.fs-full > .wrap {
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeWrongBook(); });
 
+  /* ============ 多孩子工作区 ============ */
+  const PROFILES = {
+    elsa: {
+      id: 'elsa', name: 'Elsa', emoji: '❄️', grade: '小学',
+      brand: 'Elsa 的每日数学小练',
+      sub: '今天也和我们一起收集星星吧！',
+      foot: 'Elsa 的每日数学小练 · 阅读 / 运动 / 家务 / 计算 / 思维 · 加油！',
+      modules: [
+        { id: 'read', icon: '📖', title: '阅读', sub: '15 分钟', act: "showPage('read')", goal: true },
+        { id: 'sport', icon: '🏃', title: '运动', sub: '30 分钟', act: "showPage('sport')", goal: true },
+        { id: 'chore', icon: '🧹', title: '做家务', sub: '整理房间', act: "showPage('chore')", goal: true },
+        { id: 'calc', icon: '✏️', title: '计算小练', sub: '30 题', act: "showPage('calc')", goal: true },
+        { id: 'think', icon: '🧠', title: '思维小练', sub: '12 类', act: "showPage('think')", goal: true }
+      ],
+      colors: { read: '#4f9cf7', sport: '#43b96a', chore: '#f0a13a', calc: '#f39bbd', think: '#9b7ede' }
+    },
+    shawn: {
+      id: 'shawn', name: 'Shawn', emoji: '🚀', grade: '初中',
+      brand: 'Shawn 的学习工作台',
+      sub: '今天也要稳扎稳打～',
+      foot: 'Shawn 的学习工作台 · 数学思维 / 英语语法 / 知识背诵 / 英语口语 · 加油！',
+      modules: [
+        { id: 'read', icon: '📖', title: '阅读', sub: '30 分钟', act: "showPage('read')", goal: true },
+        { id: 'sport', icon: '🏃', title: '运动', sub: '30 分钟', act: "showPage('sport')", goal: true },
+        { id: 'sx-math', icon: '🧮', title: '数学思维', sub: '12 类', act: "openModule('sx-math')", goal: true },
+        { id: 'sx-calc', icon: '✏️', title: '数学计算', sub: '3 组', act: "openModule('sx-calc')", goal: true },
+        { id: 'sx-eng', icon: '🔤', title: '英语语法', sub: '易错题', act: "openModule('sx-eng')", goal: true },
+        { id: 'sx-df', icon: '📕', title: '道法背诵', sub: '20 题', act: "openModule('sx-df')", goal: true },
+        { id: 'sx-ls', icon: '📗', title: '历史背诵', sub: '20 题', act: "openModule('sx-ls')", goal: true },
+        { id: 'sx-dl', icon: '📘', title: '地理背诵', sub: '20 题', act: "openModule('sx-dl')", goal: true },
+        { id: 'sx-oral', icon: '🗣️', title: '英语口语', sub: '朗读', act: "openModule('sx-oral')", goal: true }
+      ],
+      colors: { read: '#4f9cf7', sport: '#43b96a', 'sx-math': '#7c6cf0', 'sx-calc': '#3d7fd0', 'sx-eng': '#f0736c', 'sx-df': '#e0679a', 'sx-ls': '#cf9a2e', 'sx-dl': '#2fa3a0', 'sx-oral': '#4aa3c9' }
+    }
+  };
+  function curProfile() { return PROFILES[PROFILE_ID] || PROFILES.elsa; }
+  function switchProfile(id) {
+    if (!PROFILES[id] || id === PROFILE_ID) return;
+    try { localStorage.setItem(PROFILE_KEY, id); } catch (e) {}
+    PROFILE_ID = id;
+    location.reload();
+  }
+  function renderModuleGrid() {
+    const grid = document.getElementById('module-grid');
+    if (!grid) return;
+    grid.innerHTML = curProfile().modules.map(function (m) {
+      return '<button type="button" class="module-card" onclick="' + m.act + '">' +
+        '<span class="mi">' + m.icon + '</span>' +
+        '<div class="mt">' + escapeHtml(m.title) + '</div>' +
+        '<div class="ms">' + escapeHtml(m.sub) + '</div></button>';
+    }).join('');
+  }
+  function applyProfile() {
+    const p = curProfile();
+    document.body.classList.toggle('theme-shawn', PROFILE_ID === 'shawn');
+    setText('brand-text', p.brand);
+    setText('greet-sub', p.sub);
+    setText('child-name', childName());
+    setText('foot-text', p.foot);
+    document.querySelectorAll('.p-switch button').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-p') === PROFILE_ID);
+    });
+    renderModuleGrid();
+    renderBottomNav();
+  }
+  function renderBottomNav() {
+    const nav = document.getElementById('bottom-nav');
+    if (!nav) return;
+    let html = '<button data-page="dashboard" onclick="showPage(\'dashboard\')">🏠<span>首页</span></button>';
+    curProfile().modules.forEach(function (m) {
+      html += '<button data-page="' + m.id + '" onclick="' + m.act + '">' + m.icon + '<span>' + escapeHtml(m.title) + '</span></button>';
+    });
+    nav.innerHTML = html;
+  }
+
+  /* ============ Shawn：初中内容 ============ */
+  function genShawnMath() {
+    const t = [];
+    t.push(function () { const x = ri(2, 9), a = ri(2, 6), b = ri(1, 12), c = a * x + b; return { q: '解方程：' + a + 'x ＋ ' + b + ' ＝ ' + c + '，x ＝ ？', ans: String(x), key: [x] }; });
+    t.push(function () { const x = ri(2, 5), a = ri(1, 2), b = ri(1, 4), c = ri(1, 6), v = a * x * x + b * x + c; return { q: '当 x ＝ ' + x + ' 时，求 ' + a + 'x² ＋ ' + b + 'x ＋ ' + c + ' 的值。', ans: String(v), key: [v] }; });
+    t.push(function () { const a = ri(2, 6), d = ri(3, 7), s = [a, a + d, a + 2 * d, a + 3 * d, a + 4 * d, a + 5 * d]; return { q: '找规律填数：' + s[0] + '，' + s[1] + '，' + s[2] + '，' + s[3] + '，____，' + s[5], ans: String(s[4]), key: [s[4]] }; });
+    t.push(function () { const a = ri(2, 4), s = [a, a * 2, a * 4, a * 8]; return { q: '找规律填数：' + s[0] + '，' + s[1] + '，' + s[2] + '，____', ans: String(a * 16), key: [a * 16] }; });
+    t.push(function () { const v1 = ri(40, 70), v2 = ri(30, 60), t0 = ri(2, 5), S = (v1 + v2) * t0; return { q: '甲乙两地相距 ' + S + ' 千米。两车同时从两地相向开出，速度分别是 ' + v1 + ' 千米/时和 ' + v2 + ' 千米/时，几小时后相遇？', ans: t0 + ' 小时', key: [t0] }; });
+    t.push(function () { const v1 = ri(50, 80), v2 = ri(30, 45), t0 = ri(2, 5), d = (v1 - v2) * t0; return { q: '甲的速度 ' + v1 + ' 千米/时，乙的速度 ' + v2 + ' 千米/时，乙在甲前方 ' + d + ' 千米。甲追上乙需要几小时？', ans: t0 + ' 小时', key: [t0] }; });
+    t.push(function () { const set = [[6, 3, 2], [12, 4, 3], [10, 15, 6], [12, 6, 4], [20, 5, 4], [4, 4, 2], [8, 8, 4], [15, 10, 6]]; const c = pick(set); return { q: '一项工程，甲单独做要 ' + c[0] + ' 天，乙单独做要 ' + c[1] + ' 天。两人合作要几天完成？', ans: c[2] + ' 天', key: [c[2]] }; });
+    t.push(function () { const k = ri(2, 4), b = ri(5, 20), S = b * (k + 1); return { q: '甲乙两数的和是 ' + S + '，甲是乙的 ' + k + ' 倍。甲是多少？', ans: String(S - b), key: [S - b] }; });
+    t.push(function () { const m = ri(70, 95), s = ri(200, 5 * m - 10); return { q: '5 个数的平均数是 ' + m + '，其中前 4 个数的和是 ' + s + '，第 5 个数是多少？', ans: String(5 * m - s), key: [5 * m - s] }; });
+    t.push(function () { const k = ri(1, 5), p = ri(5, 20), a = 100 * k; return { q: '有 ' + a + ' 克盐水，浓度是 ' + p + '%，其中盐有多少克？', ans: String(k * p), key: [k * p] }; });
+    t.push(function () { const a = ri(3, 15), b = ri(2, 12); return { q: '计算：|−' + a + '| ＋ |' + b + '| ＝ ？', ans: String(a + b), key: [a + b] }; });
+    t.push(function () { const b = ri(2, 9); return { q: '计算：(−' + b + ')² ＝ ？', ans: String(b * b), key: [b * b] }; });
+    t.push(function () { const b = ri(4, 15); return { q: '计算：√' + (b * b) + ' ＝ ？', ans: String(b), key: [b] }; });
+    shuffle(t);
+    return t.slice(0, 10).map(function (f) { return f(); });
+  }
+
+  const ENG_BANK = [
+    { q: 'She ____ to school every day.', options: ['go', 'goes', 'going', 'went'], ans: 'goes' },
+    { q: 'There ____ some milk in the glass.', options: ['is', 'are', 'be', 'have'], ans: 'is' },
+    { q: 'I ____ TV when my mother came in.', options: ['watch', 'watched', 'was watching', 'am watching'], ans: 'was watching' },
+    { q: 'He has lived here ____ 2010.', options: ['for', 'since', 'in', 'at'], ans: 'since' },
+    { q: 'This book is ____ than that one.', options: ['interesting', 'more interesting', 'most interesting', 'interested'], ans: 'more interesting' },
+    { q: '____ you ever been to Beijing?', options: ['Did', 'Have', 'Do', 'Are'], ans: 'Have' },
+    { q: 'My father ____ dinner when I got home.', options: ['cook', 'cooks', 'was cooking', 'is cooking'], ans: 'was cooking' },
+    { q: 'Neither Tom nor I ____ good at math.', options: ['am', 'is', 'are', 'be'], ans: 'am' },
+    { q: 'He is one of the ____ students in our class.', options: ['tall', 'taller', 'tallest', 'the tallest'], ans: 'tallest' },
+    { q: 'It is important ____ us to learn English well.', options: ['of', 'for', 'to', 'with'], ans: 'for' },
+    { q: 'I would like ____ something to drink.', options: ['have', 'having', 'to have', 'had'], ans: 'to have' },
+    { q: 'The homework ____ by the students yesterday.', options: ['finished', 'was finished', 'is finished', 'finishes'], ans: 'was finished' },
+    { q: 'If it ____ tomorrow, we will stay at home.', options: ['rain', 'rains', 'will rain', 'rained'], ans: 'rains' },
+    { q: 'He asked me ____ I had finished my homework.', options: ['that', 'if', 'what', 'when'], ans: 'if' },
+    { q: 'She is used to ____ up early.', options: ['get', 'gets', 'getting', 'got'], ans: 'getting' },
+    { q: 'There are ____ students in the classroom.', options: ['a lot', 'lots', 'many', 'much'], ans: 'many' },
+    { q: 'I have ____ to tell you.', options: ['something important', 'important something', 'anything important', 'important anything'], ans: 'something important' },
+    { q: 'He ____ in Hainan for ten years.', options: ['has lived', 'lived', 'lives', 'is living'], ans: 'has lived' },
+    { q: 'It took me two hours ____ the work.', options: ['finish', 'finishing', 'to finish', 'finished'], ans: 'to finish' },
+    { q: 'The girl ____ is wearing a red dress is my sister.', options: ['who', 'which', 'whom', 'what'], ans: 'who' },
+    { q: 'Not only he but also I ____ interested in music.', options: ['am', 'is', 'are', 'be'], ans: 'am' },
+    { q: 'He is too young ____ go to school.', options: ['to', 'for', 'of', 'with'], ans: 'to' },
+    { q: '____ hard, and you will succeed.', options: ['Work', 'Working', 'To work', 'Worked'], ans: 'Work' },
+    { q: 'I do not know ____ to do next.', options: ['what', 'how', 'which', 'that'], ans: 'what' }
+  ];
+  function genShawnEnglish() {
+    return shuffle(ENG_BANK.slice()).slice(0, 10);
+  }
+
+  const RECITE_BANK = [
+    { subject: '历史', q: '中国历史上第一个统一的多民族的中央集权国家是？', a: '秦朝（公元前 221 年，秦始皇建立）' },
+    { subject: '历史', q: '“罢黜百家，独尊儒术”是哪位皇帝采纳的？', a: '汉武帝（采纳董仲舒的建议）' },
+    { subject: '历史', q: '中国近代史的开端是哪一事件？', a: '鸦片战争（1840 年）' },
+    { subject: '历史', q: '中国共产党成立于什么时间、什么地方？', a: '1921 年 7 月，上海' },
+    { subject: '历史', q: '新民主主义革命的开端是什么？', a: '五四运动（1919 年）' },
+    { subject: '历史', q: '中国抗日战争全面爆发的标志是什么？', a: '七七事变（卢沟桥事变，1937 年）' },
+    { subject: '历史', q: '中华人民共和国成立的时间？', a: '1949 年 10 月 1 日' },
+    { subject: '历史', q: '中国古代“四大发明”是？', a: '造纸术、印刷术、火药、指南针' },
+    { subject: '历史', q: '张骞出使西域开辟的商路叫什么？', a: '丝绸之路' },
+    { subject: '历史', q: '“贞观之治”出现在哪位皇帝在位时期？', a: '唐太宗李世民' },
+    { subject: '历史', q: '我国历史上第一部纪传体通史是？', a: '《史记》（司马迁著）' },
+    { subject: '历史', q: '标志中国近代史结束、现代史开端的事件？', a: '中华人民共和国成立（1949 年）' },
+    { subject: '地理', q: '我国最大的岛屿是？', a: '台湾岛' },
+    { subject: '地理', q: '我国最长的河流是？', a: '长江（约 6300 千米）' },
+    { subject: '地理', q: '我国最大的平原是？', a: '东北平原' },
+    { subject: '地理', q: '世界上最高的高原是？', a: '青藏高原' },
+    { subject: '地理', q: '我国面积最大的省级行政区是？', a: '新疆维吾尔自治区' },
+    { subject: '地理', q: '地球自转产生的地理现象是？', a: '昼夜交替、时间差异' },
+    { subject: '地理', q: '我国地势的总特征是？', a: '西高东低，呈三级阶梯分布' },
+    { subject: '地理', q: '我国最大的沙漠是？', a: '塔克拉玛干沙漠' },
+    { subject: '地理', q: '亚洲和欧洲的分界线是？', a: '乌拉尔山脉—乌拉尔河—里海—大高加索山脉—黑海—土耳其海峡' },
+    { subject: '地理', q: '季风气候对我国农业的有利影响是？', a: '雨热同期，有利于农业生产' },
+    { subject: '地理', q: '我国人口分布的特点是？', a: '东多西少（以黑河—腾冲线为界）' },
+    { subject: '地理', q: '我国的省级行政单位共有多少个？', a: '34 个（23 省、5 自治区、4 直辖市、2 特别行政区）' },
+    { subject: '道法', q: '我国的根本政治制度是？', a: '人民代表大会制度' },
+    { subject: '道法', q: '我国的国家性质是？', a: '人民民主专政的社会主义国家' },
+    { subject: '道法', q: '公民最基本的政治权利是？', a: '选举权和被选举权' },
+    { subject: '道法', q: '我国的法律监督机关是？', a: '人民检察院' },
+    { subject: '道法', q: '我国的根本大法（最高法律效力）是？', a: '宪法' },
+    { subject: '道法', q: '我国处理民族关系的基本原则是？', a: '民族平等、民族团结、各民族共同繁荣' },
+    { subject: '道法', q: '公民行使权利时不得损害什么？', a: '国家的、社会的、集体的利益和其他公民的合法权利' },
+    { subject: '道法', q: '依法治国的核心（根本）是？', a: '依宪治国' },
+    { subject: '道法', q: '公民的基本义务有哪些（举三例）？', a: '依法纳税、维护国家统一和民族团结、遵守宪法和法律、维护国家安全荣誉利益等' }
+  ];
+  const LS_BANK = [
+    { q: '中国历史上第一个统一的多民族的中央集权国家是？', a: '秦朝（公元前 221 年，秦始皇建立）' },
+    { q: '“罢黜百家，独尊儒术”是哪位皇帝采纳的？', a: '汉武帝（采纳董仲舒的建议）' },
+    { q: '中国近代史的开端是哪一事件？', a: '鸦片战争（1840 年）' },
+    { q: '中国共产党成立于什么时间、什么地方？', a: '1921 年 7 月，上海' },
+    { q: '新民主主义革命的开端是什么？', a: '五四运动（1919 年）' },
+    { q: '中国抗日战争全面爆发的标志是什么？', a: '七七事变（卢沟桥事变，1937 年）' },
+    { q: '中华人民共和国成立的时间？', a: '1949 年 10 月 1 日' },
+    { q: '中国古代“四大发明”是？', a: '造纸术、印刷术、火药、指南针' },
+    { q: '张骞出使西域开辟的商路叫什么？', a: '丝绸之路' },
+    { q: '“贞观之治”出现在哪位皇帝在位时期？', a: '唐太宗李世民' },
+    { q: '我国历史上第一部纪传体通史是？', a: '《史记》（司马迁著）' },
+    { q: '秦朝统一后规定使用的标准文字是？', a: '小篆' },
+    { q: '秦朝在地方上推行的行政制度是？', a: '郡县制' },
+    { q: '我国历史上第一次农民大起义是？', a: '陈胜吴广起义（大泽乡起义）' },
+    { q: '隋朝创立、后世长期沿用的选官制度是？', a: '科举制' },
+    { q: '“开元盛世”出现在哪位皇帝在位时期？', a: '唐玄宗' },
+    { q: '标志中国近代史结束、现代史开端的事件？', a: '中华人民共和国成立（1949 年）' },
+    { q: '我国第一部社会主义类型的宪法颁布于哪一年？', a: '1954 年' },
+    { q: '中共十一届三中全会（1978 年）作出的历史性决策是？', a: '实行改革开放' },
+    { q: '香港回归祖国的时间是？', a: '1997 年 7 月 1 日' }
+  ];
+  const DL_BANK = [
+    { q: '我国最大的岛屿是？', a: '台湾岛' },
+    { q: '我国最长的河流是？', a: '长江（约 6300 千米）' },
+    { q: '我国最大的平原是？', a: '东北平原' },
+    { q: '世界上最高的高原是？', a: '青藏高原' },
+    { q: '我国面积最大的省级行政区是？', a: '新疆维吾尔自治区' },
+    { q: '地球自转产生的地理现象是？', a: '昼夜交替、时间差异' },
+    { q: '我国地势的总特征是？', a: '西高东低，呈三级阶梯分布' },
+    { q: '我国最大的沙漠是？', a: '塔克拉玛干沙漠' },
+    { q: '亚洲和欧洲的分界线是？', a: '乌拉尔山脉—乌拉尔河—里海—大高加索山脉—黑海—土耳其海峡' },
+    { q: '季风气候对我国农业的有利影响是？', a: '雨热同期，有利于农业生产' },
+    { q: '我国人口分布的特点是？', a: '东多西少（以黑河—腾冲线为界）' },
+    { q: '我国的省级行政单位共有多少个？', a: '34 个（23 省、5 自治区、4 直辖市、2 特别行政区）' },
+    { q: '我国最大的盆地是？', a: '塔里木盆地' },
+    { q: '我国最长的内流河是？', a: '塔里木河' },
+    { q: '我国最大的淡水湖是？', a: '鄱阳湖' },
+    { q: '我国最大的咸水湖是？', a: '青海湖' },
+    { q: '世界上面积最大的大洋是？', a: '太平洋' },
+    { q: '我国陆上邻国中面积最大的是？', a: '俄罗斯' },
+    { q: '被称为“世界屋脊”的高原是？', a: '青藏高原' },
+    { q: '我国季风区与非季风区的分界线大致是？', a: '大兴安岭—阴山—贺兰山—巴颜喀拉山—冈底斯山' }
+  ];
+  const DF_BANK = [
+    { q: '我国的根本政治制度是？', a: '人民代表大会制度' },
+    { q: '我国的国家性质是？', a: '人民民主专政的社会主义国家' },
+    { q: '公民最基本的政治权利是？', a: '选举权和被选举权' },
+    { q: '我国的法律监督机关是？', a: '人民检察院' },
+    { q: '我国的根本大法（最高法律效力）是？', a: '宪法' },
+    { q: '我国处理民族关系的基本原则是？', a: '民族平等、民族团结、各民族共同繁荣' },
+    { q: '公民行使权利时不得损害什么？', a: '国家的、社会的、集体的利益和其他公民的合法权利' },
+    { q: '依法治国的核心（根本）是？', a: '依宪治国' },
+    { q: '公民的基本义务有哪些（举三例）？', a: '依法纳税、维护国家统一和民族团结、遵守宪法和法律' },
+    { q: '我国的审判机关是？', a: '人民法院' },
+    { q: '我国最高国家权力机关是？', a: '全国人民代表大会' },
+    { q: '违法行为中最严重的一种是？', a: '犯罪（刑事违法行为）' },
+    { q: '我国的国家机构实行的组织原则是？', a: '民主集中制' },
+    { q: '宪法的修改需要全国人大以多少比例通过？', a: '全体代表的三分之二以上多数' },
+    { q: '公民依法享有的政治自由包括？', a: '言论、出版、集会、结社、游行、示威' },
+    { q: '我国的国家标志包括？', a: '国旗、国歌、国徽、首都' },
+    { q: '社会主义民主政治的本质是？', a: '人民当家作主' },
+    { q: '未成年人保护法规定的“六大保护”是？', a: '家庭、学校、社会、网络、政府、司法保护' },
+    { q: '公民权利受到侵害时可以怎样维权？', a: '依法维权：协商、调解、投诉、仲裁、诉讼等' },
+    { q: '法律区别于道德的最主要特征是？', a: '由国家强制力保证实施' }
+  ];
+  function genShawnRecite(bank) {
+    return shuffle(bank.slice()).slice(0, 20);
+  }
+
+  const ORAL_LIST = [
+    'Good morning! How are you doing today?',
+    'Could you please tell me how to get to the library?',
+    'I think it is a good idea to review the lessons every day.',
+    'What do you usually do on weekends?',
+    'I have been learning English for about five years.',
+    'Would you like to go to the movies with me this afternoon?',
+    'My favourite subject is history because it is full of interesting stories.',
+    'Practice makes perfect, so I read English aloud every morning.',
+    'Excuse me, could you say that again a little more slowly?',
+    'I am looking forward to the summer holiday.',
+    'It is important to keep a healthy diet and exercise regularly.',
+    'Thank you for your help. I really appreciate it.',
+    'In my opinion, we should protect the environment from now on.',
+    'Have you ever thought about what you want to be in the future?',
+    'Let us work together and make progress step by step.'
+  ];
+  function genShawnOral() {
+    return shuffle(ORAL_LIST.slice()).slice(0, 12);
+  }
+
+  /* ============ 通用模块页 ============ */
+  /* ===== Shawn 初中数学题库（按知识大类） ===== */
+  const SHAWN_POOLS = {
+    rational: [
+      function () { const a = ri(2, 9), b = ri(2, 9); return { q: '计算：(−' + a + ') ＋ (−' + b + ')', ans: String(-(a + b)), key: [-(a + b)] }; },
+      function () { const a = ri(3, 12), b = ri(2, 9); return { q: '计算：(−' + a + ') − (−' + b + ')', ans: String(b - a), key: [b - a] }; },
+      function () { const a = ri(2, 9), b = ri(2, 9); return { q: '计算：(−' + a + ') × ' + b, ans: String(-(a * b)), key: [-(a * b)] }; },
+      function () { const a = ri(2, 9), b = ri(2, 9); return { q: '计算：(−' + a + ') × (−' + b + ')', ans: String(a * b), key: [a * b] }; },
+      function () { const b = ri(2, 9), k = ri(2, 6), a = b * k; return { q: '计算：(−' + a + ') ÷ ' + b, ans: String(-k), key: [-k] }; },
+      function () { const a = ri(5, 15), b = ri(2, 9); return { q: '计算：|−' + a + '| − |−' + b + '|', ans: String(a - b), key: [a - b] }; },
+      function () { const a = ri(2, 9); return { q: '计算：(−' + a + ')²', ans: String(a * a), key: [a * a] }; },
+      function () { const a = ri(2, 5); return { q: '计算：(−' + a + ')³', ans: String(-(a * a * a)), key: [-(a * a * a)] }; },
+      function () { const a = ri(2, 9), b = ri(2, 9), c = ri(1, 9); return { q: '计算：(−' + a + ') ＋ ' + b + ' − (−' + c + ')', ans: String(b + c - a), key: [b + c - a] }; },
+      function () { const a = ri(2, 6), b = ri(2, 6), c = ri(2, 9); return { q: '计算：−' + a + ' × ' + b + ' ＋ ' + c, ans: String(c - a * b), key: [c - a * b] }; }
+    ],
+    expr: [
+      function () { const k = ri(2, 6), a = ri(2, 5), b = ri(1, 4), c = ri(1, 3); return { q: '当 x ＝ ' + k + ' 时，求 ' + a + 'x ＋ ' + b + 'x − ' + c + 'x 的值。', ans: String((a + b - c) * k), key: [(a + b - c) * k] }; },
+      function () { const k = ri(2, 6), a = ri(2, 4), b = ri(1, 5), c = ri(1, 4), d = ri(1, 4); return { q: '当 x ＝ ' + k + ' 时，求 ' + a + '(x ＋ ' + b + ') − ' + c + '(x − ' + d + ') 的值。', ans: String(a * (k + b) - c * (k - d)), key: [a * (k + b) - c * (k - d)] }; },
+      function () { const k = ri(2, 6), a = ri(1, 5), b = ri(1, 5); return { q: '当 x ＝ ' + k + ' 时，求 (x ＋ ' + a + ')(x ＋ ' + b + ') 的值。', ans: String((k + a) * (k + b)), key: [(k + a) * (k + b)] }; },
+      function () { const k = ri(2, 8), a = ri(1, 5); return { q: '当 x ＝ ' + k + ' 时，求 (x ＋ ' + a + ')² 的值。', ans: String((k + a) * (k + a)), key: [(k + a) * (k + a)] }; },
+      function () { const k = ri(2, 8), a = ri(1, 5); return { q: '当 x ＝ ' + k + ' 时，求 (x ＋ ' + a + ')² − (x − ' + a + ')² 的值。', ans: String(4 * a * k), key: [4 * a * k] }; },
+      function () { const S = ri(6, 12), P = ri(5, 20); return { q: '已知 x ＋ y ＝ ' + S + '，xy ＝ ' + P + '，求 x² ＋ y² 的值。', ans: String(S * S - 2 * P), key: [S * S - 2 * P] }; },
+      function () { const a = ri(5, 12), b = ri(2, 9); return { q: '当 a ＝ ' + a + '，b ＝ ' + b + ' 时，求 a² − b² 的值。', ans: String(a * a - b * b), key: [a * a - b * b] }; },
+      function () { const a = ri(5, 12), b = ri(2, 9); return { q: '当 a ＝ ' + a + '，b ＝ ' + b + ' 时，求 (a − b)² 的值。', ans: String((a - b) * (a - b)), key: [(a - b) * (a - b)] }; },
+      function () { const x = ri(2, 6), y = ri(2, 6); return { q: '当 x ＝ ' + x + '，y ＝ ' + y + ' 时，求 3x ＋ 2y − xy 的值。', ans: String(3 * x + 2 * y - x * y), key: [3 * x + 2 * y - x * y] }; },
+      function () { const x = ri(2, 6), a = ri(2, 5), b = ri(1, 9); return { q: '当 x ＝ ' + x + ' 时，求 ' + a + 'x² − ' + b + 'x 的值。', ans: String(a * x * x - b * x), key: [a * x * x - b * x] }; }
+    ],
+    clever: [
+      function () { const n = ri(12, 48); return { q: '简便计算：99 × ' + n, ans: String(99 * n), key: [99 * n] }; },
+      function () { const n = ri(5, 25); return { q: '简便计算：101 × ' + n, ans: String(101 * n), key: [101 * n] }; },
+      function () { const n = ri(3, 9); return { q: '简便计算：25 × ' + n + ' × 4', ans: String(100 * n), key: [100 * n] }; },
+      function () { const n = ri(3, 9); return { q: '简便计算：125 × ' + n + ' × 8', ans: String(1000 * n), key: [1000 * n] }; },
+      function () { const n = ri(8, 20); return { q: '简便计算：1 ＋ 2 ＋ 3 ＋ … ＋ ' + n, ans: String(n * (n + 1) / 2), key: [n * (n + 1) / 2] }; },
+      function () { const n = ri(5, 12); return { q: '简便计算：1 ＋ 3 ＋ 5 ＋ … ＋ ' + (2 * n - 1), ans: String(n * n), key: [n * n] }; },
+      function () { const n = ri(4, 10); return { q: '简便计算：2 ＋ 4 ＋ 6 ＋ … ＋ ' + (2 * n), ans: String(n * (n + 1)), key: [n * (n + 1)] }; },
+      function () { const a = ri(20, 60); return { q: '简便计算：' + a + ' × 99 ＋ ' + a, ans: String(a * 100), key: [a * 100] }; },
+      function () { const a = ri(11, 30), b = ri(3, 9); return { q: '简便计算：' + a + ' × ' + b + ' − ' + a + ' × ' + (b - 1), ans: String(a), key: [a] }; },
+      function () { const k = ri(5, 20); return { q: '简便计算：' + (k + 1) + '² − ' + k + '²', ans: String(2 * k + 1), key: [2 * k + 1] }; }
+    ],
+    equation: [
+      function () { const x = ri(2, 9), a = ri(2, 6), b = ri(1, 15); return { q: '解方程：' + a + 'x ＋ ' + b + ' ＝ ' + (a * x + b) + '，x ＝ ？', ans: 'x ＝ ' + x, key: [x] }; },
+      function () { const x = ri(2, 9), a = ri(2, 6), b = ri(1, 15); return { q: '解方程：' + a + 'x − ' + b + ' ＝ ' + (a * x - b) + '，x ＝ ？', ans: 'x ＝ ' + x, key: [x] }; },
+      function () { const x = ri(2, 9), a = ri(2, 5), b = ri(1, 9); return { q: '解方程：' + a + '(x ＋ ' + b + ') ＝ ' + (a * (x + b)) + '，x ＝ ？', ans: 'x ＝ ' + x, key: [x] }; },
+      function () { const x = ri(2, 9), a = ri(3, 7), c = ri(1, 2), b = ri(1, 9); return { q: '解方程：' + a + 'x ＋ ' + b + ' ＝ ' + c + 'x ＋ ' + ((a - c) * x + b) + '，x ＝ ？', ans: 'x ＝ ' + x, key: [x] }; },
+      function () { const a = ri(2, 5), k = ri(2, 6), x = a * k, b = ri(1, 9); return { q: '解方程：x ÷ ' + a + ' ＋ ' + b + ' ＝ ' + (k + b) + '，x ＝ ？', ans: 'x ＝ ' + x, key: [x] }; },
+      function () { const x = ri(2, 9), a = ri(2, 5), b = ri(1, 6); return { q: '解方程：' + a + '(x − ' + b + ') ＝ ' + (a * (x - b)) + '，x ＝ ？', ans: 'x ＝ ' + x, key: [x] }; },
+      function () { const x = ri(3, 10), a = ri(1, 5), b = ri(1, 9); return { q: '解方程：2x ＋ ' + a + ' ＝ 3x − ' + b + '，x ＝ ？', ans: 'x ＝ ' + (a + b), key: [a + b] }; },
+      function () { const x = ri(2, 9), a = ri(2, 6), b = ri(1, 12); return { q: '一个数的 ' + a + ' 倍加上 ' + b + ' 等于 ' + (a * x + b) + '，这个数是多少？', ans: String(x), key: [x] }; },
+      function () { const x = ri(2, 9), a = ri(2, 6), b = ri(1, 12); return { q: '一个数的 ' + a + ' 倍减去 ' + b + ' 等于 ' + (a * x - b) + '，这个数是多少？', ans: String(x), key: [x] }; },
+      function () { const x = ri(2, 8), a = ri(2, 5); return { q: '解方程：' + a + 'x ＝ ' + (a * x) + '，x ＝ ？', ans: 'x ＝ ' + x, key: [x] }; }
+    ],
+    ineq: [
+      function () { const a = ri(2, 6), b = ri(1, 12), k = ri(2, 9); return { q: '解不等式：' + a + 'x ＋ ' + b + ' ＞ ' + (a * k + b) + '，得 x ＞ ____', ans: String(k), key: [k] }; },
+      function () { const a = ri(2, 6), b = ri(1, 12), k = ri(2, 9); return { q: '解不等式：' + a + 'x − ' + b + ' ≤ ' + (a * k - b) + '，得 x ≤ ____', ans: String(k), key: [k] }; },
+      function () { const a = ri(2, 6), b = ri(5, 15), k = ri(2, 8); return { q: '解不等式：−' + a + 'x ＋ ' + b + ' ＜ ' + (b - a * k) + '，得 x ＞ ____', ans: String(k), key: [k] }; },
+      function () { const a = ri(2, 6), b = ri(1, 9), k = ri(3, 9); return { q: '不等式 ' + a + 'x ＋ ' + b + ' ＜ ' + (a * k + b) + ' 的最大整数解是多少？', ans: String(k - 1), key: [k - 1] }; },
+      function () { const a = ri(2, 6), b = ri(1, 9), k = ri(3, 9); return { q: '不等式 ' + a + 'x ＋ ' + b + ' ≥ ' + (a * k + b) + ' 的最小整数解是多少？', ans: String(k), key: [k] }; },
+      function () { const a = ri(2, 6), b = ri(1, 9), k = ri(3, 9); return { q: '不等式 ' + a + 'x − ' + b + ' ＞ ' + (a * k - b) + ' 的最小整数解是多少？', ans: String(k + 1), key: [k + 1] }; },
+      function () { const a = ri(10, 30), b = ri(2, 9); return { q: '解不等式：' + a + ' − x ＜ ' + b + '，得 x ＞ ____', ans: String(a - b), key: [a - b] }; },
+      function () { const a = ri(2, 5), b = ri(1, 9), k = ri(2, 8); return { q: '解不等式：x ÷ ' + a + ' ＋ ' + b + ' ＞ ' + (k + b) + '，得 x ＞ ____', ans: String(a * k), key: [a * k] }; },
+      function () { const a = ri(2, 6), b = ri(1, 9), k = ri(3, 9); return { q: '不等式 ' + a + 'x ＋ ' + b + ' ≤ ' + (a * k + b) + ' 的最大整数解是多少？', ans: String(k), key: [k] }; },
+      function () { const a = ri(2, 6), b = ri(1, 9), k = ri(3, 9); return { q: '不等式 ' + a + 'x − ' + b + ' ≥ ' + (a * k - b) + ' 的最小整数解是多少？', ans: String(k), key: [k] }; }
+    ],
+    system: [
+      function () { const y = ri(2, 12), x = ri(3, 15), S = x + y, D = x - y; return { q: '解方程组：x ＋ y ＝ ' + S + '，x − y ＝ ' + D + '，求 x。', ans: 'x ＝ ' + x, key: [x] }; },
+      function () { const y = ri(2, 12), x = ri(3, 15), S = x + y, P = 2 * x + y; return { q: '解方程组：x ＋ y ＝ ' + S + '，2x ＋ y ＝ ' + P + '，求 x。', ans: 'x ＝ ' + x, key: [x] }; },
+      function () { const y = ri(2, 12), x = ri(3, 15), S = x + y, T = x + 2 * y; return { q: '解方程组：x ＋ y ＝ ' + S + '，x ＋ 2y ＝ ' + T + '，求 x。', ans: 'x ＝ ' + x, key: [x] }; },
+      function () { const y = ri(2, 12), x = ri(3, 15), S = x + y, T = 3 * x + 2 * y; return { q: '解方程组：x ＋ y ＝ ' + S + '，3x ＋ 2y ＝ ' + T + '，求 x。', ans: 'x ＝ ' + x, key: [x] }; },
+      function () { const y = ri(2, 12), x = ri(3, 15), P = 3 * x + 2 * y, Q = 2 * x + 2 * y; return { q: '解方程组：3x ＋ 2y ＝ ' + P + '，2x ＋ 2y ＝ ' + Q + '，求 x。', ans: 'x ＝ ' + x, key: [x] }; },
+      function () { const y = ri(2, 12), x = ri(3, 15), S = x + y, D = x - y; return { q: '解方程组：x ＋ y ＝ ' + S + '，x − y ＝ ' + D + '，求 y。', ans: 'y ＝ ' + y, key: [y] }; },
+      function () { const a = ri(2, 6), y = ri(2, 10), x = ri(3, 12), S = x + y; return { q: '解方程组：x ＋ y ＝ ' + S + '，' + a + 'x ＋ y ＝ ' + (a * x + y) + '，求 x。', ans: 'x ＝ ' + x, key: [x] }; },
+      function () { const y = ri(2, 12), x = ri(3, 15), S = x + y, D = x - y; return { q: '解方程组：x ＋ y ＝ ' + S + '，x − y ＝ ' + D + '，求 x ＋ y。', ans: String(S), key: [S] }; }
+    ],
+    travel: [
+      function () { const v1 = ri(40, 70), v2 = ri(30, 60), t0 = ri(2, 5); return { q: '甲乙两地相距 ' + (v1 + v2) * t0 + ' 千米，两车同时相向开出，速度分别是 ' + v1 + ' 和 ' + v2 + ' 千米/时，几小时后相遇？', ans: t0 + ' 小时', key: [t0] }; },
+      function () { const v1 = ri(50, 80), v2 = ri(30, 45), t0 = ri(2, 5); return { q: '甲的速度 ' + v1 + ' 千米/时，乙的速度 ' + v2 + ' 千米/时，乙在甲前方 ' + (v1 - v2) * t0 + ' 千米，甲追上乙要几小时？', ans: t0 + ' 小时', key: [t0] }; },
+      function () { const v = ri(20, 40), w = ri(2, 8); return { q: '船在静水中的速度是 ' + v + ' 千米/时，水流速度是 ' + w + ' 千米/时，顺水速度是多少？', ans: String(v + w), key: [v + w] }; },
+      function () { const v = ri(20, 40), w = ri(2, 8); return { q: '船在静水中的速度是 ' + v + ' 千米/时，水流速度是 ' + w + ' 千米/时，逆水速度是多少？', ans: String(v - w), key: [v - w] }; },
+      function () { const v1 = ri(40, 70), v2 = ri(30, 60), t0 = ri(2, 5); return { q: '甲乙相距 ' + (v1 + v2) * t0 + ' 千米，两车同时相向开出，甲的速度 ' + v1 + ' 千米/时，乙的速度 ' + v2 + ' 千米/时。相遇时甲走了多少千米？', ans: String(v1 * t0), key: [v1 * t0] }; },
+      function () { const v = ri(30, 60), t0 = ri(2, 6); return { q: '一辆汽车以 ' + v + ' 千米/时的速度行驶 ' + t0 + ' 小时，行驶了多少千米？', ans: String(v * t0), key: [v * t0] }; },
+      function () { const v1 = ri(50, 80), v2 = ri(30, 45), t0 = ri(2, 5); return { q: '甲在乙后方 ' + (v1 - v2) * t0 + ' 千米，甲的速度 ' + v1 + '，乙的速度 ' + v2 + '，甲追上乙时甲走了多少千米？', ans: String(v1 * t0), key: [v1 * t0] }; },
+      function () { const v = ri(30, 60), t0 = ri(2, 6); return { q: '一段路长 ' + v * t0 + ' 千米，汽车用 ' + t0 + ' 小时走完，平均速度是多少千米/时？', ans: String(v), key: [v] }; }
+    ],
+    work: [
+      function () { const set = [[6, 3, 2], [12, 4, 3], [10, 15, 6], [12, 6, 4], [20, 5, 4], [4, 4, 2], [8, 8, 4], [15, 10, 6]]; const c = pick(set); return { q: '一项工程，甲单独做 ' + c[0] + ' 天完成，乙单独做 ' + c[1] + ' 天完成，两人合作要几天完成？', ans: c[2] + ' 天', key: [c[2]] }; },
+      function () { const k = ri(1, 6), p = ri(5, 25), a = 100 * k; return { q: '有 ' + a + ' 克盐水，浓度 ' + p + '%，含盐多少克？', ans: String(k * p), key: [k * p] }; },
+      function () { const k = ri(1, 6), p = ri(5, 25), a = 100 * k; return { q: '有 ' + a + ' 克盐水，浓度 ' + p + '%，含水多少克？', ans: String(a - k * p), key: [a - k * p] }; },
+      function () { const a = ri(2, 6), b = ri(2, 6); return { q: '甲每小时完成工程的 1/' + a + '，乙每小时完成 1/' + b + '，两人合作一小时完成工程的几分之几？（填分母 a×b 的分子）' }; },
+      function () { const set = [[6, 3, 2], [10, 15, 6], [12, 6, 4], [20, 5, 4]]; const c = pick(set); return { q: '甲 ' + c[0] + ' 天完成一项工程，乙 ' + c[1] + ' 天完成。两人合作 ' + c[2] + ' 天能完成吗？（能填 1，不能填 0）' }; },
+      function () { const k = ri(2, 8), p = ri(10, 50), m = ri(2, 5); return { q: '把 ' + (100 * k) + ' 克 ' + p + '% 的糖水分给 ' + m + ' 个人，平均每人分到多少克糖水？', ans: String(100 * k / m), key: [100 * k / m] }; }
+    ],
+    sumdiff: [
+      function () { const b = ri(5, 30), d = ri(2, 15), a = b + d; return { q: '两数的和是 ' + (a + b) + '，差是 ' + d + '，较大的数是多少？', ans: String(a), key: [a] }; },
+      function () { const k = ri(2, 4), b = ri(5, 20); return { q: '两数的和是 ' + b * (k + 1) + '，其中较大数是较小数的 ' + k + ' 倍，较大的数是多少？', ans: String(b * k), key: [b * k] }; },
+      function () { const k = ri(2, 4), b = ri(4, 15); return { q: '两数的差是 ' + (b * (k - 1)) + '，较大数是较小数的 ' + k + ' 倍，较小的数是多少？', ans: String(b), key: [b] }; },
+      function () { const x = ri(20, 40), d = ri(3, 10), y = ri(3, 12); return { q: '爸爸今年 ' + x + ' 岁，儿子今年 ' + y + ' 岁，年龄差是多少？', ans: String(x - y), key: [x - y] }; },
+      function () { const d = ri(24, 30), z = ri(2, 6); return { q: '妈妈比女儿大 ' + d + ' 岁，' + z + ' 年后妈妈比女儿大多少岁？', ans: String(d), key: [d] }; },
+      function () { const son = ri(3, 8), k = ri(3, 5); return { q: '今年爸爸的年龄是儿子的 ' + k + ' 倍，儿子 ' + son + ' 岁，爸爸今年多少岁？', ans: String(son * k), key: [son * k] }; },
+      function () { const a = ri(4, 9), b = ri(3, 8); return { q: '甲数比乙数多 ' + (a * b - b) + '，甲数是乙数的 ' + a + ' 倍，乙数是多少？', ans: String(b), key: [b] }; },
+      function () { const x = ri(5, 20), d = ri(2, 9); return { q: '两个连续奇数的和是 ' + (2 * x + 2) + '，其中较小的一个是多少？', ans: String(x), key: [x] }; }
+    ],
+    geometry: [
+      function () { const a = ri(30, 80), b = ri(30, 70); if (a + b >= 180) return { q: '三角形两个内角分别是 ' + a + '° 和 ' + (180 - a - 5) + '°，第三个角是多少度？', ans: '5', key: [5] }; return { q: '三角形两个内角分别是 ' + a + '° 和 ' + b + '°，第三个内角是多少度？', ans: String(180 - a - b), key: [180 - a - b] }; },
+      function () { const a = ri(20, 160); return { q: '一个角是 ' + a + '°，它的补角是多少度？', ans: String(180 - a), key: [180 - a] }; },
+      function () { const a = ri(10, 80); return { q: '一个角是 ' + a + '°，它的余角是多少度？', ans: String(90 - a), key: [90 - a] }; },
+      function () { const n = ri(4, 9); return { q: '一个 ' + n + ' 边形的内角和是多少度？', ans: String((n - 2) * 180), key: [(n - 2) * 180] }; },
+      function () { const top = 2 * ri(10, 40); return { q: '等腰三角形的顶角是 ' + top + '°，它的一个底角是多少度？', ans: String((180 - top) / 2), key: [(180 - top) / 2] }; },
+      function () { const a = ri(50, 130); return { q: '两条平行线被第三条直线所截，一个同旁内角是 ' + a + '°，另一个同旁内角是多少度？', ans: String(180 - a), key: [180 - a] }; },
+      function () { const a = ri(25, 155); return { q: '两条直线相交，其中一个角是 ' + a + '°，与它相对的角是多少度？', ans: String(a), key: [a] }; },
+      function () { const a = ri(30, 90), b = ri(20, 60); if (a + b >= 180) return { q: '三角形两个内角分别是 60° 和 70°，第三个角是多少度？', ans: '50', key: [50] }; return { q: '三角形的两个内角和是 ' + (a + b) + '°，第三个内角是多少度？', ans: String(180 - a - b), key: [180 - a - b] }; },
+      function () { const n = ri(5, 10); return { q: '一个 ' + n + ' 边形的外角和是多少度？', ans: '360', key: [360] }; },
+      function () { const a = ri(40, 100); return { q: '三角形的一个外角是 ' + a + '°，与它不相邻的一个内角是 ' + ri(10, Math.max(11, a - 15)) + '°，另一个不相邻的内角是多少度？（请填这个外角减去已给内角的结果）', ans: '', key: [0] }; }
+    ],
+    pattern: [
+      function () { const a = ri(2, 6), d = ri(3, 9), s = [a, a + d, a + 2 * d, a + 3 * d, a + 4 * d]; return { q: '找规律填数：' + s[0] + '，' + s[1] + '，' + s[2] + '，' + s[3] + '，____', ans: String(s[4]), key: [s[4]] }; },
+      function () { const a = ri(2, 4), s = [a, a * 2, a * 4, a * 8]; return { q: '找规律填数：' + s[0] + '，' + s[1] + '，' + s[2] + '，____', ans: String(a * 16), key: [a * 16] }; },
+      function () { const n = ri(4, 10); return { q: '找规律填数：1，4，9，16，____（第 ' + (n + 1) + ' 项是多少？填 ' + (n + 1) + ' 的平方）', ans: String((n + 1) * (n + 1)), key: [(n + 1) * (n + 1)] }; },
+      function () { const n = ri(5, 10); return { q: '找规律填数：1，3，6，10，____（第 ' + (n + 1) + ' 个三角数）', ans: String((n + 1) * (n + 2) / 2), key: [(n + 1) * (n + 2) / 2] }; },
+      function () { const a = ri(1, 4), b = ri(2, 5); const t = [a, b, a + b, a + 2 * b, 2 * a + 3 * b, 3 * a + 5 * b]; return { q: '找规律填数：' + t[0] + '，' + t[1] + '，' + t[2] + '，' + t[3] + '，____', ans: String(t[4]), key: [t[4]] }; },
+      function () { const a = ri(1, 3); const t = [a, a + 1, a + 3, a + 6, a + 10, a + 15]; return { q: '找规律填数：' + t[0] + '，' + t[1] + '，' + t[2] + '，' + t[3] + '，____', ans: String(t[4]), key: [t[4]] }; },
+      function () { const k = ri(3, 8); return { q: '找规律填数：' + k + '，' + k * 2 + '，' + k * 3 + '，' + k * 4 + '，____', ans: String(k * 5), key: [k * 5] }; },
+      function () { const n = ri(3, 8); return { q: '第 n 个数是 2n，当 n ＝ ' + n + ' 时，这个数是多少？', ans: String(2 * n), key: [2 * n] }; }
+    ],
+    stat: [
+      function () { const m = ri(70, 95), n = ri(4, 8); return { q: n + ' 个数的平均数是 ' + m + '，它们的总和是多少？', ans: String(m * n), key: [m * n] }; },
+      function () { const m = ri(70, 95), s = ri(200, 999); return { q: '5 个数的平均数是 ' + m + '，前 4 个数的和是 ' + s + '，第 5 个数是多少？', ans: String(5 * m - s), key: [5 * m - s] }; },
+      function () { const a = ri(60, 80); return { q: '一组数据：' + a + '，' + (a + 2) + '，' + (a + 4) + '，' + (a + 6) + '，' + (a + 8) + '。这组数据的中位数是多少？', ans: String(a + 4), key: [a + 4] }; },
+      function () { const a = ri(60, 90); return { q: '一组数据：' + a + '，' + (a + 3) + '，' + (a + 3) + '，' + (a + 5) + '。这组数据的众数是多少？', ans: String(a + 3), key: [a + 3] }; },
+      function () { const a = ri(70, 90); return { q: '小明 3 次测验成绩分别是 ' + a + '、' + (a + 6) + '、' + (a + 9) + '，平均分是多少？', ans: String(a + 5), key: [a + 5] }; },
+      function () { const a = ri(60, 90); return { q: '一组数据：' + a + '，' + (a + 4) + '，' + (a + 8) + '，' + (a + 12) + '。它们的平均数是多少？', ans: String(a + 6), key: [a + 6] }; }
+    ]
+  };
+  function genFromPool(pool, n) {
+    const out = [], seen = {};
+    let guard = 0;
+    while (out.length < n && guard < n * 40) {
+      guard++;
+      const it = pick(pool)();
+      if (!it || !it.q || seen[it.q]) continue;
+      seen[it.q] = 1;
+      out.push(it);
+    }
+    while (out.length < n) { const it = pick(pool)(); out.push(it); }
+    return out;
+  }
+  const SHAWN_CALC = [
+    { id: 'sc1', title: '有理数运算', badge: '初一', emoji: '➕', pool: 'rational' },
+    { id: 'sc2', title: '整式运算', badge: '初一', emoji: '🧩', pool: 'expr' },
+    { id: 'sc3', title: '巧算速算', badge: '初一', emoji: '⚡', pool: 'clever' }
+  ];
+  const SHAWN_TYPES = [
+    { id: 'st1', title: '有理数运算', badge: '初一', pool: 'rational' },
+    { id: 'st2', title: '整式与代数式', badge: '初一', pool: 'expr' },
+    { id: 'st3', title: '一元一次方程', badge: '初一', pool: 'equation' },
+    { id: 'st4', title: '一元一次不等式', badge: '初一', pool: 'ineq' },
+    { id: 'st5', title: '二元一次方程组', badge: '初一', pool: 'system' },
+    { id: 'st6', title: '行程应用题', badge: '初一', pool: 'travel' },
+    { id: 'st7', title: '工程与浓度', badge: '初一', pool: 'work' },
+    { id: 'st8', title: '和差倍分与年龄', badge: '初一', pool: 'sumdiff' },
+    { id: 'st9', title: '图形与角', badge: '初一', pool: 'geometry' },
+    { id: 'st10', title: '找规律与数列', badge: '初一', pool: 'pattern' },
+    { id: 'st11', title: '统计与平均数', badge: '初一', pool: 'stat' },
+    { id: 'st12', title: '巧算速算', badge: '初一', pool: 'clever' }
+  ];
+
+  /* 通用模块的题目登记表（用于错题本） */
+  const GENERIC_REG = {};
+  function regGeneric(typeId, title, items) { GENERIC_REG[typeId] = { title: title, items: items }; }
+  function findProblem(typeId, i) {
+    const t = TYPES.find(function (x) { return x.id === typeId; });
+    if (t) {
+      const p = currentProblems[typeId] && currentProblems[typeId][i];
+      return p ? { q: p.q, a: p.a, title: t.title } : null;
+    }
+    const g = GENERIC_REG[typeId];
+    if (g && g.items[i]) return { q: g.items[i].q, a: g.items[i].a, title: g.title };
+    return null;
+  }
+
+  const GENERIC_MODULES = {
+    'sx-math': { id: 'sx-math', name: '数学思维', title: '🧮 数学思维（初中 · 按知识大类）', kind: 'shawnmath', tip: '按 12 个知识大类练习，每类 10 题，点「批改本组」。' },
+    'sx-calc': { id: 'sx-calc', name: '数学计算', title: '✏️ 数学计算（初中 · 三组）', kind: 'shawncalc', tip: '有理数 / 整式 / 巧算 三组，每组 10 题，点「批改本组」。' },
+    'sx-eng': { id: 'sx-eng', name: '英语语法', title: '🔤 英语语法易错题', kind: 'mcq', gen: genShawnEnglish, tip: '选出正确的选项，点「批改本组」。' },
+    'sx-df': { id: 'sx-df', name: '道法背诵', title: '📕 道德与法治 · 知识背诵', kind: 'flash', gen: function () { return genShawnRecite(DF_BANK); }, tip: '先自己回想答案，再点开对照；背完点「完成背诵」。' },
+    'sx-ls': { id: 'sx-ls', name: '历史背诵', title: '📗 历史 · 知识背诵', kind: 'flash', gen: function () { return genShawnRecite(LS_BANK); }, tip: '先自己回想答案，再点开对照；背完点「完成背诵」。' },
+    'sx-dl': { id: 'sx-dl', name: '地理背诵', title: '📘 地理 · 知识背诵', kind: 'flash', gen: function () { return genShawnRecite(DL_BANK); }, tip: '先自己回想答案，再点开对照；背完点「完成背诵」。' },
+    'sx-oral': { id: 'sx-oral', name: '英语口语', title: '🗣️ 英语口语练习', kind: 'oral', gen: genShawnOral, tip: '大声朗读每一句，读完点「完成朗读」。' }
+  };
+  let curGeneric = null;
+  function openModule(id) {
+    const cfg = GENERIC_MODULES[id];
+    if (!cfg) return;
+    curGeneric = { cfg: cfg, items: (cfg.gen ? cfg.gen() : []) };
+    setText('module-title', cfg.title);
+    buildGenericToolbar();
+    renderGenericBody();
+    showPage('module');
+    document.querySelectorAll('.bottom-nav button').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-page') === id);
+    });
+  }
+  function buildGenericToolbar() {
+    const tb = document.getElementById('module-toolbar');
+    const cfg = curGeneric.cfg;
+    let html = '';
+    if (cfg.kind === 'practice' || cfg.kind === 'mcq') {
+      html += '<button class="primary" onclick="gradeGeneric()">✔ 批改本组</button> <span class="score" id="generic-score">— / 10</span> ';
+    }
+    if (cfg.kind === 'flash') {
+      html += '<button class="primary" onclick="finishGeneric()">✔ 完成背诵</button> ';
+    }
+    if (cfg.kind === 'oral') {
+      html += '<button class="primary" onclick="finishGeneric()">✔ 完成朗读</button> ';
+    }
+    html += '<button onclick="refreshGeneric()">🎲 换一批</button>';
+    tb.innerHTML = html;
+  }
+  function renderGenericBody() {
+    const wrap = document.getElementById('module-content');
+    const cfg = curGeneric.cfg, items = curGeneric.items;
+    const mid = cfg.id;
+    let html = '<p class="intro">' + escapeHtml(cfg.tip) + '</p>';
+    if (cfg.kind === 'shawnmath') {
+      html += buildShawnSections(SHAWN_TYPES, 'sm');
+    } else if (cfg.kind === 'shawncalc') {
+      html += buildShawnSections(SHAWN_CALC, 'sc');
+    } else if (cfg.kind === 'practice') {
+      regGeneric(mid, cfg.name, items.map(function (it) { return { q: it.q, a: it.ans }; }));
+      html += '<div class="mod-body text">';
+      items.forEach(function (it, i) {
+        html += '<div class="calc-item" data-gi="' + i + '"><div class="calc-main">' +
+          '<div class="q">' + (i + 1) + '、' + escapeHtml(it.q) + '</div>' +
+          '<div class="a-row"><input class="ans-input g-input" data-i="' + i + '" type="text" inputmode="numeric" placeholder="✏️ 写答案" autocomplete="off"><span class="mark"></span></div>' +
+          '<div class="reveal">答案：' + escapeHtml(it.ans) + '</div></div>' +
+          '<button class="add-wrong" data-type="' + mid + '" data-i="' + i + '">＋错题本</button></div>';
+      });
+      html += '</div>';
+    } else if (cfg.kind === 'mcq') {
+      regGeneric(mid, cfg.name, items.map(function (it) { return { q: it.q, a: it.ans }; }));
+      html += '<div class="mod-body text">';
+      items.forEach(function (it, i) {
+        html += '<div class="calc-item" data-gi="' + i + '"><div class="calc-main">' +
+          '<div class="q">' + (i + 1) + '、' + escapeHtml(it.q) + '</div>' +
+          '<div class="mc">' + it.options.map(function (o) { return '<button class="mc-opt" data-i="' + i + '">' + escapeHtml(o) + '</button>'; }).join('') + '</div>' +
+          '<span class="mark"></span><div class="reveal">答案：' + escapeHtml(it.ans) + '</div></div>' +
+          '<button class="add-wrong" data-type="' + mid + '" data-i="' + i + '">＋错题本</button></div>';
+      });
+      html += '</div>';
+    } else if (cfg.kind === 'flash') {
+      regGeneric(mid, cfg.name, items.map(function (it) { return { q: it.q, a: it.a }; }));
+      html += '<div class="flash-list">';
+      items.forEach(function (it, i) {
+        html += '<details class="flash-item"><summary>' + (it.subject ? '<span class="tag">' + escapeHtml(it.subject) + '</span>' : '') + escapeHtml(it.q) + '</summary>' +
+          '<div class="flash-a">' + escapeHtml(it.a) + ' <button class="add-wrong" data-type="' + mid + '" data-i="' + i + '">＋错题本</button></div></details>';
+      });
+      html += '</div>';
+    } else if (cfg.kind === 'oral') {
+      html += '<ol class="oral-list">';
+      items.forEach(function (it) { html += '<li>' + escapeHtml(it) + '</li>'; });
+      html += '</ol>';
+    }
+    wrap.innerHTML = html;
+    updateAddedMarks();
+  }
+  const shawnKeys = {};
+  function buildShawnSections(types, prefix) {
+    let html = '';
+    types.forEach(function (t, ti) {
+      const gid = prefix + '-' + t.id;
+      const items = genFromPool(SHAWN_POOLS[t.pool], 10);
+      shawnKeys[gid] = items.map(function (it) { return it.key; });
+      regGeneric(gid, t.title, items.map(function (it) { return { q: it.q, a: it.ans }; }));
+      html += '<section class="type">';
+      html += '<h2><span class="num">' + (ti + 1) + '</span>' + escapeHtml(t.title) + ' <span class="badge">' + escapeHtml(t.badge) + '</span></h2>';
+      html += '<div class="mod-toolbar"><button class="primary-btn" onclick="gradeShawn(\'' + prefix + '\',\'' + t.id + '\')">✔ 批改本组</button> <span class="sec-score" id="' + gid + '-score"></span></div>';
+      html += '<div class="mod-body text">';
+      items.forEach(function (it, i) {
+        html += '<div class="calc-item" data-gi="' + gid + '-' + i + '"><div class="calc-main">' +
+          '<div class="q">' + (i + 1) + '、' + escapeHtml(it.q) + '</div>' +
+          '<div class="a-row"><input class="ans-input sm-input" data-g="' + gid + '" data-i="' + i + '" type="text" inputmode="numeric" placeholder="✏️" autocomplete="off"><span class="mark"></span></div>' +
+          '<div class="reveal">答案：' + escapeHtml(it.ans) + '</div></div>' +
+          '<button class="add-wrong" data-type="' + gid + '" data-i="' + i + '">＋错题本</button></div>';
+      });
+      html += '</div></section>';
+    });
+    return html;
+  }
+  function gradeShawn(prefix, tid) {
+    const gid = prefix + '-' + tid;
+    const keys = shawnKeys[gid] || [];
+    let total = 0, correct = 0;
+    keys.forEach(function (key, i) {
+      total++;
+      const inp = document.querySelector('.sm-input[data-g="' + gid + '"][data-i="' + i + '"]');
+      const ok = inp ? gradeOne(inp.value, key) : false;
+      if (ok) correct++;
+      const card = document.querySelector('.calc-item[data-gi="' + gid + '-' + i + '"]');
+      if (card) {
+        card.classList.remove('right', 'wrong');
+        card.classList.add(ok ? 'right' : 'wrong');
+        const mk = card.querySelector('.mark'); if (mk) mk.textContent = ok ? '✓' : '✗';
+        if (!ok) { const r = card.querySelector('.reveal'); if (r) r.style.display = 'block'; }
+      }
+    });
+    setText(gid + '-score', correct + ' / ' + total);
+    const ab = accBonus(total > 0 ? correct / total : 0);
+    completeModule(curGeneric.cfg.id, curGeneric.cfg.name, ab, '正确率+' + ab);
+  }
+  function gradeGeneric() {
+    const cfg = curGeneric.cfg, items = curGeneric.items;
+    let total = 0, correct = 0;
+    items.forEach(function (it, i) {
+      total++;
+      let ok = false;
+      if (cfg.kind === 'mcq') {
+        const sel = document.querySelector('.mc .mc-opt.sel[data-i="' + i + '"]');
+        ok = sel ? (sel.textContent === it.ans) : false;
+      } else {
+        const inp = document.querySelector('.g-input[data-i="' + i + '"]');
+        ok = inp ? gradeOne(inp.value, it.key) : false;
+      }
+      if (ok) correct++;
+      const card = document.querySelector('.calc-item[data-gi="' + i + '"]');
+      if (card) {
+        card.classList.remove('right', 'wrong');
+        card.classList.add(ok ? 'right' : 'wrong');
+        const mk = card.querySelector('.mark'); if (mk) mk.textContent = ok ? '✓' : '✗';
+        if (!ok) { const r = card.querySelector('.reveal'); if (r) r.style.display = 'block'; }
+      }
+    });
+    const sc = document.getElementById('generic-score');
+    if (sc) sc.textContent = correct + ' / ' + total;
+    const ab = accBonus(total > 0 ? correct / total : 0);
+    completeModule(cfg.id, cfg.name, ab, '正确率+' + ab);
+  }
+  function refreshGeneric() {
+    curGeneric.items = curGeneric.cfg.gen ? curGeneric.cfg.gen() : [];
+    buildGenericToolbar();
+    renderGenericBody();
+  }
+  function finishGeneric() {
+    completeModule(curGeneric.cfg.id, curGeneric.cfg.name, 0, '');
+  }
+
   initCalc();
   initThink();
+  applyProfile();
   updatePointsUI();
   showPage('dashboard');
 </script>
