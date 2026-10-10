@@ -241,7 +241,39 @@
   .modal-panel { background: #fff; border-radius: 20px; width: min(720px, 100%); max-height: 82vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.3); overflow: hidden; }
   .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--line); }
   .modal-head h2 { margin: 0; font-size: 18px; color: #5f4b52; }
-  .modal-close { border: none; background: none; font-size: 22px; cursor: pointer; color: var(--muted); line-height: 1; }
+  .modal-close {
+    border: 1px solid var(--line);
+    background: #fbf3f7;
+    font-size: 24px;
+    cursor: pointer;
+    color: #8e7683;
+    line-height: 1;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .modal-close:active { background: #f2e0ea; }
+  .modal-foot { padding: 12px 20px 16px; border-top: 1px solid var(--line); display: flex; gap: 10px; justify-content: center; }
+  .modal-foot button {
+    border: 1px solid var(--line);
+    background: #fdf9fa;
+    color: #5f4b52;
+    border-radius: 12px;
+    padding: 11px 30px;
+    font-size: 17px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .modal-foot button.primary { background: linear-gradient(135deg, #d97ba6, #f39bbd); color: #fff; border-color: transparent; }
+  body.theme-shawn .modal-close { background: #f2f7fd; border-color: #dbe7f3; color: #4a7fb0; }
+  body.theme-shawn .modal-foot button { border-color: #dbe7f3; color: #33506f; }
+  body.theme-shawn .modal-foot button.primary { background: linear-gradient(135deg, #3d7fd0, #6aa6e8); color: #fff; }
   .modal-actions { display: flex; gap: 8px; padding: 10px 20px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
   .modal-actions button { border: 1px solid var(--line); background: #fdf9fa; border-radius: 8px; padding: 5px 12px; cursor: pointer; font-size: 13px; }
   .modal-actions button:hover { border-color: #f39bbd; color: #d97ba6; }
@@ -1085,6 +1117,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       <button class="danger" onclick="clearWrongBook()">清空</button>
     </div>
     <div class="wb-list" id="wb-list"></div>
+    <div class="modal-foot"><button class="primary" onclick="closeWrongBook()">关闭</button></div>
   </div>
 </div>
 
@@ -1117,6 +1150,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     <div class="modal-actions">
       <button class="danger" onclick="resetPoints()">重置数据</button>
     </div>
+    <div class="modal-foot"><button class="primary" onclick="closePoints()">关闭</button></div>
   </div>
 </div>
 
@@ -2216,6 +2250,12 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     }
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeWrongBook(); });
+  // 点弹窗外面的暗色区域也能关掉，iPad 上更好退出
+  document.querySelectorAll('.modal-backdrop').forEach(function (bd) {
+    bd.addEventListener('click', function (e) {
+      if (e.target === bd) bd.classList.remove('show');
+    });
+  });
 
   /* ============ 多孩子工作区 ============ */
   const PROFILES = {
