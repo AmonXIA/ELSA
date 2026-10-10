@@ -850,6 +850,9 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
 .grade-bar button { border: 1px solid #d6e4f2; background: #fff; color: #3a6ea5; border-radius: 999px; padding: 5px 16px; cursor: pointer; font-size: 13px; font-family: inherit; }
 .grade-bar button.active { background: #3d7fd0; border-color: #3d7fd0; color: #fff; font-weight: 700; }
 .grade-bar button:hover { border-color: #3d7fd0; }
+/* 计算题里的错题本按钮缩小，避免撑大 */
+.calc-item .add-wrong { display: inline-block; margin: 6px 0 0; font-size: 11px; padding: 1px 9px; line-height: 1.7; }
+.calc-item > .add-wrong { align-self: flex-start; }
 </style></head>
 <body>
 
@@ -2667,6 +2670,7 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
       html += '</ol>';
     }
     wrap.innerHTML = html;
+    initScratchCanvases();
     updateAddedMarks();
     updateWrongBadge();
   }
@@ -2686,8 +2690,9 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
         '<div class="q">' + (i + 1) + '、' + escapeHtml(it.q) + '</div>' +
         (it.svg ? '<div class="geofig">' + it.svg + '</div>' : '') +
         '<div class="a-row"><input class="ans-input sm-input" data-g="' + gid + '" data-i="' + i + '" type="text" inputmode="numeric" placeholder="✏️" autocomplete="off"><span class="mark"></span></div>' +
+        '<button class="add-wrong" data-type="' + gid + '" data-i="' + i + '">＋错题本</button>' +
         '<div class="reveal">答案：' + escapeHtml(it.ans) + '</div></div>' +
-        '<button class="add-wrong" data-type="' + gid + '" data-i="' + i + '">＋错题本</button></div>';
+        '<canvas class="scratch" aria-label="草稿区"></canvas></div>';
     });
     html += '</div>';
     html += '<details class="answers"><summary>查看本组答案</summary><ol class="answer-list">' + ansList.join('') + '</ol></details>';
