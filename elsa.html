@@ -919,6 +919,8 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
 @media (max-width: 700px) { body.theme-shawn .module-grid { grid-template-columns: repeat(3, 1fr); } }
 .recite-bar { margin: 8px 0 4px; }
 .recite-bar.units button { font-size: 12px; padding: 4px 12px; }
+.recite-bar.units button.rand { border-style: dashed; }
+.recite-bar.units button.rand.active { border-style: solid; }
 .recite-count { font-size: 13px; color: #6b7a8d; margin: 6px 0 10px; }
 @media (min-width: 768px) {
   .recite-bar button { font-size: 15px; padding: 7px 20px; }
@@ -4248,6 +4250,7 @@ var RECITE_BANKS = { df: REC_BANK_DF, ls: REC_BANK_LS, dl: REC_BANK_DL, sw: REC_
 var reciteTerms = { df: '七上', ls: '七上', dl: '七上', sw: '七上' };
 var reciteUnits = { df: 0, ls: 0, dl: 0, sw: 0 };
 var reciteOrder = {};
+var reciteDraw = {};
 function reciteBank(key) { return RECITE_BANKS[key]; }
 function reciteTermList(key) { return Object.keys(reciteBank(key).terms); }
 function reciteCurTerm(key) {
@@ -4256,7 +4259,9 @@ function reciteCurTerm(key) {
   return reciteTerms[key];
 }
 function reciteCurUnits(key) { return reciteBank(key).terms[reciteCurTerm(key)].units; }
+function reciteIsRandom(key) { return reciteUnits[key] === -1; }
 function reciteCurIndex(key) {
+  if (reciteIsRandom(key)) return -1;
   const us = reciteCurUnits(key);
   let i = reciteUnits[key];
   if (typeof i !== 'number' || i < 0 || i >= us.length) i = 0;
@@ -4267,7 +4272,35 @@ function reciteUnitItems(key) {
   const u = reciteCurUnits(key)[reciteCurIndex(key)];
   return (u && u.i ? u.i : []).map(function (x) { return { q: x[0], a: x[1] }; });
 }
+// 把本册所有单元（含学期综合）合成一个题库，用来随机抽题
+function reciteTermPool(key) {
+  const out = [], seen = {};
+  reciteCurUnits(key).forEach(function (u) {
+    (u.i || []).forEach(function (x) {
+      if (seen[x[0]]) return;
+      seen[x[0]] = 1;
+      out.push({ q: x[0], a: x[1] });
+    });
+  });
+  return out;
+}
+function reciteDrawRandom(key) {
+  const pool = reciteTermPool(key);
+  const idx = pool.map(function (_, i) { return i; });
+  for (let i = idx.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = idx[i]; idx[i] = idx[j]; idx[j] = t;
+  }
+  const items = idx.slice(0, Math.min(10, pool.length)).map(function (i) { return pool[i]; });
+  reciteDraw[key] = { term: reciteCurTerm(key), items: items };
+  return items;
+}
 function reciteItems(key) {
+  if (reciteIsRandom(key)) {
+    const d = reciteDraw[key];
+    if (!d || d.term !== reciteCurTerm(key)) return reciteDrawRandom(key);
+    return d.items;
+  }
   const base = reciteUnitItems(key);
   const ord = reciteOrder[key];
   if (ord && ord.term === reciteCurTerm(key) && ord.unit === reciteCurIndex(key) && ord.len === base.length) {
@@ -4275,9 +4308,29 @@ function reciteItems(key) {
   }
   return base;
 }
-function reciteSetTerm(key, t) { reciteTerms[key] = t; reciteUnits[key] = 0; reciteOrder[key] = null; renderGenericBody(); }
-function reciteSetUnit(key, i) { reciteUnits[key] = i; reciteOrder[key] = null; renderGenericBody(); }
-function reciteShuffle(key) {
+function reciteSetTerm(key, t) {
+  reciteTerms[key] = t;
+  reciteUnits[key] = 0;
+  reciteOrder[key] = null;
+  reciteDraw[key] = null;
+  renderGenericBody();
+  buildGenericToolbar();
+}
+function reciteSetUnit(key, i) {
+  reciteUnits[key] = i;
+  reciteOrder[key] = null;
+  if (i === -1) reciteDraw[key] = null;
+  renderGenericBody();
+  buildGenericToolbar();
+}
+// 换一批：随机练习模式重新抽题，普通单元则打乱顺序
+function reciteRefresh(key) {
+  if (reciteIsRandom(key)) {
+    reciteDrawRandom(key);
+    renderGenericBody();
+    toast('已换一批新题');
+    return;
+  }
   const base = reciteUnitItems(key);
   const idx = base.map(function (_, i) { return i; });
   for (let i = idx.length - 1; i > 0; i--) {
@@ -4296,9 +4349,10 @@ function reciteBodyHTML(cfg) {
   const terms = reciteTermList(key), term = reciteCurTerm(key);
   const us = reciteCurUnits(key), ui = reciteCurIndex(key);
   const unit = us[ui] || { n: '', i: [] };
+  const isRand = reciteIsRandom(key);
   const items = reciteItems(key);
-  const tid = cfg.id + '|' + term + '|' + ui;
-  const unitTitle = bk.name + ' · ' + term + ' · ' + unit.n;
+  const tid = cfg.id + '|' + term + '|' + (isRand ? 'rand' : ui);
+  const unitTitle = bk.name + ' · ' + term + ' · ' + (isRand ? '随机练习' : unit.n);
   regGeneric(tid, unitTitle, items);
   let html = '';
   html += '<div class="grade-bar recite-bar">' + terms.map(function (t) {
@@ -4306,8 +4360,9 @@ function reciteBodyHTML(cfg) {
   }).join('') + '</div>';
   html += '<div class="grade-bar recite-bar units">' + us.map(function (u, i) {
     return '<button class="' + (i === ui ? 'active' : '') + '" onclick="reciteSetUnit(\'' + key + '\',' + i + ')">' + escapeHtml(u.n) + '</button>';
-  }).join('') + '</div>';
-  html += '<p class="recite-count">' + escapeHtml(unitTitle) + '　共 ' + items.length + ' 题</p>';
+  }).join('') + '<button class="rand' + (isRand ? ' active' : '') + '" onclick="reciteSetUnit(\'' + key + '\',-1)">🎲 随机抽题</button></div>';
+  html += '<p class="recite-count">' + escapeHtml(unitTitle) + '　共 ' + items.length + ' 题'
+    + (isRand ? '（本册全部单元随机抽取，点「换一批」可再抽）' : '') + '</p>';
   html += '<div class="flash-list">' + items.map(function (it, i) {
     return '<details class="flash-item"><summary>' + escapeHtml(it.q) + '</summary>' +
       '<div class="flash-a">' + escapeHtml(it.a) +
@@ -4369,7 +4424,7 @@ function reciteBodyHTML(cfg) {
     }
     if (cfg.kind === 'recite') {
       html += '<button class="primary" onclick="finishGeneric()">✔ 完成背诵</button> ';
-      html += '<button onclick="reciteShuffle(\'' + cfg.bank + '\')">🎲 打乱顺序</button> ';
+      html += '<button onclick="reciteRefresh(\'' + cfg.bank + '\')">' + (reciteIsRandom(cfg.bank) ? '🎲 换一批新题' : '🎲 打乱顺序') + '</button> ';
       html += '<button onclick="reciteOpenAll(true)">展开全部答案</button> ';
       html += '<button onclick="reciteOpenAll(false)">收起全部答案</button> ';
     } else {
