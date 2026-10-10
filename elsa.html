@@ -2062,15 +2062,15 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
       sub: '今天也要稳扎稳打～',
       foot: 'Shawn 的学习工作台 · 数学思维 / 英语语法 / 知识背诵 / 英语口语 · 加油！',
       modules: [
-        { id: 'read', icon: '📖', title: '阅读', sub: '30 分钟', act: "showPage('read')", goal: true },
-        { id: 'sport', icon: '🏃', title: '运动', sub: '30 分钟', act: "showPage('sport')", goal: true },
-        { id: 'sx-math', icon: '🧮', title: '数学思维', sub: '12 类', act: "openModule('sx-math')", goal: true },
-        { id: 'sx-calc', icon: '✏️', title: '数学计算', sub: '3 组', act: "openModule('sx-calc')", goal: true },
-        { id: 'sx-eng', icon: '🔤', title: '英语语法', sub: '易错题', act: "openModule('sx-eng')", goal: true },
-        { id: 'sx-df', icon: '📕', title: '道法背诵', sub: '20 题', act: "openModule('sx-df')", goal: true },
-        { id: 'sx-ls', icon: '📗', title: '历史背诵', sub: '20 题', act: "openModule('sx-ls')", goal: true },
-        { id: 'sx-dl', icon: '📘', title: '地理背诵', sub: '20 题', act: "openModule('sx-dl')", goal: true },
-        { id: 'sx-oral', icon: '🗣️', title: '英语口语', sub: '朗读', act: "openModule('sx-oral')", goal: true }
+        { id: 'read', icon: '📖', title: '阅读', sub: '30 分钟', act: "showPage('read')", goal: true, tint: '#e8f1fd' },
+        { id: 'sport', icon: '🏃', title: '运动', sub: '30 分钟', act: "showPage('sport')", goal: true, tint: '#e9f7ee' },
+        { id: 'sx-math', icon: '🧮', title: '数学思维', sub: '13 类', act: "openModule('sx-math')", goal: true, tint: '#eeeafd' },
+        { id: 'sx-calc', icon: '✏️', title: '数学计算', sub: '3 组', act: "openModule('sx-calc')", goal: true, tint: '#e8f4fb' },
+        { id: 'sx-eng', icon: '🔤', title: '英语语法', sub: '易错题', act: "openModule('sx-eng')", goal: true, tint: '#fdecef' },
+        { id: 'sx-df', icon: '📕', title: '道法背诵', sub: '20 题', act: "openModule('sx-df')", goal: true, tint: '#fdeef6' },
+        { id: 'sx-ls', icon: '📗', title: '历史背诵', sub: '20 题', act: "openModule('sx-ls')", goal: true, tint: '#fdf3e3' },
+        { id: 'sx-dl', icon: '📘', title: '地理背诵', sub: '20 题', act: "openModule('sx-dl')", goal: true, tint: '#e6f6f4' },
+        { id: 'sx-oral', icon: '🗣️', title: '英语口语', sub: '朗读', act: "openModule('sx-oral')", goal: true, tint: '#eaf0fd' }
       ],
       colors: { read: '#4f9cf7', sport: '#43b96a', 'sx-math': '#7c6cf0', 'sx-calc': '#3d7fd0', 'sx-eng': '#f0736c', 'sx-df': '#e0679a', 'sx-ls': '#cf9a2e', 'sx-dl': '#2fa3a0', 'sx-oral': '#4aa3c9' }
     }
@@ -2086,7 +2086,7 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
     const grid = document.getElementById('module-grid');
     if (!grid) return;
     grid.innerHTML = curProfile().modules.map(function (m) {
-      return '<button type="button" class="module-card" onclick="' + m.act + '">' +
+      return '<button type="button" class="module-card"' + (m.tint ? ' style="background:' + m.tint + '"' : '') + ' onclick="' + m.act + '">' +
         '<span class="mi">' + m.icon + '</span>' +
         '<div class="mt">' + escapeHtml(m.title) + '</div>' +
         '<div class="ms">' + escapeHtml(m.sub) + '</div></button>';
