@@ -465,6 +465,7 @@
   }
   /* 常驻错题本入口（右上角，两个工作区都能随时打开） */
   .wb-btn { right: 60px; font-size: 18px; }
+  .ai-btn { right: 108px; font-size: 20px; }
   .wb-btn .wb-badge {
     position: absolute;
     top: -4px; right: -4px;
@@ -785,6 +786,52 @@ body.theme-shawn .mod-toolbar .st-mode.active { background: #dbe9fb; border-colo
 @media (min-width: 768px) { .onecol .calc-item .scratch-box .scratch { height: 380px; } }
 /* 扫把（清空这一格）放在草稿区左下角 */
 .scratch-wipe { position: absolute; left: 10px; bottom: 10px; z-index: 3; }
+/* 分步过程输入框 */
+.step-row { margin-top: 8px; }
+.step-row .step-input {
+  width: 100%;
+  min-height: 62px;
+  border: 2px dashed #dbe7f3;
+  border-radius: 12px;
+  padding: 8px 10px;
+  font-size: 16px;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  background: #fbfdff;
+  box-sizing: border-box;
+}
+.step-row .step-input:focus { outline: none; border-color: #8db6e8; }
+.step-row .step-tip { font-size: 12px; color: #8aa0b5; margin-top: 2px; }
+.reveal .ai-bad { color: #c0392b; font-weight: 700; }
+.reveal .ai-ok { color: #2f8f4e; font-weight: 700; }
+/* AI 读草稿 */
+.ai-draft {
+  display: inline-block;
+  margin-top: 6px;
+  border: 1px dashed #8db6e8;
+  background: #f2f8ff;
+  color: #23507f;
+  border-radius: 999px;
+  padding: 3px 14px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+}
+.ai-draft:disabled { opacity: .6; }
+.ai-result {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f2f8ff;
+  border: 1px solid #d6e4f2;
+  color: #23507f;
+  font-size: 15px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+.ai-field { display: block; margin: 10px 0; font-size: 14px; color: #5f4b52; }
+.ai-field input { width: 100%; margin-top: 4px; padding: 8px 10px; border: 2px solid #efe2e8; border-radius: 10px; font-size: 15px; font-family: inherit; box-sizing: border-box; }
 .scratch-tools { position: absolute; top: 6px; right: 8px; display: flex; gap: 6px; z-index: 3; }
 .scratch-tools .st-mini {
   width: 34px; height: 34px;
@@ -1005,7 +1052,9 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
 <body>
 
 <button class="fs-btn" id="fs-btn" onclick="toggleFullscreen()" title="切换全屏">⛶</button>
+    html += '<button class="ai-settings-btn">⚙️ AI 设置</button> ';
 <button class="fs-btn wb-btn" id="wb-quick-btn" onclick="openWrongBook()" title="错题本" aria-label="错题本">📓<span class="wb-badge" id="wb-badge-quick">0</span></button>
+<button class="fs-btn ai-btn" id="ai-quick-btn" onclick="openAiSettings()" title="AI 读草稿设置" aria-label="AI 读草稿设置">⚙️</button>
 
 <header class="hero">
   <div class="brand">
@@ -1564,6 +1613,320 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     };
     window.addEventListener('afterprint', done);
     setTimeout(function () { try { window.print(); } catch (e) {} }, 80);
+  }
+  // ===== 分步批改：逐行验算学生自己写的步骤，指出第几步不成立 =====
+  // ===== AI 读草稿：把手写草稿图片交给视觉模型，直接指出错在哪一步 =====
+  const AI_CFG_KEY = 'math_ai_cfg_v1';
+  function aiCfg() { try { return JSON.parse(lsGet(AI_CFG_KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function saveAiCfg(c) { try { localStorage.setItem(pk(AI_CFG_KEY), JSON.stringify(c)); } catch (e) {} }
+  function ensureAiModal() {
+    let m = document.getElementById('ai-modal');
+    if (m) return m;
+    m = document.createElement('div');
+    m.className = 'modal-backdrop';
+    m.id = 'ai-modal';
+    m.innerHTML = '<div class="modal-panel"><div class="modal-head"><h2>🤖 草稿智能批改设置</h2><button class="modal-close" type="button">✕</button></div>'
+      + '<div style="padding:14px 20px 18px;">'
+      + '<p class="intro">填一个「兼容 OpenAI 接口」的服务即可。点「AI 批改」时，才会把这一题的草稿图片发给该服务；接口地址和密钥只保存在这台设备的浏览器里。</p>'
+      + '<p class="intro" style="line-height:1.9;">常用地址（可直接复制）：<br>OpenAI：https://api.openai.com/v1/chat/completions<br>DeepSeek：https://api.deepseek.com/chat/completions<br>通义千问：https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions<br>智谱：https://open.bigmodel.cn/api/paas/v4/chat/completions<br>月之暗面：https://api.moonshot.cn/v1/chat/completions</p>'
+      + '<label class="ai-field">接口地址<input id="ai-url" type="text" placeholder="https://api.openai.com/v1/chat/completions"></label>'
+      + '<label class="ai-field">模型名称<input id="ai-model" type="text" placeholder="gpt-4o-mini"></label>'
+      + '<label class="ai-field">API Key<input id="ai-key" type="password" placeholder="sk-..."></label>'
+      + '<div class="modal-foot" style="border-top:none;padding:4px 0 0;"><button class="primary" id="ai-save" type="button">保存</button> <button id="ai-test" type="button">测试连接</button></div>'
+      + '<div id="ai-test-out" class="ai-result" style="display:none;"></div>'
+      + '</div></div>';
+    document.body.appendChild(m);
+    m.querySelector('.modal-close').addEventListener('click', function () { m.classList.remove('show'); });
+    m.addEventListener('click', function (e) { if (e.target === m) m.classList.remove('show'); });
+    m.querySelector('#ai-save').addEventListener('click', function () {
+      saveAiCfg({
+        url: m.querySelector('#ai-url').value.trim(),
+        model: m.querySelector('#ai-model').value.trim(),
+        key: m.querySelector('#ai-key').value.trim()
+      });
+      m.classList.remove('show');
+      toast('已保存，之后点「让 AI 读草稿」就能批改了');
+    });
+    m.querySelector('#ai-test').addEventListener('click', function () {
+      const out = m.querySelector('#ai-test-out');
+      const c = {
+        url: m.querySelector('#ai-url').value.trim(),
+        model: m.querySelector('#ai-model').value.trim(),
+        key: m.querySelector('#ai-key').value.trim()
+      };
+      out.style.display = 'block';
+      out.textContent = '⏳ 正在测试…';
+      aiPost(c, [{ type: 'text', text: '回复两个字：正常' }]).then(function (t) {
+        out.textContent = '✅ 连接正常，模型回复：' + t;
+      }).catch(function (e) {
+        out.textContent = '❌ ' + e.message;
+      });
+    });
+    return m;
+  }
+  function openAiSettings() {
+    const m = ensureAiModal(), c = aiCfg();
+    m.querySelector('#ai-url').value = c.url || '';
+    m.querySelector('#ai-model').value = c.model || '';
+    m.querySelector('#ai-key').value = c.key || '';
+    m.classList.add('show');
+  }
+  function cardAnswer(card) {
+    const inp = card.querySelector('.sm-input');
+    if (inp && inp.getAttribute('data-g') !== null) {
+      const ks = shawnKeys[inp.getAttribute('data-g')] || [];
+      const k = ks[+inp.getAttribute('data-i')];
+      if (k !== undefined) return String(Array.isArray(k) ? k[0] : k);
+    }
+    const ci = card.querySelector('.ans-input');
+    if (ci && ci.getAttribute('data-type') !== null) {
+      const t = ci.getAttribute('data-type'), ii = +ci.getAttribute('data-i');
+      const prob = currentCalc[t] && currentCalc[t][ii];
+      if (prob) return String((prob.key && prob.key.length) ? prob.key[0] : prob.ans);
+    }
+    const rev = card.querySelector('.reveal');
+    if (rev) { const mm = rev.textContent.match(/答案：([\s\S]*?)(解析：|$)/); if (mm) return mm[1].trim(); }
+    return '';
+  }
+  // 统一请求：把 HTTP 状态和接口返回的原始错误显示出来，便于排查
+  function aiEndpoint(u) {
+    let url = (u || 'https://api.openai.com/v1/chat/completions').trim().replace(/\/+$/, '');
+    if (/\/chat\/completions$/.test(url)) return url;
+    if (/\/v\d+$/.test(url)) return url + '/chat/completions';
+    if (/^https?:\/\/[^\/]+$/.test(url)) return url + '/v1/chat/completions';
+    return url + '/chat/completions';
+  }
+  function aiPost(cfg, content) {
+    const url = aiEndpoint(cfg.url);
+    const body = { model: cfg.model || 'gpt-4o-mini', max_tokens: 500, messages: [{ role: 'user', content: content }] };
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
+      body: JSON.stringify(body)
+    }).catch(function (e) {
+      throw new Error('连不上接口（' + (e && e.name ? e.name : 'network') + '）。常见原因：接口地址写错、没联网，或者该服务不允许网页直接调用（CORS）。地址：' + url);
+    }).then(function (res) {
+      return res.text().then(function (raw) {
+        let data = null;
+        try { data = JSON.parse(raw); } catch (e) {}
+        if (!res.ok) {
+          let msg = '';
+          if (data && data.error) msg = data.error.message || JSON.stringify(data.error);
+          else msg = raw.slice(0, 200);
+          throw new Error('接口返回 HTTP ' + res.status + '：' + msg + '（请求地址：' + url + '）');
+        }
+        let t = '';
+        try { t = data.choices[0].message.content; } catch (e) {}
+        if (!t) throw new Error('返回内容无法解析：' + raw.slice(0, 200));
+        return String(t).trim();
+      });
+    });
+  }
+  // 草稿图片很大，先缩到宽 1000 以内再上传，避免请求过大被拒
+  function shrinkCanvas(cv) {
+    const maxW = 1000;
+    const w = cv.width, h = cv.height;
+    if (w <= maxW) return cv.toDataURL('image/png');
+    const scale = maxW / w;
+    const c2 = document.createElement('canvas');
+    c2.width = Math.round(w * scale);
+    c2.height = Math.round(h * scale);
+    const g = c2.getContext('2d');
+    g.fillStyle = '#ffffff';
+    g.fillRect(0, 0, c2.width, c2.height);
+    g.drawImage(cv, 0, 0, c2.width, c2.height);
+    return c2.toDataURL('image/jpeg', 0.85);
+  }
+  function analyzeDraft(btn, done) {
+    const card = btn.closest('.calc-item') || btn.closest('.vcol');
+    if (!card) return;
+    const cv = card.querySelector('canvas.scratch');
+    const cfg = aiCfg();
+    if (!cfg.key) { openAiSettings(); toast('请先填写接口地址与 API Key'); return; }
+    if (!cv || !cv._inked) { toast('这一格还没有草稿'); return; }
+    const qEl = card.querySelector('.q');
+    const q = qEl ? qEl.textContent.replace(/^\d+、\s*/, '') : '';
+    const ans = cardAnswer(card);
+    let out = card.querySelector('.ai-result');
+    if (!out) { out = document.createElement('div'); out.className = 'ai-result'; (card.querySelector('.calc-main') || card).appendChild(out); }
+    out.textContent = '🤖 正在读你的草稿…';
+    btn.disabled = true;
+    const prompt = '你是初中数学老师。题目：' + q + '。正确答案：' + ans + '。图里是学生的手写解题草稿。'
+      + '请逐步核对：先一句话说明他哪几步是对的，然后明确指出他算错的是第几步、他写成了什么、正确应该是什么，最后给出正确的解题过程。'
+      + '用不超过 120 字的中文回答，直接说结论，不要客套。';
+    let img = '';
+    try { img = shrinkCanvas(cv); } catch (e) { img = ''; }
+    if (!img) { out.textContent = '🤖 这一格草稿读取失败，请重新写一下再试'; btn.disabled = false; if (done) done(); return; }
+    aiPost(cfg, [
+      { type: 'text', text: prompt },
+      { type: 'image_url', image_url: { url: img } }
+    ]).then(function (t) {
+      out.textContent = '🤖 ' + t;
+    }).catch(function (e) {
+      out.textContent = '🤖 出错：' + (e && e.message ? e.message : e);
+    }).then(function () { btn.disabled = false; if (done) done(); });
+  }
+  // 一键读完这一组所有有草稿的题目
+  function analyzeSectionDrafts(prefix, tid) {
+    const gid = prefix + '-' + tid;
+    const cards = Array.prototype.slice.call(document.querySelectorAll('.calc-item[data-gi^="' + gid + '-"]'));
+    const targets = cards.filter(function (c) {
+      const cv = c.querySelector('canvas.scratch');
+      return !!(cv && cv._inked);
+    });
+    if (!targets.length) { toast('这一组还没有草稿：先在草稿区写过程，再点我'); return; }
+    const cfg = aiCfg();
+    if (!cfg.key) { openAiSettings(); toast('请先填写接口地址与 API Key'); return; }
+    toast('正在逐题读草稿，共 ' + targets.length + ' 题…');
+    let i = 0;
+    (function next() {
+      if (i >= targets.length) { toast('这组草稿批改完成'); return; }
+      const card = targets[i++];
+      let btn = card.querySelector('.ai-draft');
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ai-draft';
+        btn.textContent = '🔍 让 AI 读我的草稿，指出错在哪一步';
+        (card.querySelector('.calc-main') || card).appendChild(btn);
+      }
+      analyzeDraft(btn, next);
+    })();
+  }
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest) return;
+    const b = e.target.closest('.ai-draft');
+    if (b) { e.preventDefault(); analyzeDraft(b); return; }
+    const s = e.target.closest('.ai-settings-btn');
+    if (s) { e.preventDefault(); openAiSettings(); }
+  });
+  function normMathStr(s) {
+    return String(s)
+      .replace(/[０-９]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); })
+      .replace(/＋/g, '+').replace(/[－—−–ー]/g, '-')
+      .replace(/[×✕✖＊]/g, '*').replace(/[÷／⁄∕]/g, '/')
+      .replace(/（/g, '(').replace(/）/g, ')')
+      .replace(/[．。]/g, '.').replace(/＝/g, '=')
+      .trim();
+  }
+  // 四则运算求值：支持整数、小数、分数 4/75、带分数 40 4/75、括号；无法识别返回 null
+  function evalMath(src) {
+    const s = normMathStr(src).replace(/\s+/g, ' ').trim();
+    if (!s) return null;
+    let pos = 0;
+    function skip() { while (s[pos] === ' ') pos++; }
+    function parseNumAt() {
+      skip();
+      let d = '';
+      while (/[0-9]/.test(s[pos] || '')) { d += s[pos]; pos++; }
+      if (s[pos] === '.') { d += '.'; pos++; while (/[0-9]/.test(s[pos] || '')) { d += s[pos]; pos++; } }
+      if (d) {
+        const base = Number(d);
+        const save = pos;
+        skip();
+        let e = '';
+        while (/[0-9]/.test(s[pos] || '')) { e += s[pos]; pos++; }
+        if (e && s[pos] === '/') {
+          pos++;
+          let f = '';
+          while (/[0-9]/.test(s[pos] || '')) { f += s[pos]; pos++; }
+          if (f && Number(f) !== 0) return base + Number(e) / Number(f);
+        }
+        pos = save;
+        return base;
+      }
+      if (s[pos] === '(') { pos++; const v = expr(); skip(); if (s[pos] === ')') pos++; return v; }
+      if (s[pos] === '-') { pos++; const v = parseNumAt(); return v === null ? null : -v; }
+      return null;
+    }
+    function term() {
+      let v = parseNumAt();
+      if (v === null) return null;
+      for (;;) {
+        skip();
+        const op = s[pos];
+        if (op === '*' || op === '/') {
+          pos++;
+          const r = parseNumAt();
+          if (r === null) return null;
+          if (op === '*') v = v * r; else { if (r === 0) return null; v = v / r; }
+        } else return v;
+      }
+    }
+    function expr() {
+      let v = term();
+      if (v === null) return null;
+      for (;;) {
+        skip();
+        const op = s[pos];
+        if (op === '+' || op === '-') { pos++; const r = term(); if (r === null) return null; v = (op === '+') ? v + r : v - r; }
+        else return v;
+      }
+    }
+    const res = expr();
+    skip();
+    if (res === null || pos !== s.length) return null;
+    return res;
+  }
+  function fmtStepNum(n) {
+    const v = Math.round(n * 10000) / 10000;
+    return Object.is(v, -0) ? '0' : String(v);
+  }
+  function checkStepText(text) {
+    const lines = String(text).split(/\r?\n/).map(function (x) { return x.trim(); }).filter(function (x) { return x.length > 0; });
+    if (!lines.length) return null;
+    let last = null;
+    for (let i = 0; i < lines.length; i++) {
+      const parts = lines[i].split('=');
+      const vals = [];
+      let bad = false;
+      for (let j = 0; j < parts.length; j++) {
+        if (!parts[j].trim()) { bad = true; break; }
+        const v = evalMath(parts[j]);
+        if (v === null) { bad = true; break; }
+        vals.push(v);
+      }
+      if (bad) return { bad: 'unparsed', line: i + 1, text: lines[i] };
+      for (let k = 1; k < vals.length; k++) {
+        if (Math.abs(vals[k] - vals[k - 1]) > 0.01) {
+          return { bad: 'notEqual', line: i + 1, text: lines[i], left: vals[k - 1], right: vals[k] };
+        }
+      }
+      last = vals[vals.length - 1];
+    }
+    return { bad: 'ok', last: last };
+  }
+  function stepVerdictHTML(card) {
+    const generic = '<span class="exp">📝 你在这一格有草稿：把过程写进上面的「步骤」框（每行一步），批改时我就能直接指出第几步不成立。常见错因：去括号没变号、乘方符号、除以分数忘记取倒数、加减法进位借位算错。</span>';
+    const ta = card.querySelector('.step-input');
+    if (!ta || !ta.value.trim()) return generic;
+    const res = checkStepText(ta.value);
+    if (!res) return generic;
+    const rev = card.querySelector('.reveal');
+    let ansVal = null;
+    const smInp = card.querySelector('.sm-input');
+    if (smInp) {
+      const gid = smInp.getAttribute('data-g'), ii = +smInp.getAttribute('data-i');
+      const ks = shawnKeys[gid] || [];
+      if (ks[ii] !== undefined) ansVal = parseNum(String(Array.isArray(ks[ii]) ? ks[ii][0] : ks[ii]));
+    } else {
+      const ci = card.querySelector('.ans-input');
+      if (ci) {
+        const tid = ci.getAttribute('data-type'), ii = +ci.getAttribute('data-i');
+        const prob = currentCalc[tid] && currentCalc[tid][ii];
+        if (prob) ansVal = parseNum(String(prob.key && prob.key.length ? prob.key[0] : prob.ans));
+      }
+    }
+    if (res.bad === 'unparsed') {
+      return '<span class="exp ai-bad">❌ 第 ' + res.line + ' 步我没读懂：「' + escapeHtml(res.text) + '」。请写成 40 4/75 = 3004/75 这样的算式（一行一步）。</span>';
+    }
+    if (res.bad === 'notEqual') {
+      return '<span class="exp ai-bad">❌ 你的第 ' + res.line + ' 步就是出错的地方：「' + escapeHtml(res.text) + '」不成立——这一步左边算出来是 ' + fmtStepNum(res.left) + '，而你写成了 ' + fmtStepNum(res.right) + '。请重算这一步。</span>';
+    }
+    if (ansVal !== null && Math.abs(res.last - ansVal) > 0.01) {
+      return '<span class="exp ai-bad">✅ 你的每一步都能算通，但最后结果 ' + fmtStepNum(res.last) + ' 与正确答案 ' + fmtStepNum(ansVal) + ' 不符：检查是否抄错数字或漏了一步。</span>';
+    }
+    return '<span class="exp ai-ok">✅ 你的每一步都验算通过了，步骤没有问题。</span>';
   }
   function openWrongBook() { document.getElementById('wb-modal').classList.add('show'); renderWrongBook(); }
   function closeWrongBook() { document.getElementById('wb-modal').classList.remove('show'); }
@@ -2320,9 +2683,8 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
           if (r) {
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
-            if (sc && sc._inked && r.innerHTML.indexOf('请对照上面的步骤') < 0) {
-              r.innerHTML += '<span class="exp">📝 你在这一格有草稿：请对照上面的步骤，从第一步开始找出算错的地方。常见错因：去括号没变号、乘方符号、除以分数忘记取倒数、加减法进位借位算错。如果你用的方法和上面不同也没关系，只要每一步都对，结果一定相同——把两步之间的数字重新算一遍。</span>';
-            }
+            const ta = card.querySelector('.step-input');
+            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card);
           }
         }
       }
@@ -3110,9 +3472,8 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
           if (r) {
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
-            if (sc && sc._inked && r.innerHTML.indexOf('对照草稿') < 0) {
-              r.innerHTML += '<span class="exp">📝 你在这一格有草稿：请对照上面的步骤，从第一步开始找出算错的地方。常见错因：去括号没变号、乘方符号、除以分数忘记取倒数、加减法进位借位算错。如果你用的方法和上面不同也没关系，只要每一步都对，结果一定相同——把两步之间的数字重新算一遍。</span>';
-            }
+            const ta = card.querySelector('.step-input');
+            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card);
           }
         }
       }
@@ -5703,7 +6064,7 @@ function reciteBodyHTML(cfg) {
     shawnKeys[gid] = items.map(function (it) { return it.key; });
     regGeneric(gid, t.title, items.map(function (it) { return { q: it.q, a: it.ans }; }));
     let html = '<h2><span class="num">' + ti + '</span>' + escapeHtml(t.title) + ' <span class="badge">' + escapeHtml(t.grade || t.badge || '') + '</span></h2>';
-    html += '<div class="mod-toolbar"><button class="primary-btn" onclick="gradeShawn(\'' + prefix + '\',\'' + t.id + '\')">✔ 批改本组</button> <button onclick="refreshShawnSection(\'' + prefix + '\',\'' + t.id + '\')">🎲 换一批</button> ' + scratchToolsHTML() + ' <span class="sec-score" id="' + gid + '-score"></span></div>';
+    html += '<div class="mod-toolbar"><button class="primary-btn" onclick="gradeShawn(\'' + prefix + '\',\'' + t.id + '\')">✔ 批改本组</button> <button onclick="analyzeSectionDrafts(\'' + prefix + '\',\'' + t.id + '\')">🔍 AI 批改草稿</button> <button onclick="refreshShawnSection(\'' + prefix + '\',\'' + t.id + '\')">🎲 换一批</button> ' + scratchToolsHTML() + ' <span class="sec-score" id="' + gid + '-score"></span></div>';
     html += '<div class="mod-body text onecol" id="' + gid + '-body">';
     const ansList = [];
     items.forEach(function (it, i) {
@@ -5713,6 +6074,7 @@ function reciteBodyHTML(cfg) {
         (it.svg ? '<div class="geofig">' + it.svg + '</div>' : '') +
         '<div class="a-row"><input class="ans-input sm-input" data-g="' + gid + '" data-i="' + i + '" type="text" inputmode="text" placeholder="✏️ 如 1/6" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><span class="mark"></span></div>' +
         '<button class="add-wrong" data-type="' + gid + '" data-i="' + i + '">＋错题本</button>' +
+        '<button type="button" class="ai-draft">🔍 AI 批改这题</button>' +
         revealHTML(it.ans, it.exp || SHAWN_POOL_TIPS[t.pool]) + '</div>' +
         '<canvas class="scratch" aria-label="草稿区"></canvas></div>';
     });
@@ -5779,9 +6141,8 @@ function reciteBodyHTML(cfg) {
           if (r) {
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
-            if (sc && sc._inked && r.innerHTML.indexOf('请对照上面的步骤') < 0) {
-              r.innerHTML += '<span class="exp">📝 你在这一格有草稿：请对照上面的步骤，从第一步开始找出算错的地方。常见错因：去括号没变号、乘方符号、除以分数忘记取倒数、加减法进位借位算错。如果你用的方法和上面不同也没关系，只要每一步都对，结果一定相同——把两步之间的数字重新算一遍。</span>';
-            }
+            const ta = card.querySelector('.step-input');
+            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card);
           }
         }
       }
@@ -5824,9 +6185,8 @@ function reciteBodyHTML(cfg) {
           if (r) {
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
-            if (sc && sc._inked && r.innerHTML.indexOf('请对照上面的步骤') < 0) {
-              r.innerHTML += '<span class="exp">📝 你在这一格有草稿：请对照上面的步骤，从第一步开始找出算错的地方。常见错因：去括号没变号、乘方符号、除以分数忘记取倒数、加减法进位借位算错。如果你用的方法和上面不同也没关系，只要每一步都对，结果一定相同——把两步之间的数字重新算一遍。</span>';
-            }
+            const ta = card.querySelector('.step-input');
+            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card);
           }
         }
       }
