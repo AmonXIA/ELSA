@@ -1724,7 +1724,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   }
   function aiPost(cfg, content) {
     const url = aiEndpoint(cfg.url);
-    | 'gpt-4o-mini', max_tokens: 500, messages: [{ role: 'user', content: content }] };|const body = { model: cfg.model || 'gpt-4o-mini', max_tokens: 2000, messages: [{ role: 'user', content: content }] };|| 'gpt-4o-mini', max_tokens: 500, messages: [{ role: 'user', content: content }] };
+    const body = { model: cfg.model || 'gpt-4o-mini', max_tokens: 2000, messages: [{ role: 'user', content: content }] };
     return fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
