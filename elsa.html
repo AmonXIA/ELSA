@@ -1636,11 +1636,11 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       + '<label class="ai-field">接口地址<input id="ai-url" type="text" placeholder="https://api.openai.com/v1/chat/completions"></label>'
       + '<label class="ai-field">模型名称<input id="ai-model" type="text" placeholder="gpt-4o-mini"></label>'
       + '<label class="ai-field">API Key<input id="ai-key" type="password" placeholder="sk-..."></label>'
-      + '<p class="intro" style="margin-top:14px;">äº‘åŒæ­¥ï¼ˆSupabaseï¼Œå¯é€‰ï¼‰ï¼šå¡«ä¸ŠåŽæ¯æ¬¡æ•°æ®å˜åŒ–ä¼šè‡ªåŠ¨å­˜åˆ°ä½ çš„è¡¨é‡Œï¼Œæ¢æµè§ˆå™¨æˆ–é‡æ–°å‘å¸ƒéƒ½ä¸ä¸¢ã€‚</p>'
-      + '<label class="ai-field">Supabase é¡¹ç›®åœ°å€<input id="sb-url" type="text" placeholder="https://xxxx.supabase.co"></label>'
+      + '<p class="intro" style="margin-top:14px;">云同步（Supabase，可选）：填上后每次数据变化会自动存到你的表里，换浏览器或重新发布都不丢。</p>'
+      + '<label class="ai-field">Supabase 项目地址<input id="sb-url" type="text" placeholder="https://xxxx.supabase.co"></label>'
       + '<label class="ai-field">anon key<input id="sb-key" type="password" placeholder="eyJhbGciOi..."></label>'
-      + '<label class="ai-field">è¡¨å<input id="sb-table" type="text" placeholder="elsa_kv"></label>'
-      + '<div class="modal-foot" style="border-top:none;padding:4px 0 0;"><button class="primary" id="ai-save" type="button">保存</button> <button id="ai-test" type="button">测试连接</button></div>'
+      + '<label class="ai-field">表名<input id="sb-table" type="text" placeholder="elsa_kv"></label>'
+      + '<div class="modal-foot" style="border-top:none;padding:4px 0 0;"><button class="primary" id="ai-save" type="button">保存</button> <button id="ai-test" type="button">测试连接</button> <button type="button" onclick="document.getElementById(\'ai-modal\').classList.remove(\'show\')">关闭</button></div>'
       + '<div id="ai-test-out" class="ai-result" style="display:none;"></div>'
       + '</div></div>';
     document.body.appendChild(m);
@@ -2933,17 +2933,17 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     st.textContent = [
       '#ph-top-wrap { display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap; margin:6px 0 10px; }',
       '#ph-top-left { flex:1 1 320px; min-width:260px; }',
-      '#ph-top-right { flex:0 0 auto; min-width:276px; background:#fff; border:1px solid #e3edf7; border-radius:16px; padding:10px 12px 12px; box-shadow:0 2px 10px rgba(58,110,165,.06); }',
+      '#ph-top-right { flex:0 0 auto; min-width:276px; background:#fff; border:1px solid #e3edf7; border-radius:16px; padding:10px 12px 18px; box-shadow:0 2px 10px rgba(58,110,165,.06); }',
       '.ph-pod-title { font-size:13px; color:#3a6ea5; font-weight:700; margin-bottom:8px; }',
-      '.ph-podium { display:flex; flex-wrap:nowrap; align-items:flex-end; gap:8px; justify-content:center; }',
+      '.ph-podium { display:flex; flex-wrap:nowrap; align-items:flex-end; gap:8px; justify-content:center; padding-bottom:2px; }',
       '.ph-pod-col { width:64px; flex:0 0 auto; text-align:center; border-radius:12px 12px 0 0; padding:6px 4px 8px; color:#fff; box-shadow:0 2px 8px rgba(95,75,82,.14); }',
-      '.ph-pod-col.gold { background:linear-gradient(180deg,#f7cf6b,#dfa423); height:106px; }',
-      '.ph-pod-col.silver { background:linear-gradient(180deg,#e2e6ea,#b6bec7); height:88px; }',
-      '.ph-pod-col.bronze { background:linear-gradient(180deg,#e8bd92,#c8874d); height:76px; }',
+      '.ph-pod-col.gold { background:linear-gradient(180deg,#f7cf6b,#dfa423); height:124px; }',
+      '.ph-pod-col.silver { background:linear-gradient(180deg,#e2e6ea,#b6bec7); height:106px; }',
+      '.ph-pod-col.bronze { background:linear-gradient(180deg,#e8bd92,#c8874d); height:92px; }',
       '.ph-pod-medal { font-size:20px; line-height:1.1; }',
       '.ph-pod-score { font-size:19px; font-weight:800; line-height:1.25; }',
       '.ph-pod-time { font-size:10px; opacity:.96; line-height:1.35; }',
-      '.ph-pod-base { font-size:10px; opacity:.9; margin-top:2px; }',
+      '.ph-pod-base { font-size:10px; opacity:.9; margin-top:6px; padding-bottom:2px; }',
       '.ph-pod-empty { color:#8aa0b5; font-size:13px; text-align:center; padding:16px 8px; border:1px dashed #dbe7f3; border-radius:12px; line-height:1.7; }',
       '@media (max-width:700px) { #ph-top-right { min-width:0; width:100%; } .ph-pod-col { width:64px; } }'
     ].join('\n');
@@ -7261,7 +7261,7 @@ function reciteBodyHTML(cfg) {
     st.textContent = [
       '#ph-top-wrap { align-items:flex-start; }',
       '#ph-top-left > .intro { margin:0 0 6px; }',
-      '.calc-pod { float:right; margin:8px 0 14px 16px; position:relative; z-index:1; }',
+      '.calc-pod { float:right; margin:10px 0 20px 18px; position:relative; z-index:1; }',
       '.calc-pod .ph-podium { justify-content:center; }',
       '@media (max-width:700px) { .calc-pod { float:none; margin:0 0 10px; } }'
     ].join('\n');
