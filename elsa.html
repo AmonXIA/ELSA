@@ -1724,7 +1724,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   }
   function aiPost(cfg, content) {
     const url = aiEndpoint(cfg.url);
-    const body = { model: cfg.model || 'gpt-4o-mini', max_tokens: 500, messages: [{ role: 'user', content: content }] };
+    | 'gpt-4o-mini', max_tokens: 500, messages: [{ role: 'user', content: content }] };|const body = { model: cfg.model || 'gpt-4o-mini', max_tokens: 2000, messages: [{ role: 'user', content: content }] };|| 'gpt-4o-mini', max_tokens: 500, messages: [{ role: 'user', content: content }] };
     return fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
@@ -1742,7 +1742,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
           throw new Error('接口返回 HTTP ' + res.status + '：' + msg + '（请求地址：' + url + '）');
         }
         let t = '';
-        try { t = data.choices[0].message.content; } catch (e) {}
+        try { t = data.choices[0].message.content || data.choices[0].message.reasoning_content || ''; } catch (e) {}
         if (!t) throw new Error('返回内容无法解析：' + raw.slice(0, 200));
         return String(t).trim();
       });
