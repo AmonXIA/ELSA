@@ -2805,7 +2805,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
         { id: 'sx-ls', icon: '📗', title: '历史背诵', sub: '学期·单元', act: "openModule('sx-ls')", goal: true, tint: '#fdf3e3' },
         { id: 'sx-dl', icon: '📘', title: '地理背诵', sub: '学期·章节', act: "openModule('sx-dl')", goal: true, tint: '#e6f6f4' },
         { id: 'sx-sw', icon: '🧬', title: '生物背诵', sub: '学期·单元', act: "openModule('sx-sw')", goal: true, tint: '#eaf7ec' },
-        { id: 'sx-oral', icon: '🗣️', title: '英语口语', sub: '朗读', act: "openModule('sx-oral')", goal: true, tint: '#eaf0fd' },
+        { id: 'sx-oral', icon: '🗣️', title: '英语词组', sub: '中英互测', act: "openModule('sx-oral')", goal: true, tint: '#eaf0fd' },
         { id: 'sx-chin', icon: '📜', title: '语文', sub: '知识点·古文', act: "openModule('sx-chin')", goal: true, tint: '#eef7ea' }
       ],
       colors: { read: '#4f9cf7', sport: '#43b96a', 'sx-math': '#7c6cf0', 'sx-calc': '#3d7fd0', 'sx-eng': '#f0736c', 'sx-df': '#e0679a', 'sx-ls': '#cf9a2e', 'sx-dl': '#2fa3a0', 'sx-sw': '#5aa86b', 'sx-oral': '#4aa3c9', 'sx-chin': '#7ba05b' }
@@ -2828,7 +2828,103 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
         '<div class="ms">' + escapeHtml(m.sub) + '</div></button>';
     }).join('');
   }
+  /* ===== 英语词组「中英互测」模块 ===== */
+  let phUnit = '1', phMode = 'zh-en';
+  function phUnits() { return Object.keys(ORAL_UNITS); }
+  function phSetUnit(u) { phUnit = u; refreshGeneric(); }
+  function phSetMode(m) { phMode = m; refreshGeneric(); }
+  function phItems() {
+    const list = (ORAL_UNITS[phUnit] || []).map(function (x) {
+      return { zh: x[0], en: x[1], q: phMode === 'zh-en' ? x[0] : x[1], ans: phMode === 'zh-en' ? x[1] : x[0] };
+    });
+    return shuffle(list.slice()).slice(0, 12);
+  }
+  function phraseBodyHTML(cfg) {
+    const items = curGeneric.items || [];
+    const tid = cfg.id + '|' + phUnit + '|' + phMode;
+    regGeneric(tid, '英语词组 Unit ' + phUnit + (phMode === 'zh-en' ? '（中→英）' : '（英→中）'),
+      items.map(function (it) { return { q: it.q, a: it.ans }; }));
+    let html = '<div class="grade-bar recite-bar">' + phUnits().map(function (u) {
+      return '<button class="' + (u === phUnit ? 'active' : '') + '" onclick="phSetUnit(\'' + u + '\')">Unit ' + u + '</button>';
+    }).join('') + '</div>';
+    html += '<div class="grade-bar recite-bar units">'
+      + '<button class="' + (phMode === 'zh-en' ? 'active' : '') + '" onclick="phSetMode(\'zh-en\')">中 → 英（写英文）</button>'
+      + '<button class="' + (phMode === 'en-zh' ? 'active' : '') + '" onclick="phSetMode(\'en-zh\')">英 → 中（写中文）</button></div>';
+    html += '<p class="recite-count">本单元共 ' + ((ORAL_UNITS[phUnit] || []).length) + ' 个词组，本次抽 ' + items.length + ' 个　·　点「换一批」换一组</p>';
+    html += '<div class="mod-body text onecol">';
+    items.forEach(function (it, i) {
+      html += '<div class="calc-item" data-gi="' + i + '"><div class="calc-main">'
+        + '<div class="q">' + (i + 1) + '、' + escapeHtml(it.q) + '</div>'
+        + '<div class="a-row"><input class="ans-input g-input ph-input" data-i="' + i + '" type="text" placeholder="✏️ ' + (phMode === 'zh-en' ? '写英文短语' : '写中文意思') + '" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><span class="mark"></span></div>'
+        + '<button class="add-wrong" data-type="' + tid + '" data-i="' + i + '">＋错题本</button>'
+        + '<div class="reveal">参考答案：' + escapeHtml(it.ans) + '</div></div></div>';
+    });
+    html += '</div>';
+    return html;
+  }
   // 按时间动态问候（夜里提醒睡觉）
+  /* ===== 英语词组（按单元，中英互测）[中文, 英文] ===== */
+  var ORAL_UNITS = {
+    '1': [
+      ['这是我！', 'This is me!'],
+      ['我的英文名/中文名', 'my English/Chinese name'],
+      ['和我打招呼', 'greet me'],
+      ['介绍彼此', 'introduce each other'],
+      ['叫我西蒙', 'call me Simon'],
+      ['被称为', 'go by'],
+      ['早上好/下午好/晚上好', 'good morning/afternoon/evening'],
+      ['见到你很高兴！', 'Nice/Glad to meet you!'],
+      ['你在哪个班级/年级？', 'Which class/grade are you in?'],
+      ['你呢？', 'And you?/What about you?'],
+      ['在同一个班级', 'in the same class'],
+      ['有一些爱好', 'have some hobbies'],
+      ['弹钢琴', 'play the piano'],
+      ['欢迎来到七(1)班！', 'Welcome to Class 1, Grade 7!'],
+      ['阳光中学的一名新学生', 'a new student at Sunshine Middle School'],
+      ['十二岁', '12 years old'],
+      ['喜爱阅读', 'love/enjoy reading'],
+      ['一个八岁的女孩', 'an 8-year-old girl'],
+      ['对别人友好', 'be friendly/nice/kind to others'],
+      ['这儿是我的新同学们。', 'Here are my new classmates.'],
+      ['充满活力', 'be full of energy'],
+      ['擅长运动', 'be good at sport'],
+      ['擅长踢足球', 'be good at playing football'],
+      ['放学后', 'after school'],
+      ['又高又苗条', 'tall and slim'],
+      ['留着长发', 'have long hair'],
+      ['一个留着长发的女孩', 'a girl with long hair'],
+      ['戴眼镜', 'wear glasses'],
+      ['戴着眼镜的那个男孩', 'the boy with/wearing glasses'],
+      ['聪明且有礼貌', 'smart and polite'],
+      ['愿意帮助别人', 'be ready to help others'],
+      ['对科学感兴趣', 'be interested in science'],
+      ['对跳舞感兴趣', 'be interested in dancing'],
+      ['乐于助人的', 'be helpful'],
+      ['对彼此友好', 'be friendly to each other'],
+      ['说“请”和“谢谢”', 'say "please" and "thank you"'],
+      ['他们两人都喜爱运动。', 'They both love sport./Both of them love sport.'],
+      ['那儿的那个女孩', 'the girl over there'],
+      ['有可爱的眼睛', 'have lovely/cute eyes'],
+      ['腼腆又文静', 'shy and quiet'],
+      ['小巧可爱', 'small and cute'],
+      ['擅长游泳', 'be good at swimming'],
+      ['看起来标志', 'look pretty'],
+      ['上舞蹈课', 'have dance classes'],
+      ['帮助我保持健康', 'help me stay/keep healthy'],
+      ['有一场和二班的足球赛', 'have a football match with Class 2'],
+      ['祝你好运！', 'Good luck!'],
+      ['和我爸爸打乒乓球', 'play ping-pong with my father'],
+      ['喜爱下国际象棋', 'enjoy/love playing chess'],
+      ['我最喜爱的科目', 'my favourite subject(s)'],
+      ['帮助我的同学解决数学难题', 'help my classmates with Maths problems'],
+      ['在周末', 'at the weekend'],
+      ['它们很有趣。', 'They are fun/interesting.'],
+      ['玩得开心', 'have fun/have a good time'],
+      ['和他们交朋友', 'make friends with them'],
+      ['成为我的朋友', 'be my friend(s)'],
+      ['喜爱计算机科学', 'love Computer Science']
+    ]
+  };
   function greetWord(h) {
     const t = (h === undefined || h === null) ? new Date().getHours() : h;
     if (t >= 5 && t < 9) return '早上好';
@@ -6085,7 +6181,7 @@ function reciteBodyHTML(cfg) {
     'sx-ls': { id: 'sx-ls', name: '历史背诵', title: '📗 历史（按学期 · 单元）', kind: 'recite', bank: 'ls', tip: '按学期和单元整理，每个单元一组；先自己回想，再点开对照。' },
     'sx-dl': { id: 'sx-dl', name: '地理背诵', title: '📘 地理（按学期 · 章节）', kind: 'recite', bank: 'dl', tip: '按学期和章节整理，每章一组；先自己回想，再点开对照。' },
     'sx-sw': { id: 'sx-sw', name: '生物背诵', title: '🧬 生物（按学期 · 单元）', kind: 'recite', bank: 'sw', tip: '按学期和单元整理，每个单元一组；先自己回想，再点开对照。' },
-    'sx-oral': { id: 'sx-oral', name: '英语口语', title: '🗣️ 英语口语练习', kind: 'oral', gen: genShawnOral, tip: '大声朗读每一句，读完点「完成朗读」。' },
+    'sx-oral': { id: 'sx-oral', name: '英语词组', title: '🗣️ 英语词组（Unit 1-8 · 中英互测）', kind: 'phrase', gen: phItems, tip: '先选单元与方向：中→英 写英文短语，英→中 写中文意思，写完点「批改本组」。' },
     'sx-chin': { id: 'sx-chin', name: '语文', title: '📜 语文 · 知识点与古文词义', kind: 'flash', gen: genChinGraded, tip: '先自己回想答案，再点开对照（题干均取自课本原文）；背完点「完成背诵」。' }
   };
  let curGeneric = null;
@@ -6115,7 +6211,7 @@ function reciteBodyHTML(cfg) {
     const tb = document.getElementById('module-toolbar');
     const cfg = curGeneric.cfg;
     let html = '';
-    if (cfg.kind === 'practice' || cfg.kind === 'mcq') {
+    if (cfg.kind === 'practice' || cfg.kind === 'mcq' || cfg.kind === 'phrase') {
       html += '<button class="primary" onclick="gradeGeneric()">✔ 批改本组</button> <span class="score" id="generic-score">— / 10</span> ';
     }
     if (cfg.kind === 'flash') {
@@ -6145,7 +6241,9 @@ function reciteBodyHTML(cfg) {
     const cfg = curGeneric.cfg, items = curGeneric.items;
     const mid = cfg.id;
     let html = '<p class="intro">' + escapeHtml(cfg.tip) + '</p>';
-    if (cfg.kind === 'shawnmath') {
+    if (cfg.kind === 'phrase') {
+      html += phraseBodyHTML(cfg);
+    } else if (cfg.kind === 'shawnmath') {
       html += buildShawnSections(SHAWN_TYPES, 'sm');
     } else if (cfg.kind === 'shawncalc') {
       html += buildShawnSections(SHAWN_CALC, 'sc');
@@ -6313,7 +6411,9 @@ function reciteBodyHTML(cfg) {
       if (cfg.kind === 'mcq') {
         const sel = document.querySelector('.mc .mc-opt.sel[data-i="' + i + '"]');
         ok = sel ? (sel.textContent === it.ans) : false;
-      } else if (cfg.kind === 'eng') {
+      } else if (cfg.kind === 'phrase') {
+        const pin = document.querySelector('.ph-input[data-i="' + i + '"]');
+        ok = pin ? gradeText(pin.value, it.ans) : false;      } else if (cfg.kind === 'eng') {
         if (it.options) {
           const sel = document.querySelector('.mc .mc-opt.sel[data-i="' + i + '"]');
           ok = sel ? gradeText(sel.textContent, it.ans) : false;
