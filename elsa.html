@@ -2841,6 +2841,60 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     }).join('');
   }
   /* ===== 英语词组「中英互测」模块 ===== */
+  // ===== 词组计分：每题 5 分、满分 100；记录每次成绩，进步给奖励 =====
+  var PH_HIST_KEY = 'ph_hist_v1';
+  function phHist() { try { return JSON.parse(lsGet(PH_HIST_KEY) || '[]') || []; } catch (e) { return []; } }
+  function phKeyOf() { return 'U' + phUnit + '-' + phMode; }
+  function phStatOf() {
+    const list = phHist().filter(function (x) { return x.k === phKeyOf(); });
+    if (!list.length) return { last: null, best: null, n: 0 };
+    return {
+      last: list[list.length - 1].s,
+      best: Math.max.apply(null, list.map(function (x) { return x.s; })),
+      n: list.length
+    };
+  }
+  function phStatLine() {
+    let el = document.getElementById('ph-stat');
+    if (el) return el;
+    el = document.createElement('p');
+    el.className = 'recite-count';
+    el.id = 'ph-stat';
+    const bar = document.querySelector('#page-module .recite-bar.units');
+    if (bar && bar.parentNode) bar.parentNode.insertBefore(el, bar.nextSibling);
+    return el;
+  }
+  function phRefreshStat() {
+    const st = phStatOf();
+    const el = document.getElementById('ph-stat');
+    if (!el) return;
+    if (st.last === null) { el.textContent = '本题组还没有成绩记录，批改后就会记录在这里'; return; }
+    el.textContent = '上次 ' + st.last + ' 分　·　最好 ' + st.best + ' 分　·　共练 ' + st.n + ' 次';
+  }
+  function phAfterGrading(correct, total) {
+    const score = Math.round(correct * 5);
+    const before = phStatOf();
+    let list = phHist();
+    list.push({ k: phKeyOf(), s: score, t: Date.now() });
+    if (list.length > 300) list = list.slice(-300);
+    try { localStorage.setItem(pk(PH_HIST_KEY), JSON.stringify(list)); } catch (e) {}
+    if (typeof cfg !== 'undefined' && cfg && cfg.kind === 'phrase') { phAfterGrading(correct, total); return; }
+    const sc = document.getElementById('generic-score');
+    if (sc) sc.textContent = '本次 ' + score + ' / 100（答对 ' + correct + '/' + total + '，每题 5 分）';
+    phStatLine();
+    phRefreshStat();
+    if (before.last !== null && score > before.last) {
+      const gain = score - before.last;
+      completeModule(curGeneric.cfg.id, curGeneric.cfg.name, 5, '比上次提高 ' + gain + ' 分');
+      toast('👏 比上次提高 ' + gain + ' 分，奖励 +5⭐');
+    } else if (before.best !== null && score > before.best) {
+      toast('🎉 刷新最好成绩：' + score + ' 分！');
+    } else if (before.last !== null && score < before.last) {
+      toast('这次 ' + score + ' 分，比上次低 ' + (before.last - score) + ' 分，再来一次会更好');
+    } else {
+      toast('本次 ' + score + ' 分，已记录');
+    }
+  }
   let phUnit = '1', phMode = 'zh-en';
   function phUnits() { return Object.keys(ORAL_UNITS); }
   function phSetUnit(u) { phUnit = u; refreshGeneric(); }
@@ -6514,6 +6568,7 @@ function reciteBodyHTML(cfg) {
         }
       }
     });
+    if (typeof cfg !== 'undefined' && cfg && cfg.kind === 'phrase') { phAfterGrading(correct, total); return; }
     const sc = document.getElementById('generic-score');
     if (sc) sc.textContent = correct + ' / ' + total;
     const ab = accBonus(total > 0 ? correct / total : 0);
