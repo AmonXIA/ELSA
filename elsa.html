@@ -1742,7 +1742,11 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
           throw new Error('接口返回 HTTP ' + res.status + '：' + msg + '（请求地址：' + url + '）');
         }
         let t = '';
-        try { t = data.choices[0].message.content || data.choices[0].message.reasoning_content || ''; } catch (e) {}
+        try {
+          const msg = data.choices[0].message || {};
+          t = msg.content || '';
+          if (!t && msg.reasoning_content) t = String(msg.reasoning_content).replace(/[ã€‚ï¼ï¼Ÿ!?]\s*$/, '').slice(-220);
+        } catch (e) {}
         if (!t) throw new Error('返回内容无法解析：' + raw.slice(0, 200));
         return String(t).trim();
       });
@@ -1787,7 +1791,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       { type: 'text', text: prompt },
       { type: 'image_url', image_url: { url: img } }
     ]).then(function (t) {
-      out.textContent = '🤖 ' + t;
+      out.textContent = '🤖 ' + aiTidy(t);
     }).catch(function (e) {
       out.textContent = '🤖 出错：' + (e && e.message ? e.message : e) + (/image|vision|content|400|model|multimodal/i.test(String(e && e.message)) ? '　👉 多半是这个模型不支持图片：请在 ⚙️ 里换成支持视觉的模型（如 gpt-4o-mini、qwen-vl-max、glm-4v、doubao-vision）。' : '');
     }).then(function () { btn.disabled = false; if (done) done(); });
@@ -7052,6 +7056,22 @@ function reciteBodyHTML(cfg) {
     setInterval(function () { syncPush(false).catch(function () {}); }, 30000);
     window.addEventListener('pagehide', function () { try { syncPush(true); } catch (e) {} });
     document.addEventListener('visibilitychange', function () { if (document.hidden) { try { syncPush(true); } catch (e) {} } });
+  }
+  // 只保留“哪一步错了”的结论，丢掉模型的思考过程
+  function aiTidy(t) {
+    let x = String(t || '').replace(/\s+/g, ' ').trim();
+    if (!x) return '（模型没有返回结论，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
+    x = x.replace(/^(好的|首先|让我|我们需要|分析|思考[:：]?)/, '').trim();
+    const hits = x.match(/[^。；;.!?]{0,40}(第\s*[0-9一二三四五六七八九十]+\s*步)[^。；;.!?]{0,60}[。；;.!?]?/g);
+    if (hits && hits.length) {
+      x = hits[hits.length - 1].trim();
+    } else if (x.length > 160) {
+      x = x.slice(-160).trim();
+      const cut = x.search(/[。；;.!?]/);
+      if (cut > 0) x = x.slice(0, cut + 1);
+    }
+    if (x.length > 200) x = x.slice(0, 200) + '…';
+    return x;
   }
   initCalc();
   initThink();
