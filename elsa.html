@@ -819,6 +819,9 @@ body.theme-shawn .mod-toolbar .st-mode.active { background: #dbe9fb; border-colo
   cursor: pointer;
 }
 .ai-draft:disabled { opacity: .6; }
+/* è‹±è¯­/è¯ç»„ç­”é¢˜æ¡†åŠ é•¿ï¼Œæ–¹ä¾¿è¾“å…¥æ•´å¥ */
+.mod-body .g-input, .mod-body .ph-input { width: 100%; max-width: 620px; text-align: left; }
+.onecol .g-input, .onecol .ph-input { max-width: none; }
 .ai-result {
   margin-top: 8px;
   padding: 10px 12px;
@@ -1928,7 +1931,16 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     }
     return '<span class="exp ai-ok">✅ 你的每一步都验算通过了，步骤没有问题。</span>';
   }
-  function openWrongBook() { document.getElementById('wb-modal').classList.add('show'); renderWrongBook(); }
+  // è‹±æ–‡/ä¸­æ–‡ç­”æ¡ˆæ”¯æŒâ€œä¸€å¯¹å¤šâ€ï¼šç”¨ / ; ã€ æˆ– or åˆ†éš”çš„ä»»ä¸€å†™æ³•éƒ½ç®—å¯¹ï¼ˆè¦†ç›–ä¸Šé¢çš„åŒåå‡½æ•°ï¼‰
+  function gradeText(input, ans) {
+    const norm = function (x) { return String(x).toLowerCase().replace(/[\s'-.,!?;:]/g, ''); };
+    const b = norm(input).replace(/[\u3000-\u303f\uff00-\uffef]/g, '');
+    if (!b) return false;
+    const variants = String(ans).split(/[\/;ã€]|\bor\b/i).map(function (x) { return norm(x).replace(/[\u3000-\u303f\uff00-\uffef]/g, ''); }).filter(function (x) { return x !== ''; });
+    if (!variants.length) return false;
+    if (variants.length === 1) return variants[0] === b;
+    return variants.some(function (v) { return v === b; });
+  }  function openWrongBook() { document.getElementById('wb-modal').classList.add('show'); renderWrongBook(); }
   function closeWrongBook() { document.getElementById('wb-modal').classList.remove('show'); }
   function renderWrongBook() {
     const list = document.getElementById('wb-list');
@@ -2837,7 +2849,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     const list = (ORAL_UNITS[phUnit] || []).map(function (x) {
       return { zh: x[0], en: x[1], q: phMode === 'zh-en' ? x[0] : x[1], ans: phMode === 'zh-en' ? x[1] : x[0] };
     });
-    return shuffle(list.slice()).slice(0, 12);
+    return shuffle(list.slice()).slice(0, 20);
   }
   function phraseBodyHTML(cfg) {
     const items = curGeneric.items || [];
@@ -2872,8 +2884,8 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['介绍彼此', 'introduce each other'],
       ['叫我西蒙', 'call me Simon'],
       ['被称为', 'go by'],
-      ['早上好/下午好/晚上好', 'good morning/afternoon/evening'],
-      ['见到你很高兴！', 'Nice/Glad to meet you!'],
+      ['早上好/下午好/晚上好', 'good morning / good afternoon / good evening'],
+      ['见到你很高兴！', 'Nice to meet you! / Glad to meet you!'],
       ['你在哪个班级/年级？', 'Which class/grade are you in?'],
       ['你呢？', 'And you?/What about you?'],
       ['在同一个班级', 'in the same class'],
@@ -2882,9 +2894,9 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['欢迎来到七(1)班！', 'Welcome to Class 1, Grade 7!'],
       ['阳光中学的一名新学生', 'a new student at Sunshine Middle School'],
       ['十二岁', '12 years old'],
-      ['喜爱阅读', 'love/enjoy reading'],
+      ['喜爱阅读', 'love reading / enjoy reading'],
       ['一个八岁的女孩', 'an 8-year-old girl'],
-      ['对别人友好', 'be friendly/nice/kind to others'],
+      ['对别人友好', 'be friendly to others / be nice to others / be kind to others'],
       ['这儿是我的新同学们。', 'Here are my new classmates.'],
       ['充满活力', 'be full of energy'],
       ['擅长运动', 'be good at sport'],
@@ -6456,7 +6468,20 @@ function reciteBodyHTML(cfg) {
     completeModule(curGeneric.cfg.id, curGeneric.cfg.name, 0, '');
   }
 
-  initCalc();
+  // è‹±æ–‡/ä¸­æ–‡ç­”æ¡ˆâ€œä¸€å¯¹å¤šâ€ï¼šç”¨ / ; ã€æˆ– or åˆ†éš”çš„ä»»æ„ä¸€ç§å†™æ³•éƒ½ç®—å¯¹ï¼ˆæ”¾åœ¨æœ«å°¾ä»¥ç¡®ä¿è¦†ç›–å‰é¢çš„å®šä¹‰ï¼‰
+  gradeText = function (input, ans) {
+    const norm = function (x) {
+      return String(x).toLowerCase()
+        .replace(/[\u3000-\u303f\uff00-\uffef]/g, '')
+        .replace(/[\s'â€™\-.,!?;:]/g, '');
+    };
+    const b = norm(input);
+    if (!b) return false;
+    const variants = String(ans).split(/[\/;ã€]|\bor\b/i).map(norm).filter(function (x) { return x !== ''; });
+    if (!variants.length) return false;
+    if (variants.length === 1) return variants[0] === b;
+    return variants.some(function (v) { return v === b; });
+  };  initCalc();
   initThink();
   applyProfile();
   updatePointsUI();
