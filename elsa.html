@@ -1721,7 +1721,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   }
   function aiPost(cfg, content) {
     const url = aiEndpoint(cfg.url);
-    const body = { model: cfg.model || 'gpt-4o-mini', max_tokens: 2000, messages: [{ role: 'user', content: content }] };
+    const body = { model: cfg.model || 'gpt-4o-mini', max_tokens: 3000, messages: [{ role: 'user', content: content }] };
     return fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
@@ -7520,6 +7520,28 @@ function reciteBodyHTML(cfg) {
     x = x.replace(/\n{3,}/g, '\n\n');
     if (x.length > 320) x = x.slice(0, 320) + '…';
     return x;
+  }
+  // 过滤推理模型漏出的“自言自语/提示词回声”，只保留结论与正确过程
+  function aiTidy(t) {
+    let x = String(t || '').replace(/[ \t]+/g, ' ').trim();
+    if (!x) return '（模型没有返回内容，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
+    const meta = /(用户|让我|我们|检查|期望|不影响|不需要|可以指出|不是主要|最终输出|可以分点|Markdown|客套|首先|接下来|也就是说|这说明|可能可以|那就|所以最终)/;
+    const latex = /(\\frac|\\\(|\\\)|\\times|"role"|"content")/;
+    const segs = x.split(/[\n。；;]/).map(function (s) { return s.trim(); })
+      .filter(function (s) { return s && !meta.test(s) && !latex.test(s); });
+    var err = segs.filter(function (s) { return /第\s*[0-9一二三四五六七八九十]+\s*[行步]/.test(s) && /(应|正确|错)/.test(s); });
+    var proc = x.match(/正确过程[：:]([\s\S]{0,220})/);
+    var out = [];
+    if (err.length) out.push(err.slice(-2).join('；'));
+    else {
+      var tail = segs.filter(function (s) { return /(=|＝|应为|答案)/.test(s); });
+      if (tail.length) out.push(tail.slice(-2).join('；'));
+    }
+    if (proc) out.push('正确过程：' + proc[1].replace(/[\n]+/g, ' ').trim());
+    var res = out.join('\n').trim();
+    if (!res) res = segs.slice(-2).join('；') || x.slice(-160);
+    if (res.length > 320) res = res.slice(0, 320) + '…';
+    return res;
   }
   initCalc();
   initThink();
