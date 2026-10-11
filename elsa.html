@@ -770,7 +770,7 @@
   height: 62px; box-sizing: border-box; display: block;
   border: 1px dashed #e3d0e2; border-radius: 10px;
   background: #fffdfe;
-  touch-action: pan-y; cursor: crosshair;
+  touch-action: none; cursor: crosshair;
   -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
 }
 /* 草稿区工具：画笔 / 橡皮擦 / 清空 */
@@ -2624,7 +2624,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     cv.addEventListener('lostpointercapture', function () { drawing = false; cv._drawing = false; });
     // 阻断平板浏览器的手势（滚动 / 双指缩放 / 长按菜单）：写草稿时页面不做任何别的反应
     ['touchstart', 'touchmove', 'touchend', 'touchcancel'].forEach(function (t) {
-      cv.addEventListener(t, function (e) { e.stopPropagation(); }, { passive: true });
+      cv.addEventListener(t, function (e) { e.preventDefault(); e.stopPropagation(); }, { passive: false });
     });
     cv.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     cv.addEventListener('gesturestart', function (e) { e.preventDefault(); });
