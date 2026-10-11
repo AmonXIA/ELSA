@@ -2882,6 +2882,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     const sc = document.getElementById('generic-score');
     if (sc) sc.textContent = '本次 ' + score + ' / 100（答对 ' + correct + '/' + total + '，每题 5 分）';
     phStatLine();
+    phRenderPodium();
     phRefreshStat();
     if (before.last !== null && score > before.last) {
       const gain = score - before.last;
@@ -2894,6 +2895,71 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     } else {
       toast('本次 ' + score + ' 分，已记录');
     }
+  }
+  // ===== 冠亚季军奖台：列出本题组（单元+方向）成绩最好的三次及时间 =====
+  (function () {
+    if (document.getElementById('ph-podium-css')) return;
+    var st = document.createElement('style');
+    st.id = 'ph-podium-css';
+    st.textContent = [
+      '#ph-top-wrap { display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap; margin:6px 0 10px; }',
+      '#ph-top-left { flex:1 1 320px; min-width:260px; }',
+      '#ph-top-right { flex:0 0 auto; min-width:232px; background:#fff; border:1px solid #e3edf7; border-radius:16px; padding:10px 12px 12px; box-shadow:0 2px 10px rgba(58,110,165,.06); }',
+      '.ph-pod-title { font-size:13px; color:#3a6ea5; font-weight:700; margin-bottom:8px; }',
+      '.ph-podium { display:flex; align-items:flex-end; gap:8px; justify-content:center; }',
+      '.ph-pod-col { width:70px; text-align:center; border-radius:12px 12px 0 0; padding:6px 4px 8px; color:#fff; box-shadow:0 2px 8px rgba(95,75,82,.14); }',
+      '.ph-pod-col.gold { background:linear-gradient(180deg,#f7cf6b,#dfa423); height:106px; }',
+      '.ph-pod-col.silver { background:linear-gradient(180deg,#e2e6ea,#b6bec7); height:88px; }',
+      '.ph-pod-col.bronze { background:linear-gradient(180deg,#e8bd92,#c8874d); height:76px; }',
+      '.ph-pod-medal { font-size:20px; line-height:1.1; }',
+      '.ph-pod-score { font-size:19px; font-weight:800; line-height:1.25; }',
+      '.ph-pod-time { font-size:10px; opacity:.96; line-height:1.35; }',
+      '.ph-pod-base { font-size:10px; opacity:.9; margin-top:2px; }',
+      '.ph-pod-empty { color:#8aa0b5; font-size:13px; text-align:center; padding:16px 8px; border:1px dashed #dbe7f3; border-radius:12px; line-height:1.7; }',
+      '@media (max-width:700px) { #ph-top-right { min-width:0; width:100%; } .ph-pod-col { width:64px; } }'
+    ].join('\n');
+    document.head.appendChild(st);
+  })();
+  function phPodiumHTML() {
+    const list = phHist().filter(function (x) { return x.k === phKeyOf(); });
+    if (!list.length) return '<div class="ph-pod-title">🏆 前三名成绩</div><div class="ph-pod-empty">还没有成绩记录<br>批改一次就会出现在这里</div>';
+    const sorted = list.slice().sort(function (a, b) { return b.s - a.s || a.t - b.t; });
+    const top = sorted.slice(0, 3);
+    const cls = ['gold', 'silver', 'bronze'];
+    const medal = ['🥇', '🥈', '🥉'];
+    const rank = ['第1名', '第2名', '第3名'];
+    let cols = '';
+    top.forEach(function (x, i) {
+      const d = new Date(x.t);
+      const time = (d.getMonth() + 1) + '月' + d.getDate() + '日<br>' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+      cols += '<div class="ph-pod-col ' + cls[i] + '"><div class="ph-pod-medal">' + medal[i] + '</div><div class="ph-pod-score">' + x.s + '</div><div class="ph-pod-time">' + time + '</div><div class="ph-pod-base">' + rank[i] + '</div></div>';
+    });
+    return '<div class="ph-pod-title">🏆 前三名成绩（本单元 · 本方向）</div><div class="ph-podium">' + cols + '</div>';
+  }
+  function phRenderPodium() {
+    const un = document.querySelector('#page-module .recite-bar.units');
+    if (!un) return;
+    let host = document.getElementById('ph-top-wrap');
+    if (!host || !host.contains(un)) {
+      const old = document.getElementById('ph-top-wrap');
+      if (old) old.parentNode.removeChild(old);
+      host = document.createElement('div');
+      host.id = 'ph-top-wrap';
+      un.parentNode.insertBefore(host, un);
+      const left = document.createElement('div');
+      left.id = 'ph-top-left';
+      host.appendChild(left);
+      left.appendChild(un);
+      const stat = phStatLine();
+      if (stat) left.appendChild(stat);
+      const cnt = document.querySelector('#page-module .recite-count:not(#ph-stat)');
+      if (cnt) left.appendChild(cnt);
+      const right = document.createElement('div');
+      right.id = 'ph-top-right';
+      host.appendChild(right);
+    }
+    document.getElementById('ph-top-right').innerHTML = phPodiumHTML();
+    phRefreshStat();
   }
   let phUnit = '1', phMode = 'zh-en';
   function phUnits() { return Object.keys(ORAL_UNITS); }
@@ -6431,6 +6497,7 @@ function reciteBodyHTML(cfg) {
     let html = '<p class="intro">' + escapeHtml(cfg.tip) + '</p>';
     if (cfg.kind === 'phrase') {
       html += phraseBodyHTML(cfg);
+      setTimeout(phRenderPodium, 0);
     } else if (cfg.kind === 'shawnmath') {
       html += buildShawnSections(SHAWN_TYPES, 'sm');
     } else if (cfg.kind === 'shawncalc') {
