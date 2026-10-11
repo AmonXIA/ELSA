@@ -3348,7 +3348,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     setText('brand-text', p.brand);
     setText('greet-sub', p.sub);
     setText('child-name', childName());
-    setText('foot-text', p.foot);
+    setText('foot-text', p.foot + 'ã€€Â·ã€€ç‰ˆæœ¬ ' + BUILD_TAG);
     document.querySelectorAll('.p-switch button').forEach(function (b) {
       b.classList.toggle('active', b.getAttribute('data-p') === PROFILE_ID);
     });
@@ -7142,6 +7142,9 @@ function reciteBodyHTML(cfg) {
     if (x.length > 460) x = x.slice(0, 460) + '…';
     return x;
   }
+  // 构建版本号：显示在页脚，方便确认是否刷新到最新版
+  var BUILD_TAG = '2026-10-11 晚';
+  window.__BUILD_TAG = BUILD_TAG;
   initCalc();
   initThink();
   applyProfile();
