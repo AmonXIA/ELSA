@@ -1639,12 +1639,31 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       + '<label class="ai-field">接口地址<input id="ai-url" type="text" placeholder="https://api.openai.com/v1/chat/completions"></label>'
       + '<label class="ai-field">模型名称<input id="ai-model" type="text" placeholder="gpt-4o-mini"></label>'
       + '<label class="ai-field">API Key<input id="ai-key" type="password" placeholder="sk-..."></label>'
+      + '<p class="intro" style="margin-top:14px;">äº‘åŒæ­¥ï¼ˆSupabaseï¼Œå¯é€‰ï¼‰ï¼šå¡«ä¸ŠåŽæ¯æ¬¡æ•°æ®å˜åŒ–ä¼šè‡ªåŠ¨å­˜åˆ°ä½ çš„è¡¨é‡Œï¼Œæ¢æµè§ˆå™¨æˆ–é‡æ–°å‘å¸ƒéƒ½ä¸ä¸¢ã€‚</p>'
+      + '<label class="ai-field">Supabase é¡¹ç›®åœ°å€<input id="sb-url" type="text" placeholder="https://xxxx.supabase.co"></label>'
+      + '<label class="ai-field">anon key<input id="sb-key" type="password" placeholder="eyJhbGciOi..."></label>'
+      + '<label class="ai-field">è¡¨å<input id="sb-table" type="text" placeholder="elsa_kv"></label>'
       + '<div class="modal-foot" style="border-top:none;padding:4px 0 0;"><button class="primary" id="ai-save" type="button">保存</button> <button id="ai-test" type="button">测试连接</button></div>'
       + '<div id="ai-test-out" class="ai-result" style="display:none;"></div>'
       + '</div></div>';
     document.body.appendChild(m);
     m.querySelector('.modal-close').addEventListener('click', function () { m.classList.remove('show'); });
     m.addEventListener('click', function (e) { if (e.target === m) m.classList.remove('show'); });
+    const sbFill = function () {
+      const c = sbCfg();
+      const f = function (id, v) { const el = m.querySelector('#' + id); if (el) el.value = v || ''; };
+      f('sb-url', c.url); f('sb-key', c.key); f('sb-table', c.table || 'elsa_kv');
+    };
+    m.querySelector('#ai-save').addEventListener('click', function () {
+      saveSbCfg({
+        url: (m.querySelector('#sb-url') || {}).value || '',
+        key: (m.querySelector('#sb-key') || {}).value || '',
+        table: (m.querySelector('#sb-table') || {}).value || 'elsa_kv'
+      });
+      sbFill();
+      if (sbReady()) { syncPush(true).then(function () { toast('äº‘åŒæ­¥å·²å¼€å¯'); }).catch(function (e) { toast('äº‘åŒæ­¥å¤±è´¥ï¼š' + e.message); }); }
+    });
+    sbFill();
     m.querySelector('#ai-save').addEventListener('click', function () {
       saveAiCfg({
         url: m.querySelector('#ai-url').value.trim(),
@@ -2910,10 +2929,10 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     st.textContent = [
       '#ph-top-wrap { display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap; margin:6px 0 10px; }',
       '#ph-top-left { flex:1 1 320px; min-width:260px; }',
-      '#ph-top-right { flex:0 0 auto; min-width:232px; background:#fff; border:1px solid #e3edf7; border-radius:16px; padding:10px 12px 12px; box-shadow:0 2px 10px rgba(58,110,165,.06); }',
+      '#ph-top-right { flex:0 0 auto; min-width:276px; background:#fff; border:1px solid #e3edf7; border-radius:16px; padding:10px 12px 12px; box-shadow:0 2px 10px rgba(58,110,165,.06); }',
       '.ph-pod-title { font-size:13px; color:#3a6ea5; font-weight:700; margin-bottom:8px; }',
-      '.ph-podium { display:flex; align-items:flex-end; gap:8px; justify-content:center; }',
-      '.ph-pod-col { width:70px; text-align:center; border-radius:12px 12px 0 0; padding:6px 4px 8px; color:#fff; box-shadow:0 2px 8px rgba(95,75,82,.14); }',
+      '.ph-podium { display:flex; flex-wrap:nowrap; align-items:flex-end; gap:8px; justify-content:center; }',
+      '.ph-pod-col { width:64px; flex:0 0 auto; text-align:center; border-radius:12px 12px 0 0; padding:6px 4px 8px; color:#fff; box-shadow:0 2px 8px rgba(95,75,82,.14); }',
       '.ph-pod-col.gold { background:linear-gradient(180deg,#f7cf6b,#dfa423); height:106px; }',
       '.ph-pod-col.silver { background:linear-gradient(180deg,#e2e6ea,#b6bec7); height:88px; }',
       '.ph-pod-col.bronze { background:linear-gradient(180deg,#e8bd92,#c8874d); height:76px; }',
@@ -6638,6 +6657,7 @@ function reciteBodyHTML(cfg) {
     initScratchCanvases();
     updateAddedMarks();
     updateWrongBadge();
+  syncBoot();
   }
   const shawnKeys = {};
   function shawnSectionInner(t, ti, prefix) {
@@ -6891,11 +6911,96 @@ function reciteBodyHTML(cfg) {
   function calRenderAllPodiums() {
     document.querySelectorAll('.calc-pod').forEach(function (b) { calRenderPodium(b.getAttribute('data-pod')); });
   }
+  // ===== Supabase 云同步：本地永远先写，联网时自动补传；换浏览器/重发版本都不丢 =====
+  var SB_CFG_KEY = 'sb_cfg_v1';
+  var SB_TS_KEY = 'sb_ts_v1';
+  var SB_SKIP = { 'math_ai_cfg_v1': 1, 'sb_cfg_v1': 1, 'sb_ts_v1': 1 };
+  var sbDirty = false;
+  function sbCfg() { try { return JSON.parse(localStorage.getItem(SB_CFG_KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function saveSbCfg(c) { try { localStorage.setItem(SB_CFG_KEY, JSON.stringify(c)); } catch (e) {} }
+  function sbReady() { const c = sbCfg(); return !!(c.url && c.key); }
+  function sbBase(u) { return String(u || '').trim().replace(/\/+$/, '').replace(/\/rest\/v1$/, ''); }
+  function sbTable() { return sbCfg().table || 'elsa_kv'; }
+  // 收集属于当前孩子的所有数据（不包含密钥）
+  function syncCollect() {
+    const out = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const full = localStorage.key(i);
+      const suffix = '::' + PROFILE_ID;
+      if (full && full.slice(-suffix.length) === suffix) {
+        const base = full.slice(0, full.length - suffix.length);
+        if (SB_SKIP[base]) continue;
+        out[base] = localStorage.getItem(full);
+      }
+    }
+    return out;
+  }
+  function syncPush(force) {
+    if (!sbReady()) return Promise.resolve(false);
+    const c = sbCfg();
+    const ts = Date.now();
+    const last = +(localStorage.getItem(SB_TS_KEY) || 0);
+    if (!force && !sbDirty && ts - last < 30000) return Promise.resolve(false);
+    const body = JSON.stringify({ profile: PROFILE_ID, data: syncCollect(), ts: ts });
+    return fetch(sbBase(c.url) + '/rest/v1/' + sbTable() + '?on_conflict=profile', {
+      method: 'POST',
+      headers: {
+        'apikey': c.key,
+        'Authorization': 'Bearer ' + c.key,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: body
+    }).then(function (r) {
+      if (r.ok) { try { localStorage.setItem(SB_TS_KEY, String(ts)); } catch (e) {} sbDirty = false; return true; }
+      return r.text().then(function (t) { throw new Error('HTTP ' + r.status + '：' + String(t).slice(0, 120)); });
+    });
+  }
+  function syncPull() {
+    if (!sbReady()) return Promise.resolve(false);
+    const c = sbCfg();
+    const url = sbBase(c.url) + '/rest/v1/' + sbTable() + '?profile=eq.' + encodeURIComponent(PROFILE_ID) + '&select=*';
+    return fetch(url, { headers: { 'apikey': c.key, 'Authorization': 'Bearer ' + c.key } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (rows) {
+        if (!rows || !rows.length) return false;
+        const row = rows[0];
+        const remote = row.data || {};
+        const remoteTs = +(row.ts || 0);
+        const localTs = +(localStorage.getItem(SB_TS_KEY) || 0);
+        if (remoteTs && remoteTs <= localTs) return false;
+        let changed = false;
+        Object.keys(remote).forEach(function (base) {
+          if (SB_SKIP[base]) return;
+          const full = base + '::' + PROFILE_ID;
+          if (localStorage.getItem(full) !== remote[base]) { localStorage.setItem(full, remote[base]); changed = true; }
+        });
+        try { localStorage.setItem(SB_TS_KEY, String(remoteTs)); } catch (e) {}
+        return changed;
+      });
+  }
+  function syncNow() { return syncPush(true).catch(function (e) { toast('云同步失败：' + e.message); return false; }); }
+  function syncBoot() {
+    if (!sbReady()) return;
+    if (sessionStorage.getItem('sb_pulled') !== '1') {
+      sessionStorage.setItem('sb_pulled', '1');
+      syncPull().then(function (changed) {
+        if (changed) location.reload();
+        else syncPush(true).catch(function () {});
+      }).catch(function () {});
+    } else {
+      syncPush(false).catch(function () {});
+    }
+    setInterval(function () { syncPush(false).catch(function () {}); }, 30000);
+    window.addEventListener('pagehide', function () { try { syncPush(true); } catch (e) {} });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) { try { syncPush(true); } catch (e) {} } });
+  }
   initCalc();
   initThink();
   applyProfile();
   updatePointsUI();
   updateWrongBadge();
+  syncBoot();
   showPage('dashboard');
 </script>
 <script id="generated-ui-icons">
