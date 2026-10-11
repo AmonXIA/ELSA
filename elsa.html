@@ -931,6 +931,8 @@ body.fs-full > .wrap {
 .p-switch button.active { background: #f39bbd; border-color: #f39bbd; color: #fff; font-weight: 700; }
 .p-switch button { display: inline-flex; align-items: center; gap: 4px; }
 .p-ico { width: 18px; height: 18px; flex: 0 0 auto; }
+  .hero-ai-btn { display:inline-flex; align-items:center; gap:4px; margin:2px 0 8px; border:1px solid rgba(255,255,255,.65); background:rgba(255,255,255,.22); color:#fff; border-radius:999px; padding:5px 14px; font-size:13px; font-family:inherit; cursor:pointer; }
+  .hero-ai-btn:active { background:rgba(255,255,255,.35); }
   /* banner ä¸Šçš„ AI è®¾ç½®æŒ‰é’® */
 .p-switch button.active .p-ico { filter: drop-shadow(0 0 1px #fff); }
 @media (min-width: 768px) { .p-switch button { font-size: 14px; padding: 6px 16px; } }
@@ -1068,6 +1070,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       <button type="button" data-p="shawn" onclick="switchProfile('shawn')"><img class="p-ico" alt="Shawn" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNiAzNiI+PHBhdGggZmlsbD0iI0ZGQUMzMyIgZD0iTTExLjk4MyAzLjU2MmM0LjU0My0uMjYyIDcuODI0IDEuNTk3IDguMDg5IDYuODI2LjIxNSA0LjE5LTUuMTg0IDYuNzktOC4wNDYgNi44NzktMi40NjIuMDc3LTEuMzUzLTEuODUyLjYxLTIuMzM0IDEuNTc2LS4zODcgNC4xMjQtMi40MTMgMy42MDItNC40NC0uNTk3LTIuMzItNC4zMTUtMi42ODQtNi4zNTEuMjkyLS43OTggMS4xNjctMy41NTQuODczLTQuMDk2LS40MzQtLjk1OC0yLjMwOSAxLjIxMS02LjUwMiA2LjE5Mi02Ljc4OXoiLz48cGF0aCBmaWxsPSIjRTFFOEVEIiBkPSJNMzUuNzUgMjEuMzg0YzAtNy43ODMtNC40OTUtMTEuNDA3LTE0LjUxOS0xMS40MDctMS4wODcgMC0yLjA4My4wNTEtMy4wMTguMTM3LTEuMzYtMi40MjMtNC44NDUtMi44MjgtOC4yMTMtMi44MjgtNC4zMDQgMC0xMCA2LjE0NS0xMCAxMC44MzkgMCA0LjYwOCAzLjYwNiA0Ljg2NiA3LjgxMSA0Ljg3NC4yMzMgMy4yNDUgMS4yMjYgNS42NDcgMy4yNDkgNy4yNkMxMS4zMzcgMzEuNDA5IDEyLjU5NCAzNiAxNSAzNmMxLjM1MyAwIDIuMDk5LTEuNjk1IDIuNTEtMy40MTcgMS4xMjguMTM2IDIuMzU5LjIwOSAzLjcyMi4yMDkgMS43MzMgMCAzLjI4OC0uMTE2IDQuNjk1LS4zMzVDMjYuMDE3IDM0LjExNCAyNi40NTggMzYgMjggMzZjMi4zMTcgMCA0LjI3My00Ljk1NiA0LjgzNC02LjUyMSAxLjk2OS0xLjg3IDIuOTE2LTQuNTQ1IDIuOTE2LTguMDk1eiIvPjxjaXJjbGUgZmlsbD0iIzI5MkYzMyIgY3g9IjQuNSIgY3k9IjE1Ljc4NiIgcj0iMS41Ii8+PHBhdGggZmlsbD0iI0ZGQ0M0RCIgZD0iTTE3LjU2MiA0LjMzOWM0LjMxMiAxLjQ1NSA1Ljc0IDQuMTQ4IDQuMDM0IDkuMDk5LTEuMzY3IDMuOTY3LTcuMzQ1IDQuMzYxLTEwLjAzNCAzLjM3NUM5LjI1IDE1Ljk2NCAxMSAxNC41ODkgMTMgMTQuODc1YzEuNjA2LjIzIDQuNzI3LS42OTggNS0yLjc3M0MxOC4zMTIgOS43MjcgMTUgOCAxMiAxMGMtMS4xNzcuNzg1LTUuNzc0LjQzLTUuNS0uOTU4LjYzOC0zLjIyNiA2LjMzNS02LjI5OCAxMS4wNjItNC43MDN6Ii8+PC9zdmc+"> Shawn</button>
     </span>
   </div>
+  <button type="button" class="hero-ai-btn" onclick="openAiSettings()">⚙️ AI 批改设置</button>
   <div class="hero-top">
     <div class="greet">
       <h1><span id="greet-hi">下午好</span>，<span id="child-name" onclick="setName()">小朋友</span> 👋</h1>
@@ -2724,7 +2727,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             const ta = card.querySelector('.step-input');
-            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card);
+            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card) + ' <button type="button" class="ai-draft">&#128269; AI批改这题</button>';
           }
         }
       }
@@ -4486,7 +4489,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             const ta = card.querySelector('.step-input');
-            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card);
+            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card) + ' <button type="button" class="ai-draft">&#128269; AI批改这题</button>';
           }
         }
       }
@@ -7167,7 +7170,7 @@ function reciteBodyHTML(cfg) {
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             const ta = card.querySelector('.step-input');
-            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card);
+            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card) + ' <button type="button" class="ai-draft">&#128269; AI批改这题</button>';
           }
         }
       }
@@ -7219,7 +7222,7 @@ function reciteBodyHTML(cfg) {
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             const ta = card.querySelector('.step-input');
-            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card);
+            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card) + ' <button type="button" class="ai-draft">&#128269; AI批改这题</button>';
           }
         }
       }
