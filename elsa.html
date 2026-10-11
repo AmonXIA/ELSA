@@ -1781,11 +1781,12 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     if (!out) { out = document.createElement('div'); out.className = 'ai-result'; (card.querySelector('.calc-main') || card).appendChild(out); }
     out.textContent = '🤖 正在读你的草稿…';
     btn.disabled = true;
-    const prompt = '你是初中数学老师。题目：' + q + '。正确答案：' + ans + '。图是学生的手写解题草稿，请以图里的手写内容为准。'
-      + '严格按下面三行格式回答，每行一句话，不要写思考过程、不要客套、不要重复题目：\n'
-      + '① 我读到的草稿：照抄图里学生写的每一行算式（看不清的写“模糊”）\n'
-      + '② 错在哪一步：指出第几行的哪个数或符号错了，应改成什么（必须引用学生写的数字）\n'
-      + '③ 正确过程：用 2~4 步写出正确解法';
+    const prompt = '你是初中数学老师，要看学生的手写草稿。题目：' + q + '。正确答案：' + ans + '。'
+      + '先数出草稿里学生写了几个等号（一个等号算一步，几个等号就是几步），再严格按下面四行回答，每行一句话，不要写思考过程、不要客套：\n'
+      + '① 你的草稿共 N 步（N 个等号）\n'
+      + '② 第 x、y 步正确，第 z 步出错（不正确的步就不要列进去）\n'
+      + '③ 错在哪里：引用学生写的数字，说明他写成什么、应该是什么\n'
+      + '④ 正确过程：用等号一步接一步写出来（2~4 步）';
     let img = '';
     try { img = shrinkCanvas(cv); } catch (e) { img = ''; }
     if (!img) { out.textContent = '🤖 这一格草稿读取失败，请重新写一下再试'; btn.disabled = false; if (done) done(); return; }
@@ -7105,6 +7106,29 @@ function reciteBodyHTML(cfg) {
       if (!l) return;
       if (/读到的草稿|错在哪一步|正确过程|^[①②③]/.test(l)) {
         const mm = l.match(/[①②③]/);
+        keep.push(mm ? l.slice(l.indexOf(mm[0])).trim() : l);
+      }
+    });
+    if (keep.length) {
+      x = keep.join('\n');
+    } else {
+      const hits = x.match(/[^。；;.!?]{0,40}第\s*[0-9一二三四五六七八九十]+\s*[步行][^。；;.!?]{0,60}[。；;.!?]?/g);
+      if (hits && hits.length) x = hits[hits.length - 1].trim();
+      else if (x.length > 200) x = x.slice(-200).trim();
+    }
+    if (x.length > 460) x = x.slice(0, 460) + '…';
+    return x;
+  }
+  // 只保留「读到的草稿 / 错在哪一步 / 正确过程」三行，丢掉思考过程
+  function aiTidy(t) {
+    let x = String(t || '').replace(/[ \t]+/g, ' ').trim();
+    if (!x) return '（模型没有返回内容，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
+    const keep = [];
+    x.split(/\n+/).forEach(function (line) {
+      const l = line.trim();
+      if (!l) return;
+      if (/草稿共|步正确|错在哪里|错在哪一步|正确过程|读到的草稿|^[①②③④]/.test(l)) {
+        const mm = l.match(/[①②③④]/);
         keep.push(mm ? l.slice(l.indexOf(mm[0])).trim() : l);
       }
     });
