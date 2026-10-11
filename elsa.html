@@ -1682,10 +1682,10 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       };
       out.style.display = 'block';
       out.textContent = '⏳ 正在测试…';
-      aiPost(c, [{ type: 'text', text: '回复两个字：正常' }]).then(function (t) {
+      aiPost(c, [{ type: 'text', text: '仅回答：正常' }, { type: 'image_url', image_url: { url: (function () { const q = document.createElement('canvas'); q.width = 32; q.height = 32; const g = q.getContext('2d'); g.fillStyle = '#e02020'; g.fillRect(0, 0, 32, 32); return q.toDataURL('image/png'); })() } }]).then(function (t) {
         out.textContent = '✅ 连接正常，模型回复：' + t;
       }).catch(function (e) {
-        out.textContent = '❌ ' + e.message;
+        out.textContent = '❌ ' + e.message + (/image|vision|content|400|model|multimodal/i.test(String(e.message)) ? '　👉 多半是这个模型不支持图片：请换成支持视觉的模型（如 gpt-4o-mini、qwen-vl-max、glm-4v、doubao-vision）。' : '');
       });
     });
     return m;
@@ -1789,7 +1789,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     ]).then(function (t) {
       out.textContent = '🤖 ' + t;
     }).catch(function (e) {
-      out.textContent = '🤖 出错：' + (e && e.message ? e.message : e);
+      out.textContent = '🤖 出错：' + (e && e.message ? e.message : e) + (/image|vision|content|400|model|multimodal/i.test(String(e && e.message)) ? '　👉 多半是这个模型不支持图片：请在 ⚙️ 里换成支持视觉的模型（如 gpt-4o-mini、qwen-vl-max、glm-4v、doubao-vision）。' : '');
     }).then(function () { btn.disabled = false; if (done) done(); });
   }
   // 一键读完这一组所有有草稿的题目
