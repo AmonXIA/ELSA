@@ -819,6 +819,9 @@ body.theme-shawn .mod-toolbar .st-mode.active { background: #dbe9fb; border-colo
   cursor: pointer;
 }
 .ai-draft:disabled { opacity: .6; }
+/* è‹±è¯­/è¯ç»„ç­”é¢˜æ¡†åŠ é•¿ï¼Œæ–¹ä¾¿è¾“å…¥æ•´å¥ */
+.mod-body .g-input, .mod-body .ph-input { width: 100%; max-width: 620px; text-align: left; }
+.onecol .g-input, .onecol .ph-input { max-width: none; }
 .ai-result {
   margin-top: 8px;
   padding: 10px 12px;
@@ -928,6 +931,9 @@ body.fs-full > .wrap {
 .p-switch button.active { background: #f39bbd; border-color: #f39bbd; color: #fff; font-weight: 700; }
 .p-switch button { display: inline-flex; align-items: center; gap: 4px; }
 .p-ico { width: 18px; height: 18px; flex: 0 0 auto; }
+  .hero-ai-btn { display:inline-flex; align-items:center; gap:4px; margin:2px 0 8px; border:1px solid rgba(255,255,255,.65); background:rgba(255,255,255,.22); color:#fff; border-radius:999px; padding:5px 14px; font-size:13px; font-family:inherit; cursor:pointer; }
+  .hero-ai-btn:active { background:rgba(255,255,255,.35); }
+  /* banner ä¸Šçš„ AI è®¾ç½®æŒ‰é’® */
 .p-switch button.active .p-ico { filter: drop-shadow(0 0 1px #fff); }
 @media (min-width: 768px) { .p-switch button { font-size: 14px; padding: 6px 16px; } }
 /* 背诵卡片 / 口语列表 */
@@ -1054,7 +1060,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
 <button class="fs-btn" id="fs-btn" onclick="toggleFullscreen()" title="切换全屏">⛶</button>
     html += '<button class="ai-settings-btn">⚙️ AI 设置</button> ';
 <button class="fs-btn wb-btn" id="wb-quick-btn" onclick="openWrongBook()" title="错题本" aria-label="错题本">📓<span class="wb-badge" id="wb-badge-quick">0</span></button>
-<button class="fs-btn ai-btn" id="ai-quick-btn" onclick="openAiSettings()" title="AI 读草稿设置" aria-label="AI 读草稿设置">⚙️</button>
+  <button class="fs-btn ai-btn" id="ai-quick-btn" onclick="openAiSettings()" title="AI " aria-label="AI">&#9881;</button>
 
 <header class="hero">
   <div class="brand">
@@ -1064,9 +1070,10 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       <button type="button" data-p="shawn" onclick="switchProfile('shawn')"><img class="p-ico" alt="Shawn" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNiAzNiI+PHBhdGggZmlsbD0iI0ZGQUMzMyIgZD0iTTExLjk4MyAzLjU2MmM0LjU0My0uMjYyIDcuODI0IDEuNTk3IDguMDg5IDYuODI2LjIxNSA0LjE5LTUuMTg0IDYuNzktOC4wNDYgNi44NzktMi40NjIuMDc3LTEuMzUzLTEuODUyLjYxLTIuMzM0IDEuNTc2LS4zODcgNC4xMjQtMi40MTMgMy42MDItNC40NC0uNTk3LTIuMzItNC4zMTUtMi42ODQtNi4zNTEuMjkyLS43OTggMS4xNjctMy41NTQuODczLTQuMDk2LS40MzQtLjk1OC0yLjMwOSAxLjIxMS02LjUwMiA2LjE5Mi02Ljc4OXoiLz48cGF0aCBmaWxsPSIjRTFFOEVEIiBkPSJNMzUuNzUgMjEuMzg0YzAtNy43ODMtNC40OTUtMTEuNDA3LTE0LjUxOS0xMS40MDctMS4wODcgMC0yLjA4My4wNTEtMy4wMTguMTM3LTEuMzYtMi40MjMtNC44NDUtMi44MjgtOC4yMTMtMi44MjgtNC4zMDQgMC0xMCA2LjE0NS0xMCAxMC44MzkgMCA0LjYwOCAzLjYwNiA0Ljg2NiA3LjgxMSA0Ljg3NC4yMzMgMy4yNDUgMS4yMjYgNS42NDcgMy4yNDkgNy4yNkMxMS4zMzcgMzEuNDA5IDEyLjU5NCAzNiAxNSAzNmMxLjM1MyAwIDIuMDk5LTEuNjk1IDIuNTEtMy40MTcgMS4xMjguMTM2IDIuMzU5LjIwOSAzLjcyMi4yMDkgMS43MzMgMCAzLjI4OC0uMTE2IDQuNjk1LS4zMzVDMjYuMDE3IDM0LjExNCAyNi40NTggMzYgMjggMzZjMi4zMTcgMCA0LjI3My00Ljk1NiA0LjgzNC02LjUyMSAxLjk2OS0xLjg3IDIuOTE2LTQuNTQ1IDIuOTE2LTguMDk1eiIvPjxjaXJjbGUgZmlsbD0iIzI5MkYzMyIgY3g9IjQuNSIgY3k9IjE1Ljc4NiIgcj0iMS41Ii8+PHBhdGggZmlsbD0iI0ZGQ0M0RCIgZD0iTTE3LjU2MiA0LjMzOWM0LjMxMiAxLjQ1NSA1Ljc0IDQuMTQ4IDQuMDM0IDkuMDk5LTEuMzY3IDMuOTY3LTcuMzQ1IDQuMzYxLTEwLjAzNCAzLjM3NUM5LjI1IDE1Ljk2NCAxMSAxNC41ODkgMTMgMTQuODc1YzEuNjA2LjIzIDQuNzI3LS42OTggNS0yLjc3M0MxOC4zMTIgOS43MjcgMTUgOCAxMiAxMGMtMS4xNzcuNzg1LTUuNzc0LjQzLTUuNS0uOTU4LjYzOC0zLjIyNiA2LjMzNS02LjI5OCAxMS4wNjItNC43MDN6Ii8+PC9zdmc+"> Shawn</button>
     </span>
   </div>
+  <button type="button" class="hero-ai-btn" onclick="openAiSettings()">⚙️ AI 批改设置</button>
   <div class="hero-top">
     <div class="greet">
-      <h1>下午好，<span id="child-name" onclick="setName()">小朋友</span> 👋</h1>
+      <h1><span id="greet-hi">下午好</span>，<span id="child-name" onclick="setName()">小朋友</span> 👋</h1>
       <p id="greet-sub">今天也和我们一起收集星星吧！</p>
     </div>
     <div class="star-jar">
@@ -1632,12 +1639,31 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       + '<label class="ai-field">接口地址<input id="ai-url" type="text" placeholder="https://api.openai.com/v1/chat/completions"></label>'
       + '<label class="ai-field">模型名称<input id="ai-model" type="text" placeholder="gpt-4o-mini"></label>'
       + '<label class="ai-field">API Key<input id="ai-key" type="password" placeholder="sk-..."></label>'
-      + '<div class="modal-foot" style="border-top:none;padding:4px 0 0;"><button class="primary" id="ai-save" type="button">保存</button> <button id="ai-test" type="button">测试连接</button></div>'
+      + '<p class="intro" style="margin-top:14px;">云同步（Supabase，可选）：填上后每次数据变化会自动存到你的表里，换浏览器或重新发布都不丢。</p>'
+      + '<label class="ai-field">Supabase 项目地址<input id="sb-url" type="text" placeholder="https://xxxx.supabase.co"></label>'
+      + '<label class="ai-field">anon key<input id="sb-key" type="password" placeholder="eyJhbGciOi..."></label>'
+      + '<label class="ai-field">表名<input id="sb-table" type="text" placeholder="elsa_kv"></label>'
+      + '<div class="modal-foot" style="border-top:none;padding:4px 0 0;"><button class="primary" id="ai-save" type="button">保存</button> <button id="ai-test" type="button">测试连接</button> <button type="button" onclick="document.getElementById(\'ai-modal\').classList.remove(\'show\')">关闭</button></div>'
       + '<div id="ai-test-out" class="ai-result" style="display:none;"></div>'
       + '</div></div>';
     document.body.appendChild(m);
     m.querySelector('.modal-close').addEventListener('click', function () { m.classList.remove('show'); });
     m.addEventListener('click', function (e) { if (e.target === m) m.classList.remove('show'); });
+    const sbFill = function () {
+      const c = sbCfg();
+      const f = function (id, v) { const el = m.querySelector('#' + id); if (el) el.value = v || ''; };
+      f('sb-url', c.url); f('sb-key', c.key); f('sb-table', c.table || 'elsa_kv');
+    };
+    m.querySelector('#ai-save').addEventListener('click', function () {
+      saveSbCfg({
+        url: (m.querySelector('#sb-url') || {}).value || '',
+        key: (m.querySelector('#sb-key') || {}).value || '',
+        table: (m.querySelector('#sb-table') || {}).value || 'elsa_kv'
+      });
+      sbFill();
+      if (sbReady()) { syncPush(true).then(function () { toast('äº‘åŒæ­¥å·²å¼€å¯'); }).catch(function (e) { toast('äº‘åŒæ­¥å¤±è´¥ï¼š' + e.message); }); }
+    });
+    sbFill();
     m.querySelector('#ai-save').addEventListener('click', function () {
       saveAiCfg({
         url: m.querySelector('#ai-url').value.trim(),
@@ -1656,10 +1682,10 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       };
       out.style.display = 'block';
       out.textContent = '⏳ 正在测试…';
-      aiPost(c, [{ type: 'text', text: '回复两个字：正常' }]).then(function (t) {
+      aiPost(c, [{ type: 'text', text: '仅回答：正常' }, { type: 'image_url', image_url: { url: (function () { const q = document.createElement('canvas'); q.width = 32; q.height = 32; const g = q.getContext('2d'); g.fillStyle = '#e02020'; g.fillRect(0, 0, 32, 32); return q.toDataURL('image/png'); })() } }]).then(function (t) {
         out.textContent = '✅ 连接正常，模型回复：' + t;
       }).catch(function (e) {
-        out.textContent = '❌ ' + e.message;
+        out.textContent = '❌ ' + e.message + (/image|vision|content|400|model|multimodal/i.test(String(e.message)) ? '　👉 多半是这个模型不支持图片：请换成支持视觉的模型（如 gpt-4o-mini、qwen-vl-max、glm-4v、doubao-vision）。' : '');
       });
     });
     return m;
@@ -1698,7 +1724,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   }
   function aiPost(cfg, content) {
     const url = aiEndpoint(cfg.url);
-    const body = { model: cfg.model || 'gpt-4o-mini', max_tokens: 500, messages: [{ role: 'user', content: content }] };
+    const body = { model: cfg.model || 'gpt-4o-mini', max_tokens: 3000, enable_thinking: false, thinking: { type: 'disabled' }, messages: [{ role: 'user', content: content }] };
     return fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
@@ -1716,7 +1742,11 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
           throw new Error('接口返回 HTTP ' + res.status + '：' + msg + '（请求地址：' + url + '）');
         }
         let t = '';
-        try { t = data.choices[0].message.content; } catch (e) {}
+        try {
+          const msg = data.choices[0].message || {};
+          t = msg.content || '';
+          if (!t && msg.reasoning_content) t = String(msg.reasoning_content).replace(/[ã€‚ï¼ï¼Ÿ!?]\s*$/, '').slice(-220);
+        } catch (e) {}
         if (!t) throw new Error('返回内容无法解析：' + raw.slice(0, 200));
         return String(t).trim();
       });
@@ -1751,9 +1781,11 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     if (!out) { out = document.createElement('div'); out.className = 'ai-result'; (card.querySelector('.calc-main') || card).appendChild(out); }
     out.textContent = '🤖 正在读你的草稿…';
     btn.disabled = true;
-    const prompt = '你是初中数学老师。题目：' + q + '。正确答案：' + ans + '。图里是学生的手写解题草稿。'
-      + '请逐步核对：先一句话说明他哪几步是对的，然后明确指出他算错的是第几步、他写成了什么、正确应该是什么，最后给出正确的解题过程。'
-      + '用不超过 120 字的中文回答，直接说结论，不要客套。';
+    const prompt = '你是初中数学老师，请读图里学生的手写解题草稿。题目：' + q + '。正确答案：' + ans + '。'
+      + '注意：分数按文字理解（1/3 就是三分之一）；−3⁴ 表示 −(3⁴)。'
+      + '只输出下面两行，不要任何多余文字、不要 LaTeX、不要公式符号（用 × ÷ − + = 这些普通符号）：\n'
+      + '错：第几行错，他把什么写成了什么，正确应为多少\n'
+      + '正确：用等号连起来的一步式子（2~4 步）';
     let img = '';
     try { img = shrinkCanvas(cv); } catch (e) { img = ''; }
     if (!img) { out.textContent = '🤖 这一格草稿读取失败，请重新写一下再试'; btn.disabled = false; if (done) done(); return; }
@@ -1761,9 +1793,9 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       { type: 'text', text: prompt },
       { type: 'image_url', image_url: { url: img } }
     ]).then(function (t) {
-      out.textContent = '🤖 ' + t;
+      out.textContent = '🤖 ' + aiTidy(t);
     }).catch(function (e) {
-      out.textContent = '🤖 出错：' + (e && e.message ? e.message : e);
+      out.textContent = '🤖 出错：' + (e && e.message ? e.message : e) + (/image|vision|content|400|model|multimodal/i.test(String(e && e.message)) ? '　👉 多半是这个模型不支持图片：请在 ⚙️ 里换成支持视觉的模型（如 gpt-4o-mini、qwen-vl-max、glm-4v、doubao-vision）。' : '');
     }).then(function () { btn.disabled = false; if (done) done(); });
   }
   // 一键读完这一组所有有草稿的题目
@@ -1928,7 +1960,16 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     }
     return '<span class="exp ai-ok">✅ 你的每一步都验算通过了，步骤没有问题。</span>';
   }
-  function openWrongBook() { document.getElementById('wb-modal').classList.add('show'); renderWrongBook(); }
+  // è‹±æ–‡/ä¸­æ–‡ç­”æ¡ˆæ”¯æŒâ€œä¸€å¯¹å¤šâ€ï¼šç”¨ / ; ã€ æˆ– or åˆ†éš”çš„ä»»ä¸€å†™æ³•éƒ½ç®—å¯¹ï¼ˆè¦†ç›–ä¸Šé¢çš„åŒåå‡½æ•°ï¼‰
+  function gradeText(input, ans) {
+    const norm = function (x) { return String(x).toLowerCase().replace(/[\s'-.,!?;:]/g, ''); };
+    const b = norm(input).replace(/[\u3000-\u303f\uff00-\uffef]/g, '');
+    if (!b) return false;
+    const variants = String(ans).split(/[\/;ã€]|\bor\b/i).map(function (x) { return norm(x).replace(/[\u3000-\u303f\uff00-\uffef]/g, ''); }).filter(function (x) { return x !== ''; });
+    if (!variants.length) return false;
+    if (variants.length === 1) return variants[0] === b;
+    return variants.some(function (v) { return v === b; });
+  }  function openWrongBook() { document.getElementById('wb-modal').classList.add('show'); renderWrongBook(); }
   function closeWrongBook() { document.getElementById('wb-modal').classList.remove('show'); }
   function renderWrongBook() {
     const list = document.getElementById('wb-list');
@@ -2578,6 +2619,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       if (e.cancelable) e.preventDefault();
     }
     cv.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'touch') return;   // æ‰‹æŒ‡ä¸ç”»ï¼Œåªè®¤ Apple Pencil
       isolate(e); ensure();
       if (!ctx) return;
       cv._drawing = true;
@@ -2590,6 +2632,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       try { cv.setPointerCapture(e.pointerId); } catch (_) {}
     });
     cv.addEventListener('pointermove', function (e) {
+      if (e.pointerType === 'touch') return;
       if (!drawing) return;
       isolate(e); ensure();
       if (!ctx) return;
@@ -2606,7 +2649,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     cv.addEventListener('lostpointercapture', function () { drawing = false; cv._drawing = false; });
     // 阻断平板浏览器的手势（滚动 / 双指缩放 / 长按菜单）：写草稿时页面不做任何别的反应
     ['touchstart', 'touchmove', 'touchend', 'touchcancel'].forEach(function (t) {
-      cv.addEventListener(t, function (e) { isolate(e); }, { passive: false });
+      cv.addEventListener(t, function (e) { e.preventDefault(); e.stopPropagation(); }, { passive: false });
     });
     cv.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     cv.addEventListener('gesturestart', function (e) { e.preventDefault(); });
@@ -2684,7 +2727,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             const ta = card.querySelector('.step-input');
-            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card);
+            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card) + ' <button type="button" class="ai-draft">&#128269; AI批改这题</button>';
           }
         }
       }
@@ -2828,13 +2871,844 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
         '<div class="ms">' + escapeHtml(m.sub) + '</div></button>';
     }).join('');
   }
+  /* ===== 英语词组「中英互测」模块 ===== */
+  // ===== 词组计分：每题 5 分、满分 100；记录每次成绩，进步给奖励 =====
+  var PH_HIST_KEY = 'ph_hist_v1';
+  function phHist() { try { return JSON.parse(lsGet(PH_HIST_KEY) || '[]') || []; } catch (e) { return []; } }
+  function phKeyOf() { return 'U' + phUnit + '-' + phMode; }
+  function phStatOf() {
+    const list = phHist().filter(function (x) { return x.k === phKeyOf(); });
+    if (!list.length) return { last: null, best: null, n: 0 };
+    return {
+      last: list[list.length - 1].s,
+      best: Math.max.apply(null, list.map(function (x) { return x.s; })),
+      n: list.length
+    };
+  }
+  function phStatLine() {
+    let el = document.getElementById('ph-stat');
+    if (el) return el;
+    el = document.createElement('p');
+    el.className = 'recite-count';
+    el.id = 'ph-stat';
+    const bar = document.querySelector('#page-module .recite-bar.units');
+    if (bar && bar.parentNode) bar.parentNode.insertBefore(el, bar.nextSibling);
+    return el;
+  }
+  function phRefreshStat() {
+    const st = phStatOf();
+    const el = document.getElementById('ph-stat');
+    if (!el) return;
+    if (st.last === null) { el.textContent = '本题组还没有成绩记录，批改后就会记录在这里'; return; }
+    el.textContent = '上次 ' + st.last + ' 分　·　最好 ' + st.best + ' 分　·　共练 ' + st.n + ' 次';
+  }
+  function phAfterGrading(correct, total) {
+    const score = Math.round(correct * 5);
+    const before = phStatOf();
+    let list = phHist();
+    list.push({ k: phKeyOf(), s: score, t: Date.now() });
+    if (list.length > 300) list = list.slice(-300);
+    try { localStorage.setItem(pk(PH_HIST_KEY), JSON.stringify(list)); } catch (e) {}
+    if (typeof cfg !== 'undefined' && cfg && cfg.kind === 'phrase') { phAfterGrading(correct, total); return; }
+    const sc = document.getElementById('generic-score');
+    if (sc) sc.textContent = '本次 ' + score + ' / 100（答对 ' + correct + '/' + total + '，每题 5 分）';
+    phStatLine();
+    phRenderPodium();
+    phRefreshStat();
+    if (before.last !== null && score > before.last) {
+      const gain = score - before.last;
+      completeModule(curGeneric.cfg.id, curGeneric.cfg.name, 5, '比上次提高 ' + gain + ' 分');
+      toast('👏 比上次提高 ' + gain + ' 分，奖励 +5⭐');
+    } else if (before.best !== null && score > before.best) {
+      toast('🎉 刷新最好成绩：' + score + ' 分！');
+    } else if (before.last !== null && score < before.last) {
+      toast('这次 ' + score + ' 分，比上次低 ' + (before.last - score) + ' 分，再来一次会更好');
+    } else {
+      toast('本次 ' + score + ' 分，已记录');
+    }
+  }
+  // ===== 冠亚季军奖台：列出本题组（单元+方向）成绩最好的三次及时间 =====
+  (function () {
+    if (document.getElementById('ph-podium-css')) return;
+    var st = document.createElement('style');
+    st.id = 'ph-podium-css';
+    st.textContent = [
+      '#ph-top-wrap { display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap; margin:6px 0 10px; }',
+      '#ph-top-left { flex:1 1 320px; min-width:260px; }',
+      '#ph-top-right { flex:0 0 auto; min-width:276px; background:#fff; border:1px solid #e3edf7; border-radius:16px; padding:10px 12px 18px; box-shadow:0 2px 10px rgba(58,110,165,.06); }',
+      '.ph-pod-title { font-size:13px; color:#3a6ea5; font-weight:700; margin-bottom:8px; }',
+      '.ph-podium { display:flex; flex-wrap:nowrap; align-items:flex-end; gap:8px; justify-content:center; padding-bottom:2px; }',
+      '.ph-pod-col { width:64px; flex:0 0 auto; text-align:center; border-radius:12px 12px 0 0; padding:6px 4px 8px; color:#fff; box-shadow:0 2px 8px rgba(95,75,82,.14); }',
+      '.ph-pod-col.gold { background:linear-gradient(180deg,#f7cf6b,#dfa423); min-height:120px; }',
+      '.ph-pod-col.silver { background:linear-gradient(180deg,#e2e6ea,#b6bec7); min-height:102px; }',
+      '.ph-pod-col.bronze { background:linear-gradient(180deg,#e8bd92,#c8874d); min-height:88px; }',
+      '.ph-pod-medal { font-size:20px; line-height:1.1; }',
+      '.ph-pod-score { font-size:19px; font-weight:800; line-height:1.25; }',
+      '.ph-pod-time { font-size:10px; opacity:.96; line-height:1.35; }',
+      '.ph-pod-base { font-size:10px; opacity:.9; margin-top:6px; padding-bottom:2px; }',
+      '.ph-pod-empty { color:#8aa0b5; font-size:13px; text-align:center; padding:16px 8px; border:1px dashed #dbe7f3; border-radius:12px; line-height:1.7; }',
+      '@media (max-width:700px) { #ph-top-right { min-width:0; width:100%; } .ph-pod-col { width:64px; } }'
+    ].join('\n');
+    document.head.appendChild(st);
+  })();
+  function phPodiumHTML() {
+    const list = phHist().filter(function (x) { return x.k === phKeyOf(); });
+    if (!list.length) return '<div class="ph-pod-title">🏆 前三名成绩</div><div class="ph-pod-empty">还没有成绩记录<br>批改一次就会出现在这里</div>';
+    const sorted = list.slice().sort(function (a, b) { return b.s - a.s || a.t - b.t; });
+    const top = sorted.slice(0, 3);
+    const cls = ['gold', 'silver', 'bronze'];
+    const medal = ['🥇', '🥈', '🥉'];
+    const rank = ['第1名', '第2名', '第3名'];
+    let cols = '';
+    top.forEach(function (x, i) {
+      const d = new Date(x.t);
+      const time = (d.getMonth() + 1) + '月' + d.getDate() + '日<br>' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+      cols += '<div class="ph-pod-col ' + cls[i] + '"><div class="ph-pod-medal">' + medal[i] + '</div><div class="ph-pod-score">' + x.s + '</div><div class="ph-pod-time">' + time + '</div><div class="ph-pod-base">' + rank[i] + '</div></div>';
+    });
+    return '<div class="ph-pod-title">🏆 前三名成绩（本单元 · 本方向）</div><div class="ph-podium">' + cols + '</div>';
+  }
+  function phRenderPodium() {
+    const un = document.querySelector('#page-module .recite-bar.units');
+    if (!un) return;
+    let host = document.getElementById('ph-top-wrap');
+    if (!host || !host.contains(un)) {
+      const old = document.getElementById('ph-top-wrap');
+      if (old) old.parentNode.removeChild(old);
+      host = document.createElement('div');
+      host.id = 'ph-top-wrap';
+      un.parentNode.insertBefore(host, un);
+      const left = document.createElement('div');
+      left.id = 'ph-top-left';
+      host.appendChild(left);
+      left.appendChild(un);
+      const stat = phStatLine();
+      if (stat) left.appendChild(stat);
+      const cnt = document.querySelector('#page-module .recite-count:not(#ph-stat)');
+      if (cnt) left.appendChild(cnt);
+      const right = document.createElement('div');
+      right.id = 'ph-top-right';
+      host.appendChild(right);
+    }
+    document.getElementById('ph-top-right').innerHTML = phPodiumHTML();
+    phRefreshStat();
+  }
+  let phUnit = '1', phMode = 'zh-en';
+  function phUnits() { return Object.keys(ORAL_UNITS); }
+  function phSetUnit(u) { phUnit = u; refreshGeneric(); }
+  function phSetMode(m) { phMode = m; refreshGeneric(); }
+  function phItems() {
+    const list = (ORAL_UNITS[phUnit] || []).map(function (x) {
+      return { zh: x[0], en: x[1], q: phMode === 'zh-en' ? x[0] : x[1], ans: phMode === 'zh-en' ? x[1] : x[0] };
+    });
+    return shuffle(list.slice()).slice(0, 20);
+  }
+  function phraseBodyHTML(cfg) {
+    const items = curGeneric.items || [];
+    const tid = cfg.id + '|' + phUnit + '|' + phMode;
+    regGeneric(tid, '英语词组 Unit ' + phUnit + (phMode === 'zh-en' ? '（中→英）' : '（英→中）'),
+      items.map(function (it) { return { q: it.q, a: it.ans }; }));
+    let html = '<div class="grade-bar recite-bar">' + phUnits().map(function (u) {
+      return '<button class="' + (u === phUnit ? 'active' : '') + '" onclick="phSetUnit(\'' + u + '\')">Unit ' + u + '</button>';
+    }).join('') + '</div>';
+    html += '<div class="grade-bar recite-bar units">'
+      + '<button class="' + (phMode === 'zh-en' ? 'active' : '') + '" onclick="phSetMode(\'zh-en\')">中 → 英（写英文）</button>'
+      + '<button class="' + (phMode === 'en-zh' ? 'active' : '') + '" onclick="phSetMode(\'en-zh\')">英 → 中（写中文）</button></div>';
+    html += '<p class="recite-count">本单元共 ' + ((ORAL_UNITS[phUnit] || []).length) + ' 个词组，本次抽 ' + items.length + ' 个　·　点「换一批」换一组</p>';
+    html += '<div class="mod-body text onecol">';
+    items.forEach(function (it, i) {
+      html += '<div class="calc-item" data-gi="' + i + '"><div class="calc-main">'
+        + '<div class="q">' + (i + 1) + '、' + escapeHtml(it.q) + '</div>'
+        + '<div class="a-row"><input class="ans-input g-input ph-input" data-i="' + i + '" type="text" placeholder="✏️ ' + (phMode === 'zh-en' ? '写英文短语' : '写中文意思') + '" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><span class="mark"></span></div>'
+        + '<button class="add-wrong" data-type="' + tid + '" data-i="' + i + '">＋错题本</button>'
+        + '<div class="reveal">参考答案：' + escapeHtml(it.ans) + '</div></div></div>';
+    });
+    html += '</div>';
+    return html;
+  }
+  // 按时间动态问候（夜里提醒睡觉）
+  /* ===== 英语词组（按单元，中英互测）[中文, 英文] ===== */
+  var ORAL_UNITS = {
+    '1': [
+      ['这是我！', 'This is me!'],
+      ['我的英文名/中文名', 'my English/Chinese name'],
+      ['和我打招呼', 'greet me'],
+      ['介绍彼此', 'introduce each other'],
+      ['叫我西蒙', 'call me Simon'],
+      ['被称为', 'go by'],
+      ['早上好/下午好/晚上好', 'good morning / good afternoon / good evening'],
+      ['见到你很高兴！', 'Nice to meet you! / Glad to meet you!'],
+      ['你在哪个班级/年级？', 'Which class/grade are you in?'],
+      ['你呢？', 'And you?/What about you?'],
+      ['在同一个班级', 'in the same class'],
+      ['有一些爱好', 'have some hobbies'],
+      ['弹钢琴', 'play the piano'],
+      ['欢迎来到七(1)班！', 'Welcome to Class 1, Grade 7!'],
+      ['阳光中学的一名新学生', 'a new student at Sunshine Middle School'],
+      ['十二岁', '12 years old'],
+      ['喜爱阅读', 'love reading / enjoy reading'],
+      ['一个八岁的女孩', 'an 8-year-old girl'],
+      ['对别人友好', 'be friendly to others / be nice to others / be kind to others'],
+      ['这儿是我的新同学们。', 'Here are my new classmates.'],
+      ['充满活力', 'be full of energy'],
+      ['擅长运动', 'be good at sport'],
+      ['擅长踢足球', 'be good at playing football'],
+      ['放学后', 'after school'],
+      ['又高又苗条', 'tall and slim'],
+      ['留着长发', 'have long hair'],
+      ['一个留着长发的女孩', 'a girl with long hair'],
+      ['戴眼镜', 'wear glasses'],
+      ['戴着眼镜的那个男孩', 'the boy with/wearing glasses'],
+      ['聪明且有礼貌', 'smart and polite'],
+      ['愿意帮助别人', 'be ready to help others'],
+      ['对科学感兴趣', 'be interested in science'],
+      ['对跳舞感兴趣', 'be interested in dancing'],
+      ['乐于助人的', 'be helpful'],
+      ['对彼此友好', 'be friendly to each other'],
+      ['说“请”和“谢谢”', 'say "please" and "thank you"'],
+      ['他们两人都喜爱运动。', 'They both love sport./Both of them love sport.'],
+      ['那儿的那个女孩', 'the girl over there'],
+      ['有可爱的眼睛', 'have lovely/cute eyes'],
+      ['腼腆又文静', 'shy and quiet'],
+      ['小巧可爱', 'small and cute'],
+      ['擅长游泳', 'be good at swimming'],
+      ['看起来标志', 'look pretty'],
+      ['上舞蹈课', 'have dance classes'],
+      ['帮助我保持健康', 'help me stay/keep healthy'],
+      ['有一场和二班的足球赛', 'have a football match with Class 2'],
+      ['祝你好运！', 'Good luck!'],
+      ['和我爸爸打乒乓球', 'play ping-pong with my father'],
+      ['喜爱下国际象棋', 'enjoy/love playing chess'],
+      ['我最喜爱的科目', 'my favourite subject(s)'],
+      ['帮助我的同学解决数学难题', 'help my classmates with Maths problems'],
+      ['在周末', 'at the weekend'],
+      ['它们很有趣。', 'They are fun/interesting.'],
+      ['玩得开心', 'have fun/have a good time'],
+      ['和他们交朋友', 'make friends with them'],
+      ['成为我的朋友', 'be my friend(s)'],
+      ['喜爱计算机科学', 'love Computer Science']
+    ],
+    '2': [
+      ['你喜欢做什么？', 'What do you like to do?'],
+      ['各种各样的东西', 'all kinds of things'],
+      ['喜爱剪纸/慢跑/画画/阅读', 'enjoy paper-cutting / jogging / painting / reading'],
+      ['你最大的爱好是什么？', 'What’s your favourite hobby?'],
+      ['从书籍中学到很多', 'learn a lot from books'],
+      ['保持健康', 'keep fit / keep healthy'],
+      ['你多久游一次泳？', 'How often do you go swimming?'],
+      ['我的新朋友之一', 'one of my new friends'],
+      ['一位科学迷', 'a fan of science'],
+      ['遍布我们身边', 'all around us'],
+      ['改变我们的生活', 'change our lives'],
+      ['参观科技博物馆', 'visit science museums'],
+      ['有机会做某事', 'get to do sth'],
+      ['拆分东西', 'take things apart'],
+      ['它对我来说很有乐趣。', 'It’s great fun for me.'],
+      ['学习东西如何运作', 'learn how things work'],
+      ['在他的空闲时间', 'in his free time'],
+      ['帮助修理房子各处的东西', 'help fix things around the house'],
+      ['读许多科学书', 'read many science books'],
+      ['上网', 'go on the internet'],
+      ['找到问题的答案', 'find answers to the questions'],
+      ['有无穷无尽的问题', 'have endless questions'],
+      ['想成为一名科学家', 'want to be a scientist'],
+      ['将来某一天', 'one day'],
+      ['我确信他的梦想会实现。', 'I am sure his dream can come true.'],
+      ['他为何如此喜欢科学？', 'Why does he like science so much?'],
+      ['用这种方式', 'in this way'],
+      ['他想成为什么？', 'What does he want to be?'],
+      ['（经常）看我们游泳', 'see/watch us swim'],
+      ['看我们正在游泳', 'see/watch us swimming'],
+      ['音乐/画画/机器人/地理/排球俱乐部', 'the Music/Painting/Robot/Geography/Volleyball Club'],
+      ['俱乐部成员', 'the club members'],
+      ['打排球', 'play volleyball'],
+      ['总计', 'in all'],
+      ['我们中的每一个', 'each of us'],
+      ['每周一次', 'once a week'],
+      ['加入地理俱乐部', 'join the Geography Club'],
+      ['分享他们的想法', 'share their ideas'],
+      ['在周三下午见面', 'meet on Wednesday afternoons'],
+      ['放学后你喜欢做什么？', 'What do you like doing after school?'],
+      ['在会议上', 'at the meeting'],
+      ['让我感觉愉快', 'make me feel happy'],
+      ['听起来很棒！', 'Sounds nice!'],
+      ['计划做某事', 'plan to do sth'],
+      ['对机器人俱乐部感兴趣', 'be interested in the Robot Club'],
+      ['玩得很开心', 'have a great time / have a lot of fun'],
+      ['你的榜样', 'your role model'],
+      ['我的梦想是设计漂亮的衣服。', 'My dream is to design beautiful clothes.'],
+      ['学习绘画技巧', 'learn painting skills'],
+      ['帮助我很多', 'help me a lot'],
+      ['分享我们的画作', 'share our paintings'],
+      ['谈论艺术', 'talk about art'],
+      ['我最喜爱的艺术家', 'my favourite artist'],
+      ['艺术作品', 'works of art'],
+      ['一位中国画大师', 'a master of Chinese painting'],
+      ['成为一名设计师', 'become a designer'],
+      ['在未来', 'in the future'],
+      ['我希望我的梦想能实现。', 'I hope my dream can come true.']
+    ],
+    '3': [
+      ['一个学习的好地方', 'a great place for learning'],
+      ['多少幢教学楼', 'how many classroom buildings'],
+      ['一个实验室和一座体育馆', 'a lab and a gym'],
+      ['一个大的体育场', 'a big/large sports field'],
+      ['也有一个食堂', 'have a dining hall as well'],
+      ['见到你很高兴。', 'It’s good to see you.'],
+      ['你的新学校怎么样？', 'How’s your new school? / What’s your new school like?'],
+      ['最棒的部分', 'the best part'],
+      ['一座现代化的图书馆', 'a modern library'],
+      ['这儿是我们现代化的图书馆和教学楼。', 'Here’s our modern library and our classroom buildings.'],
+      ['供我们学习的一个绝佳场所', 'a perfect place for us to study'],
+      ['明亮又干净的', 'bright and clean'],
+      ['很多绿地', 'a lot of/lots of green spaces'],
+      ['喜欢在这儿花时间', 'enjoy spending time here'],
+      ['花时间做某事', 'spend time (in) doing sth'],
+      ['与老师们闲聊我们的难题', 'chat with teachers about our problems'],
+      ['很多令人兴奋的体育比赛', 'lots of exciting sports matches'],
+      ['看到学生正在跑步', 'see the students running'],
+      ['发生', 'take place'],
+      ['靠近学校大门', 'near the school gate'],
+      ['读到学校新闻', 'read about school news'],
+      ['看一下学校的布告板。', 'Look at the school noticeboard/board.'],
+      ['明星学生和老师的故事', 'stories of star students and teachers'],
+      ['展示学生的作品', 'show students’ works'],
+      ['例如画作和照片', 'like paintings and photos'],
+      ['享受校园生活', 'enjoy the school life'],
+      ['找到更多很棒的地方', 'find more great places'],
+      ['相信我！', 'Trust me!'],
+      ['一个我们运动的地方', 'a place for us to do sport'],
+      ['你过得怎么样？', 'How are you doing?'],
+      ['一个十分棒的地方', 'a really great place'],
+      ['回头再聊', 'talk soon'],
+      ['教我们英语', 'teach us English'],
+      ['像他们一样的好老师', 'nice teachers like them'],
+      ['在校足球队', 'in the school football team'],
+      ['班主任', 'the form teacher'],
+      ['在学校演出上弹钢琴', 'play the piano at the school shows'],
+      ['他是什么样的？', 'What’s he like?'],
+      ['跟她打招呼', 'say hello to her / greet her'],
+      ['等一下。', 'Wait a minute.'],
+      ['关于不同主题的书', 'books on different subjects'],
+      ['一座三层楼的灰色建筑', 'a grey building with three floors'],
+      ['数千本书', 'thousands of books'],
+      ['两千本书', 'two thousand books'],
+      ['事实上,确切地说', 'in fact'],
+      ['从图书馆借书', 'borrow books from the library'],
+      ['一间配备了电脑的阅览室', 'a reading room with computers'],
+      ['每次,逐一', 'at a time'],
+      ['在顶楼', 'on the top floor'],
+      ['关心', 'care about'],
+      ['阅读报纸杂志', 'read newspapers and magazines'],
+      ['你还喜欢我们学校的哪些方面？', 'What else do you like about our school?'],
+      ['你觉得你们学校怎么样？', 'What do you think of your school? / How do you like your school?'],
+      ['谢谢你的邮件。', 'Thanks for your email.'],
+      ['谢谢你帮助我。', 'Thanks for helping me.'],
+      ['很多有趣的活动', 'a lot of interesting events'],
+      ['一起打乒乓球', 'play ping-pong together'],
+      ['相当好', 'quite nice'],
+      ['一个对我来说特别的地方', 'a special place for me'],
+      ['我很开心能成为这儿的一名学生。', 'I am happy to be a student here.']
+    ],
+    '4': [
+      ['早上七点起床', 'get up at 7:00 a.m.'],
+      ['打开世界大门的钥匙', 'the key to unlocking the world'],
+      ['先做早操', 'do morning exercises first'],
+      ['进行课后活动', 'do after-school activities'],
+      ['帮忙做家务劳动', 'help with housework'],
+      ['做家庭作业', 'do homework'],
+      ['在工作日', 'on weekdays'],
+      ['小跑一下', 'go for a short jog'],
+      ['进行少量的阅读', 'read a little'],
+      ['有很多乐趣', 'have lots of fun'],
+      ['关于你的上学日你最喜欢什么？', 'What do you like best about your school days?'],
+      ['一个让我得到乐趣的好方法', 'a good way for me to enjoy myself'],
+      ['第一学期', 'the first term'],
+      ['在八点开始', 'start at 8:00'],
+      ['阅读很多知名作家的作品', 'read the works of many famous writers'],
+      ['一门让人惊奇的语言', 'an amazing language'],
+      ['上生物课', 'have Biology classes'],
+      ['研究很多生物', 'study many living things'],
+      ['了解大自然', 'learn about nature'],
+      ['练习足球', 'practise playing football'],
+      ['进行一次野外考察', 'have/go on a field trip'],
+      ['动身去农场', 'leave for a farm'],
+      ['摘苹果', 'pick apples'],
+      ['你的校园生活是什么样的？', 'What is your school life like? / How is your school life?'],
+      ['收到某人的信件（或电子邮件、电话等）', 'hear from sb'],
+      ['愿意/想要做某事', 'would like to do sth'],
+      ['说一些中文', 'speak a little Chinese'],
+      ['参观有趣的地方', 'visit fun places'],
+      ['我迫不及待了。', 'I can’t wait.'],
+      ['祝一切顺利', 'all the best'],
+      ['当然', 'of course'],
+      ['打网球', 'play tennis'],
+      ['去滑旱冰', 'go roller skating'],
+      ['游泳队的一员', 'a member of the swimming team'],
+      ['学习如何种苹果', 'learn how to grow apples'],
+      ['植树', 'plant trees'],
+      ['参观一次田野', 'have a tour of the fields'],
+      ['在学校网站上', 'on the school website'],
+      ['观看一个视频', 'watch a video'],
+      ['喜欢待在外面', 'like being outside'],
+      ['靠近大自然', 'get close to nature'],
+      ['享受平静和安宁', 'enjoy the peace and quiet'],
+      ['竭尽全力做某事', 'try one’s best to do sth'],
+      ['使事情更好', 'make things better'],
+      ['一次累人的学校旅行', 'a tiring school trip'],
+      ['保持我们学校区域清洁感觉很好。', 'It feels good to keep our school area clean.'],
+      ['我们的班级值日', 'our class duties'],
+      ['参加', 'take part in'],
+      ['以小组活动', 'work in groups'],
+      ['轮流做某事', 'take turns to do sth'],
+      ['扫地', 'sweep the floor'],
+      ['擦黑板', 'clean the blackboard'],
+      ['清空垃圾桶', 'empty the bins'],
+      ['给植物浇水', 'water the plants'],
+      ['照料植物', 'take care of plants'],
+      ['为我们班级做事', 'do something for our class'],
+      ['通过值日了解团队协作', 'learn about teamwork through chores'],
+      ['保持我们的教室干净整洁', 'keep our classroom clean and tidy']
+    ],
+    '5': [
+      ['一种健康的生活方式', 'a healthy lifestyle'],
+      ['一些糖果和巧克力', 'some sweets and chocolate'],
+      ['各种点心', 'all kinds of snacks'],
+      ['对健康有益/害', 'be good/bad for health'],
+      ['买一些黄瓜、西瓜和柠檬', 'buy some cucumbers, watermelons and lemons'],
+      ['像甜椒和胡萝卜那样健康的蔬菜', 'healthy vegetables like peppers and carrots'],
+      ['经常吃牛奶和鸡蛋对我们来说是健康的。', 'It’s healthy for us to have milk and eggs often.'],
+      ['其他什么', 'what else'],
+      ['美味的牛肉和猪肉', 'delicious beef and pork'],
+      ['睡九小时的觉', 'get nine hours of sleep'],
+      ['每天跳舞一小时', 'dance for an hour every day'],
+      ['保持健康对我来说很重要。', 'It is important for me to keep fit.'],
+      ['午饭吃羊肉、豆腐和蔬菜', 'have mutton, tofu and vegetables for lunch'],
+      ['有健康的饮食', 'have a healthy diet'],
+      ['不吃早饭去上学', 'go to school without breakfast'],
+      ['太多糖', 'too much sugar'],
+      ['早餐吃一个煎饼', 'have a pancake for breakfast'],
+      ['对我们的牙齿有害', 'be bad for our teeth'],
+      ['一个宅家的人', 'a homebody'],
+      ['经常锻炼', 'exercise very often'],
+      ['爱吃甜食', 'have a sweet tooth'],
+      ['对我来说拒绝蛋糕很难。', 'It’s hard for me to say no to cakes.'],
+      ['熬夜到很晚', 'stay up late'],
+      ['多吃果蔬', 'eat more fruit and vegetables'],
+      ['少吃糖', 'eat less sugar'],
+      ['需要做某事', 'need to do sth'],
+      ['改变他的不健康的生活方式', 'change his unhealthy lifestyle'],
+      ['确保', 'make sure'],
+      ['得到充足的睡眠/锻炼', 'get enough sleep/exercise'],
+      ['一块奶酪', 'a piece of cheese'],
+      ['一碗汤', 'a bowl of soup'],
+      ['一小袋盐', 'a packet of salt'],
+      ['两袋大米', 'two bags of rice'],
+      ['四千克肉', 'four kilos of meat'],
+      ['五盒牛奶', 'five cartons of milk'],
+      ['六瓶果汁', 'six bottles of juice'],
+      ['多于/少于三次', 'more/less than 3 times'],
+      ['爱吃甜食的人', 'people with a sweet tooth'],
+      ['几乎每天', 'almost every day'],
+      ['像炸薯条那样不健康的食物', 'unhealthy food like chips'],
+      ['你多久锻炼一次？', 'How often do you exercise?'],
+      ['你每晚睡多久？', 'How long do you sleep every night?'],
+      ['花时间在智能手机和平板电脑上', 'spend time on the smartphone and tablet'],
+      ['你的得分', 'your score'],
+      ['得三分', 'get three points'],
+      ['以健康的方式吃', 'eat in a healthy way'],
+      ['早饭吃一顿大餐', 'have a big meal for breakfast'],
+      ['对你的饮食、锻炼和睡眠做出一些改变', 'make some changes to your diet, exercise and sleep'],
+      ['煮美味的粥', 'cook delicious porridge'],
+      ['错过早餐', 'miss breakfast'],
+      ['给我们一上午的能量', 'give us energy for the whole morning'],
+      ['对我来说,健康的生活方式都是关于健康的饮食、足够的运动和休息。', 'For me, a healthy lifestyle is all about a healthy diet, enough exercise and rest.'],
+      ['早餐吃一个馅饼,一个鸡蛋和一些草莓', 'have a pie, an egg and some strawberries for breakfast'],
+      ['两餐之间吃酸奶', 'have a yoghurt between meals'],
+      ['用不同的方式煮面', 'cook noodles in different ways'],
+      ['晚上的好睡眠让我第二天精力充沛。', 'A good night’s sleep gives me lots of energy for the next day.']
+    ],
+    '6': [
+      ['着装是一种生活方式。', 'Dressing is a way of life.'],
+      ['不同种类的衣服', 'different types/kinds of clothes'],
+      ['戴着一条围巾/领带', 'wear a scarf/tie'],
+      ['一条牛仔裤', 'a pair of jeans'],
+      ['一件紫色的夹克衫', 'a purple jacket'],
+      ['像红色那样的暖色', 'warm colours like red'],
+      ['像蓝色那样的冷色', 'cool colours like blue'],
+      ['感到平静', 'feel calm'],
+      ['流行色', 'colours in fashion'],
+      ['选正确的颜色穿', 'choose the right colours to wear'],
+      ['你能给我一些建议吗？', 'Could you give me some advice?'],
+      ['取决于', 'depend on'],
+      ['我们的肤色', 'the colour of our skin'],
+      ['例如,诸如', 'such as/for example'],
+      ['穿暖/冷色好看', 'look good in warm/cool colours'],
+      ['搭配得好', 'go well together'],
+      ['选相似的颜色', 'pick similar colours'],
+      ['穿深蓝色牛仔裤配淡蓝色的女士衬衫', 'wear dark blue jeans with a light blue blouse'],
+      ['混合冷暖色', 'mix warm and cool colours'],
+      ['使彼此突出', 'make each other stand out'],
+      ['匹配所有', 'match all'],
+      ['穿超过三种颜色', 'wear more than three colours'],
+      ['与任何颜色都很相配', 'go well with/match any colour'],
+      ['既适合正装,也适合休闲装', 'be suitable for both formal suits and casual clothes'],
+      ['穿衣打扮', 'get dressed'],
+      ['穿舒适的衣服', 'wear comfortable clothes'],
+      ['一场正式的活动', 'a formal event'],
+      ['一名时装设计师', 'a fashion designer'],
+      ['顺便说一下', 'by the way'],
+      ['在网上查东西', 'look things up on the internet'],
+      ['对某事不清楚', 'have no idea about sth'],
+      ['好吧。', 'All right.'],
+      ['我明白了。', 'I see.'],
+      ['一位小学同学', 'a primary school classmate'],
+      ['穿牛仔裤看起来精神', 'look smart in the jeans'],
+      ['你穿这件橙色的更好看。', 'You look better in the orange one.'],
+      ['许多不同种类的传统服饰', 'many different types/kinds of traditional clothes'],
+      ['一些流行的种类', 'some popular types/kinds'],
+      ['在生活中的重要日子', 'on important days in life'],
+      ['节日和结婚日', 'festivals and wedding days'],
+      ['流行的一部分', 'a part of fashion'],
+      ['有一种不一样的样式和设计', 'have a different style and design'],
+      ['展示我国的传统文化', 'show the traditional culture of our country'],
+      ['有两千年的历史', 'have a history of two thousand years'],
+      ['由丝绸/棉花/皮革制成', 'be made of silk/cotton/leather'],
+      ['传统中国服饰', 'traditional Chinese clothes'],
+      ['有一根腰带', 'have a belt'],
+      ['受年轻人欢迎', 'be popular with young people'],
+      ['摸起来丝滑柔软', 'feel smooth and soft'],
+      ['它们穿起来宽松又舒适。', 'They are loose and comfortable to wear.'],
+      ['衣服的特点/材料', 'the features/materials of clothes'],
+      ['我赞同。', 'I agree.'],
+      ['有清爽的外观', 'have a clean look'],
+      ['一双运动鞋', 'a pair of sports shoes'],
+      ['既不太长也不太大', 'not too long or too large'],
+      ['又轻巧又适合运动', 'be light and good for sport'],
+      ['有不同的尺码', 'come in different sizes']
+    ],
+    '7': [
+      ['明智地使用钱财', 'be wise with money'],
+      ['我们的购物习惯', 'our shopping habit'],
+      ['如何理财', 'how to manage money well'],
+      ['起重要作用', 'play an important role'],
+      ['一个储蓄罐', 'a money box'],
+      ['一只招财猫', 'a lucky cat'],
+      ['戴着棒球帽', 'wear a baseball cap'],
+      ['五颜六色的俄罗斯套娃', 'colourful Russian dolls'],
+      ['一个套一个', 'one inside another'],
+      ['一套不同尺寸的玩偶', 'a set of dolls in different sizes'],
+      ['充满了惊喜', 'be full of surprises'],
+      ['从最大到最小', 'from the biggest to the smallest'],
+      ['保护运动员的眼睛不受阳光伤害', 'protect the players’ eyes from the sun'],
+      ['一种时尚', 'a kind of fashion'],
+      ['为花钱制订计划', 'make plans for using money'],
+      ['花最多的钱购物', 'spend the most money (in) (going) shopping'],
+      ['一双新的运动鞋', 'a new pair of sports shoes'],
+      ['街对面的一家商场', 'a mall across the street'],
+      ['花费很多钱', 'cost a lot of money'],
+      ['别担心。', 'Don’t worry.'],
+      ['很会理财', 'manage money well'],
+      ['做一个预算', 'make a budget'],
+      ['够付你的教育费用', 'cover your education'],
+      ['支付日常所需', 'pay for daily needs'],
+      ['花费我们预算的大约 50%', 'cost about 50 per cent of our budget'],
+      ['花另外一半在我们的公寓上', 'spend the other half on our flat'],
+      ['比如什么', 'like what'],
+      ['例如度假', 'like taking holidays'],
+      ['可能会很贵', 'can be expensive'],
+      ['存一些钱', 'save some money'],
+      ['留下一些钱在银行账户', 'leave some money in the bank account'],
+      ['未雨绸缪', 'save for a rainy day'],
+      ['买一个钥匙扣作为礼物', 'buy a key ring as a present'],
+      ['在每个家庭中钱都很重要。', 'Money matters in every family.'],
+      ['遵守预算', 'keep to the budget'],
+      ['有一些零花钱', 'have some pocket money'],
+      ['你想用你的零花钱做什么？', 'What do you want to do with your pocket money?'],
+      ['为我们的朋友买一些礼物', 'buy some gifts for our friends'],
+      ['你剩下的钱足够了。', 'The rest of your money is enough.'],
+      ['有一本笔记本和一些橡皮。', 'There is a notebook and some erasers.'],
+      ['远离我的学校', 'far away from my school'],
+      ['给你。', 'Here you are.'],
+      ['成交！', 'That’s a deal!'],
+      ['这儿是购买大米的 45 枚硬币。', 'Here are 45 coins for the rice.'],
+      ['在线购买电脑', 'buy a computer online'],
+      ['世界上第一个使用纸币的国家', 'the first country to use paper money in the world'],
+      ['从祖父母和亲戚那里拿到压岁钱', 'get lucky money from grandparents and relatives'],
+      ['我也是。', 'Same here.'],
+      ['给我发送在线红包', 'send me online red packets'],
+      ['一次压岁钱调查', 'a lucky money survey'],
+      ['帮助有需要的儿童', 'help children in need'],
+      ['把大部分压岁钱花在学习用品上', 'spend most of the pocket money on school things'],
+      ['为你的压岁钱做预算', 'make a budget for your lucky money'],
+      ['把剩下的存在银行账户', 'save the rest in the bank account'],
+      ['正如妈妈总是告诉我的那样,存钱以备不时之需很重要。', 'As Mum always tells me, it is important to save for a rainy day.'],
+      ['每年年初', 'at the beginning of each year'],
+      ['有好的消费习惯', 'have good spending habits'],
+      ['怎么处理零花钱', 'what to do with the pocket money']
+    ],
+    '6': [
+      ['着装是一种生活方式。', 'Dressing is a way of life.'],
+      ['不同种类的衣服', 'different types/kinds of clothes'],
+      ['戴着一条围巾/领带', 'wear a scarf/tie'],
+      ['一条牛仔裤', 'a pair of jeans'],
+      ['一件紫色的夹克衫', 'a purple jacket'],
+      ['像红色那样的暖色', 'warm colours like red'],
+      ['像蓝色那样的冷色', 'cool colours like blue'],
+      ['感到平静', 'feel calm'],
+      ['流行色', 'colours in fashion'],
+      ['选正确的颜色穿', 'choose the right colours to wear'],
+      ['你能给我一些建议吗？', 'Could you give me some advice?'],
+      ['取决于', 'depend on'],
+      ['我们的肤色', 'the colour of our skin'],
+      ['例如,诸如', 'such as/for example'],
+      ['穿暖/冷色好看', 'look good in warm/cool colours'],
+      ['搭配得好', 'go well together'],
+      ['选相似的颜色', 'pick similar colours'],
+      ['穿深蓝色牛仔裤配淡蓝色的女士衬衫', 'wear dark blue jeans with a light blue blouse'],
+      ['混合冷暖色', 'mix warm and cool colours'],
+      ['使彼此突出', 'make each other stand out'],
+      ['匹配所有', 'match all'],
+      ['穿超过三种颜色', 'wear more than three colours'],
+      ['与任何颜色都很相配', 'go well with/match any colour'],
+      ['既适合正装,也适合休闲装', 'be suitable for both formal suits and casual clothes'],
+      ['穿衣打扮', 'get dressed'],
+      ['穿舒适的衣服', 'wear comfortable clothes'],
+      ['一场正式的活动', 'a formal event'],
+      ['一名时装设计师', 'a fashion designer'],
+      ['顺便说一下', 'by the way'],
+      ['在网上查东西', 'look things up on the internet'],
+      ['对某事不清楚', 'have no idea about sth'],
+      ['好吧。', 'All right.'],
+      ['我明白了。', 'I see.'],
+      ['一位小学同学', 'a primary school classmate'],
+      ['穿牛仔裤看起来精神', 'look smart in the jeans'],
+      ['你穿这件橙色的更好看。', 'You look better in the orange one.'],
+      ['许多不同种类的传统服饰', 'many different types/kinds of traditional clothes'],
+      ['一些流行的种类', 'some popular types/kinds'],
+      ['在生活中的重要日子', 'on important days in life'],
+      ['节日和结婚日', 'festivals and wedding days'],
+      ['流行的一部分', 'a part of fashion'],
+      ['有一种不一样的样式和设计', 'have a different style and design'],
+      ['展示我国的传统文化', 'show the traditional culture of our country'],
+      ['有两千年的历史', 'have a history of two thousand years'],
+      ['由丝绸/棉花/皮革制成', 'be made of silk/cotton/leather'],
+      ['传统中国服饰', 'traditional Chinese clothes'],
+      ['有一根腰带', 'have a belt'],
+      ['受年轻人欢迎', 'be popular with young people'],
+      ['摸起来丝滑柔软', 'feel smooth and soft'],
+      ['它们穿起来宽松又舒适。', 'They are loose and comfortable to wear.'],
+      ['衣服的特点/材料', 'the features/materials of clothes'],
+      ['我赞同。', 'I agree.'],
+      ['有清爽的外观', 'have a clean look'],
+      ['一双运动鞋', 'a pair of sports shoes'],
+      ['既不太长也不太大', 'not too long or too large'],
+      ['又轻巧又适合运动', 'be light and good for sport'],
+      ['有不同的尺码', 'come in different sizes']
+    ],
+    '8': [
+      ['让我们庆祝吧！', 'Let’s celebrate!'],
+      ['通向不同文化的窗口', 'a window to different cultures'],
+      ['全世界不同的节日', 'different festivals around the world'],
+      ['春节', 'the Spring Festival'],
+      ['端午节', 'the Dragon Boat Festival'],
+      ['中秋节', 'the Mid-Autumn Festival'],
+      ['在圣诞节', 'at Christmas'],
+      ['彭斯之夜', 'Burns Night'],
+      ['喜欢泼水节', 'like the Water Festival'],
+      ['聚在一起', 'get together'],
+      ['观看龙舟赛', 'watch the dragon boat races'],
+      ['纪念伟大的诗人屈原', 'remember the great poet Qu Yuan'],
+      ['读诗', 'read poems'],
+      ['新年快乐！', 'Happy New Year!'],
+      ['女士们,先生们', 'ladies and gentlemen'],
+      ['美味的粽子', 'delicious rice dumplings'],
+      ['在门阶上撒盐', 'spread salt on the doorstep'],
+      ['好运和和平', 'good luck and peace'],
+      ['在即将到来的一年', 'in the coming year'],
+      ['在门上挂洋葱', 'hang onions on the door'],
+      ['让他们远离坏事', 'keep them from bad things'],
+      ['一种希腊传统', 'a Greek tradition'],
+      ['好运的象征', 'a symbol of good luck'],
+      ['将近午夜', 'near midnight'],
+      ['敲响 12 点', 'strike 12'],
+      ['跳下椅子进入新的一年', 'jump off the chairs into the new year'],
+      ['希望在', 'in the hope of'],
+      ['克服这个难题', 'get over the problem'],
+      ['在来年', 'in the year ahead'],
+      ['充满旅行的新年', 'a new year with lots of travel'],
+      ['提着手提箱在街区里转来转去', 'carry suitcases around the block'],
+      ['充满了精彩有趣的新年传统', 'be full of wonderful and interesting New Year traditions'],
+      ['无论你在哪里', 'wherever you are'],
+      ['辞旧迎新', 'out with the old, in with the new'],
+      ['拉小提琴', 'play the violin'],
+      ['做春卷', 'make spring rolls'],
+      ['为舞蹈演奏生动的音乐', 'play lively music for the dance'],
+      ['看新年音乐会', 'watch the New Year’s Concert'],
+      ['现在,此刻', 'at the moment/right now'],
+      ['演奏一首著名的曲子', 'play a famous piece'],
+      ['随着音乐起舞', 'dance to the music'],
+      ['那听起来很有趣！', 'That sounds like fun!'],
+      ['为今晚的一顿丰盛的家庭晚餐做准备', 'get ready for a big family dinner tonight'],
+      ['玩得开心', 'enjoy oneself'],
+      ['重阳节', 'the Double Ninth Festival'],
+      ['欣赏秋天的自然美景', 'enjoy the natural beauty of autumn'],
+      ['对长辈表示尊重和爱', 'show respect and love for the elders'],
+      ['听起来像中文中的“久久”这个词', 'sound like the word “forever” in Chinese'],
+      ['祝愿我们的长辈长寿、生活幸福', 'wish our elders a long and happy life'],
+      ['和家人朋友欢聚一堂', 'get together with family and friends'],
+      ['去爬山', 'go mountain climbing'],
+      ['给彼此礼物', 'give each other presents'],
+      ['唱圣诞歌曲', 'sing Christmas songs'],
+      ['装饰家里', 'decorate the homes'],
+      ['在除夕夜', 'on the Chinese New Year’s Eve'],
+      ['拜访亲戚朋友', 'visit relatives and friends'],
+      ['提前张帖春联', 'put up the Spring Festival couplets beforehand'],
+      ['准备一些有特殊意义的菜', 'prepare some dishes with special meanings'],
+      ['在假期中', 'during the holiday'],
+      ['祝他们好运', 'wish them good luck'],
+      ['持续到元宵节', 'last till the Lantern Festival'],
+      ['心中感到温暖', 'feel warm in the hearts']
+    ],
+    '7': [
+      ['明智地使用钱财', 'be wise with money'],
+      ['我们的购物习惯', 'our shopping habit'],
+      ['如何理财', 'how to manage money well'],
+      ['起重要作用', 'play an important role'],
+      ['一个储蓄罐', 'a money box'],
+      ['一只招财猫', 'a lucky cat'],
+      ['戴着棒球帽', 'wear a baseball cap'],
+      ['五颜六色的俄罗斯套娃', 'colourful Russian dolls'],
+      ['一个套一个', 'one inside another'],
+      ['一套不同尺寸的玩偶', 'a set of dolls in different sizes'],
+      ['充满了惊喜', 'be full of surprises'],
+      ['从最大到最小', 'from the biggest to the smallest'],
+      ['保护运动员的眼睛不受阳光伤害', 'protect the players’ eyes from the sun'],
+      ['一种时尚', 'a kind of fashion'],
+      ['为花钱制订计划', 'make plans for using money'],
+      ['花最多的钱购物', 'spend the most money (in) (going) shopping'],
+      ['一双新的运动鞋', 'a new pair of sports shoes'],
+      ['街对面的一家商场', 'a mall across the street'],
+      ['花费很多钱', 'cost a lot of money'],
+      ['别担心。', 'Don’t worry.'],
+      ['很会理财', 'manage money well'],
+      ['做一个预算', 'make a budget'],
+      ['够付你的教育费用', 'cover your education'],
+      ['支付日常所需', 'pay for daily needs'],
+      ['花费我们预算的大约 50%', 'cost about 50 per cent of our budget'],
+      ['花另外一半在我们的公寓上', 'spend the other half on our flat'],
+      ['比如什么', 'like what'],
+      ['例如度假', 'like taking holidays'],
+      ['可能会很贵', 'can be expensive'],
+      ['存一些钱', 'save some money'],
+      ['留下一些钱在银行账户', 'leave some money in the bank account'],
+      ['未雨绸缪', 'save for a rainy day'],
+      ['买一个钥匙扣作为礼物', 'buy a key ring as a present'],
+      ['在每个家庭中钱都很重要。', 'Money matters in every family.'],
+      ['遵守预算', 'keep to the budget'],
+      ['有一些零花钱', 'have some pocket money'],
+      ['你想用你的零花钱做什么？', 'What do you want to do with your pocket money?'],
+      ['为我们的朋友买一些礼物', 'buy some gifts for our friends'],
+      ['你剩下的钱足够了。', 'The rest of your money is enough.'],
+      ['有一本笔记本和一些橡皮。', 'There is a notebook and some erasers.'],
+      ['远离我的学校', 'far away from my school'],
+      ['给你。', 'Here you are.'],
+      ['成交！', 'That’s a deal!'],
+      ['这儿是购买大米的 45 枚硬币。', 'Here are 45 coins for the rice.'],
+      ['在线购买电脑', 'buy a computer online'],
+      ['世界上第一个使用纸币的国家', 'the first country to use paper money in the world'],
+      ['从祖父母和亲戚那里拿到压岁钱', 'get lucky money from grandparents and relatives'],
+      ['我也是。', 'Same here.'],
+      ['给我发送在线红包', 'send me online red packets'],
+      ['一次压岁钱调查', 'a lucky money survey'],
+      ['帮助有需要的儿童', 'help children in need'],
+      ['把大部分压岁钱花在学习用品上', 'spend most of the pocket money on school things'],
+      ['为你的压岁钱做预算', 'make a budget for your lucky money'],
+      ['把剩下的存在银行账户', 'save the rest in the bank account'],
+      ['正如妈妈总是告诉我的那样,存钱以备不时之需很重要。', 'As Mum always tells me, it is important to save for a rainy day.'],
+      ['每年年初', 'at the beginning of each year'],
+      ['有好的消费习惯', 'have good spending habits'],
+      ['怎么处理零花钱', 'what to do with the pocket money']
+    ],
+    '6': [
+      ['着装是一种生活方式。', 'Dressing is a way of life.'],
+      ['不同种类的衣服', 'different types/kinds of clothes'],
+      ['戴着一条围巾/领带', 'wear a scarf/tie'],
+      ['一条牛仔裤', 'a pair of jeans'],
+      ['一件紫色的夹克衫', 'a purple jacket'],
+      ['像红色那样的暖色', 'warm colours like red'],
+      ['像蓝色那样的冷色', 'cool colours like blue'],
+      ['感到平静', 'feel calm'],
+      ['流行色', 'colours in fashion'],
+      ['选正确的颜色穿', 'choose the right colours to wear'],
+      ['你能给我一些建议吗？', 'Could you give me some advice?'],
+      ['取决于', 'depend on'],
+      ['我们的肤色', 'the colour of our skin'],
+      ['例如,诸如', 'such as/for example'],
+      ['穿暖/冷色好看', 'look good in warm/cool colours'],
+      ['搭配得好', 'go well together'],
+      ['选相似的颜色', 'pick similar colours'],
+      ['穿深蓝色牛仔裤配淡蓝色的女士衬衫', 'wear dark blue jeans with a light blue blouse'],
+      ['混合冷暖色', 'mix warm and cool colours'],
+      ['使彼此突出', 'make each other stand out'],
+      ['匹配所有', 'match all'],
+      ['穿超过三种颜色', 'wear more than three colours'],
+      ['与任何颜色都很相配', 'go well with/match any colour'],
+      ['既适合正装,也适合休闲装', 'be suitable for both formal suits and casual clothes'],
+      ['穿衣打扮', 'get dressed'],
+      ['穿舒适的衣服', 'wear comfortable clothes'],
+      ['一场正式的活动', 'a formal event'],
+      ['一名时装设计师', 'a fashion designer'],
+      ['顺便说一下', 'by the way'],
+      ['在网上查东西', 'look things up on the internet'],
+      ['对某事不清楚', 'have no idea about sth'],
+      ['好吧。', 'All right.'],
+      ['我明白了。', 'I see.'],
+      ['一位小学同学', 'a primary school classmate'],
+      ['穿牛仔裤看起来精神', 'look smart in the jeans'],
+      ['你穿这件橙色的更好看。', 'You look better in the orange one.'],
+      ['许多不同种类的传统服饰', 'many different types/kinds of traditional clothes'],
+      ['一些流行的种类', 'some popular types/kinds'],
+      ['在生活中的重要日子', 'on important days in life'],
+      ['节日和结婚日', 'festivals and wedding days'],
+      ['流行的一部分', 'a part of fashion'],
+      ['有一种不一样的样式和设计', 'have a different style and design'],
+      ['展示我国的传统文化', 'show the traditional culture of our country'],
+      ['有两千年的历史', 'have a history of two thousand years'],
+      ['由丝绸/棉花/皮革制成', 'be made of silk/cotton/leather'],
+      ['传统中国服饰', 'traditional Chinese clothes'],
+      ['有一根腰带', 'have a belt'],
+      ['受年轻人欢迎', 'be popular with young people'],
+      ['摸起来丝滑柔软', 'feel smooth and soft'],
+      ['它们穿起来宽松又舒适。', 'They are loose and comfortable to wear.'],
+      ['衣服的特点/材料', 'the features/materials of clothes'],
+      ['我赞同。', 'I agree.'],
+      ['有清爽的外观', 'have a clean look'],
+      ['一双运动鞋', 'a pair of sports shoes'],
+      ['既不太长也不太大', 'not too long or too large'],
+      ['又轻巧又适合运动', 'be light and good for sport'],
+      ['有不同的尺码', 'come in different sizes']
+    ],
+  };
+  function greetWord(h) {
+    const t = (h === undefined || h === null) ? new Date().getHours() : h;
+    if (t >= 5 && t < 9) return '早上好';
+    if (t >= 9 && t < 12) return '上午好';
+    if (t >= 12 && t < 14) return '中午好';
+    if (t >= 14 && t < 18) return '下午好';
+    if (t >= 18 && t < 22) return '晚上好';
+    return '夜深了，该睡觉啦';
+  }
+  function refreshGreeting() { setText('greet-hi', greetWord()); }
+  setInterval(refreshGreeting, 60000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) refreshGreeting(); });
   function applyProfile() {
     const p = curProfile();
     document.body.classList.toggle('theme-shawn', PROFILE_ID === 'shawn');
+    refreshGreeting();
     setText('brand-text', p.brand);
     setText('greet-sub', p.sub);
     setText('child-name', childName());
-    setText('foot-text', p.foot);
+    setText('foot-text', p.foot + '  |  build ' + BUILD_TAG);
     document.querySelectorAll('.p-switch button').forEach(function (b) {
       b.classList.toggle('active', b.getAttribute('data-p') === PROFILE_ID);
     });
@@ -3413,6 +4287,141 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     mc('初二上', '语法', '语法：She asked me if I ______ (be) free the next day.', ['am', 'was', 'will be', 'would be'], 'would be', '宾语从句主句为过去时，从句用过去将来时。'),
     mc('初二上', '语法', '语法：We ______ (know) each other since 2015.', ['know', 'knew', 'have known', 'knowing'], 'have known', 'since ＋ 时间点，用现在完成时。'),
     mc('初二上', '语法', '语法：The more you read, the ______ (much) you will learn.', ['much', 'more', 'most', 'many'], 'more', 'the more…the more… 越……越……。'),
+    /* ===== 再补一批：每个题型 +4 题（题库到 20 题 / 题型） ===== */
+    mc('初一上', '读音', '下列单词中，哪一个词中 th 的读音与其他三个不同？', ['this', 'that', 'thank', 'these'], 'thank', 'thank 中 th 读 /θ/，其余读 /ð/。'),
+    mc('初一上', '读音', '下列单词中，哪一个词中 e 的读音与其他三个不同？', ['me', 'we', 'he', 'yes'], 'yes', 'yes 中 e 读 /e/，其余读 /iː/。'),
+    mc('初一上', '读音', '下列单词中，哪一个词中 o 的读音与其他三个不同？', ['so', 'go', 'no', 'box'], 'box', 'box 中 o 读 /ɒ/，其余读 /əʊ/。'),
+    mc('初一上', '读音', '下列单词中，哪一个词中 u 的读音与其他三个不同？', ['up', 'bus', 'but', 'put'], 'put', 'put 中 u 读 /ʊ/，其余读 /ʌ/。'),
+    fb('初一上', '首字母填空', 'My brother is a d______. He drives a bus.', 'driver', '司机 driver。'),
+    fb('初一上', '首字母填空', 'I go to school by b______ every day.', 'bike', 'by bike 骑自行车。'),
+    fb('初一上', '首字母填空', 'Her favourite c______ is red.', 'colour', '颜色 colour。'),
+    fb('初一上', '首字母填空', 'We often play football on the p______.', 'playground', '操场 playground。'),
+    mc('初一上', '选择', 'Excuse me, ______ is the post office?', ['where', 'what', 'who', 'how'], 'where', '问地点用 where。'),
+    mc('初一上', '选择', 'There are ______ apples in the basket.', ['a', 'an', 'some', 'any'], 'some', '肯定句中复数名词前用 some。'),
+    mc('初一上', '选择', 'I can ______ English well.', ['speak', 'speaks', 'speaking', 'spoke'], 'speak', '情态动词 can 后接动词原形。'),
+    mc('初一上', '选择', '______ do you spell your name?', ['How', 'What', 'Where', 'Who'], 'How', '问“怎么拼写”用 How。'),
+    mc('初一上', '语法', '语法：Look! The boys ______ (play) basketball.', ['play', 'plays', 'are playing', 'played'], 'are playing', 'Look! 提示现在进行时，主语 boys 用 are playing。'),
+    mc('初一上', '语法', '语法：My mother ______ (like) apples.', ['like', 'likes', 'liking', 'liked'], 'likes', '一般现在时三单，like 加 -s。'),
+    mc('初一上', '语法', '语法：This is ______ (we) classroom.', ['we', 'us', 'our', 'ours'], 'our', '形容词性物主代词 our 修饰名词。'),
+    mc('初一上', '语法', '语法：I have two ______ (knife).', ['knife', 'knifes', 'knives', 'knifs'], 'knives', 'fe 结尾变复数：把 f 变 v 加 -es。'),
+    mc('初一下', '读音', '下列单词中，哪一个词中 i 的读音与其他三个不同？', ['time', 'five', 'like', 'give'], 'give', 'give 中 i 读 /ɪ/，其余读 /aɪ/。'),
+    mc('初一下', '读音', '下列单词中，哪一个词中 a 的读音与其他三个不同？', ['bag', 'cat', 'map', 'name'], 'name', 'name 中 a 读 /eɪ/，其余读 /æ/。'),
+    mc('初一下', '读音', '下列单词中，哪一个词中 oo 的读音与其他三个不同？', ['food', 'moon', 'room', 'cook'], 'cook', 'cook 中 oo 读 /ʊ/，其余读 /uː/。'),
+    mc('初一下', '读音', '下列单词中，哪一个词中 ir 的读音与其他三个不同？', ['bird', 'girl', 'first', 'tired'], 'tired', 'tired 中 ire 读 /aɪə/，其余 ir 读 /ɜː/。'),
+    fb('初一下', '首字母填空', 'He is very t______ after the long walk.', 'tired', '疲劳的 tired。'),
+    fb('初一下', '首字母填空', 'My grandfather often reads n______ after dinner.', 'newspapers', '读报纸 read newspapers。'),
+    fb('初一下', '首字母填空', 'He is ill, so he is in h______.', 'hospital', 'in hospital 住院。'),
+    fb('初一下', '首字母填空', 'Beijing is the c______ of China.', 'capital', '首都 capital。'),
+    mc('初一下', '选择', 'There ______ two pens and a book on the desk.', ['is', 'are', 'have', 'has'], 'are', 'There be 就近一致：靠近的是 two pens，用 are。'),
+    mc('初一下', '选择', 'It is not easy ______ English well.', ['learn', 'learns', 'learning', 'to learn'], 'to learn', 'It is ＋ 形容词 ＋ to do sth.。'),
+    mc('初一下', '选择', '______ interesting book it is!', ['What', 'What an', 'How', 'How a'], 'What an', '感叹句 What ＋ a/an ＋ 形容词 ＋ 名词。'),
+    mc('初一下', '选择', 'You look tired. You should ______ a rest.', ['have', 'has', 'having', 'had'], 'have', 'should 后接动词原形。'),
+    mc('初一下', '语法', '语法：The shop ______ (open) at 8:00 every day.', ['open', 'opens', 'opening', 'opened'], 'opens', '一般现在时三单，open 加 -s。'),
+    mc('初一下', '语法', '语法：Look at the clouds. It ______ (rain) soon.', ['rains', 'is going to rain', 'rained', 'rain'], 'is going to rain', '根据云彩判断即将下雨，用 be going to。'),
+    mc('初一下', '语法', '语法：My father ______ (buy) a new car last week.', ['buys', 'bought', 'buying', 'buy'], 'bought', 'last week 提示一般过去时，用 bought。'),
+    mc('初一下', '语法', '语法：There ______ (be) a lot of students in the hall.', ['is', 'are', 'has', 'be'], 'are', 'students 是复数，There be 用 are。'),
+    mc('初二上', '读音', '下列单词中，哪一个词中 a 的读音与其他三个不同？', ['watch', 'want', 'what', 'make'], 'make', 'make 中 a 读 /eɪ/，watch/want/what 中 a 读 /ɒ/。'),
+    mc('初二上', '读音', '下列单词中，哪一个词中 oo 的读音与其他三个不同？', ['food', 'school', 'soon', 'took'], 'took', 'took 中 oo 读 /ʊ/，其余读 /uː/。'),
+    mc('初二上', '读音', '下列单词中，哪一个词中 th 的读音与其他三个不同？', ['think', 'three', 'throw', 'other'], 'other', 'other 中 th 读 /ð/，其余读 /θ/。'),
+    mc('初二上', '读音', '下列单词中，哪一个词中 ow 的读音与其他三个不同？', ['know', 'slow', 'snow', 'now'], 'now', 'now 中 ow 读 /aʊ/，其余读 /əʊ/。'),
+    fb('初二上', '首字母填空', 'You should keep your room c______.', 'clean', 'keep ＋ 形容词，clean 干净的。'),
+    fb('初二上', '首字母填空', 'We are going to have a class m______ this afternoon.', 'meeting', '班会 class meeting。'),
+    fb('初二上', '首字母填空', 'I can not f______ my keys. Let me look for them.', 'find', '找到 find。'),
+    fb('初二上', '首字母填空', 'The doctor said I should take more e______.', 'exercise', 'take exercise 锻炼。'),
+    mc('初二上', '选择', 'Neither of them ______ in the classroom.', ['is', 'are', 'be', 'were'], 'is', 'neither of ＋ 复数名词作主语时，谓语用单数。'),
+    mc('初二上', '选择', 'The more careful you are, the ______ mistakes you will make.', ['few', 'fewer', 'little', 'less'], 'fewer', 'the more…the fewer…；mistakes 是可数名词复数，用 fewer。'),
+    mc('初二上', '选择', 'She is the girl ______ helped me yesterday.', ['which', 'who', 'whom', 'whose'], 'who', '先行词指人且在从句中作主语，用 who。'),
+    mc('初二上', '选择', 'It is the third time that he ______ late.', ['is', 'was', 'has been', 'had been'], 'has been', 'It is the … time that ＋ 现在完成时。'),
+    mc('初二上', '语法', '语法：He ______ (read) a book while I was doing my homework.', ['reads', 'was reading', 'read', 'is reading'], 'was reading', 'while 引导的过去时间状语，主句用过去进行时。'),
+    mc('初二上', '语法', '语法：The trees ______ (plant) by us last year.', ['planted', 'were planted', 'are planted', 'plant'], 'were planted', '树是被种的，last year 用一般过去时的被动语态。'),
+    mc('初二上', '语法', '语法：I will tell him the news as soon as he ______ (come) back.', ['comes', 'will come', 'came', 'coming'], 'comes', '主将从现：时间状语从句用一般现在时。'),
+    mc('初二上', '语法', '语法：We must stop ______ (talk) in class.', ['talk', 'to talk', 'talking', 'talked'], 'talking', 'stop doing sth. 停止做某事。'),
+    /* ===== 句型填空也补齐到 16 题（初一下 / 初二上） ===== */
+    fb('初一下', '句型填空', '完成句子：他昨天没去上学，因为他病了。He did not go to school because he was i______.', 'ill', 'be ill 生病。'),
+    fb('初一下', '句型填空', '完成句子：这个盒子太小了，装不下这些书。The box is too small to h______ these books.', 'hold', 'hold 容纳、装得下。'),
+    fb('初一下', '句型填空', '完成句子：我们下个月要去北京旅游。We are going to t______ to Beijing next month.', 'travel', 'travel to 去……旅行。'),
+    fb('初一下', '句型填空', '完成句子：他每天花半小时跑步。It takes him half an hour to r______ every day.', 'run', 'It takes sb. some time to do sth.。'),
+    fb('初一下', '句型填空', '完成句子：风太大了，请把窗户关上。It is too windy. Please c______ the window.', 'close', '关上 close。'),
+    fb('初一下', '句型填空', '完成句子：她一边听音乐一边做作业。She listens to music w______ doing her homework.', 'while', 'while 表示“当……的时候”。'),
+    fb('初二上', '句型填空', '完成句子：他决定放弃这次机会。He decided to g______ up the chance.', 'give', 'give up 放弃。'),
+    fb('初二上', '句型填空', '完成句子：这本书值得一读。The book is w______ reading.', 'worth', 'be worth doing sth. 值得做某事。'),
+    fb('初二上', '句型填空', '完成句子：他习惯于早起。He is used to g______ up early.', 'getting', 'be used to doing sth. 习惯于做某事。'),
+    fb('初二上', '句型填空', '完成句子：我们班由 45 名学生组成。Our class is m______ up of 45 students.', 'made', 'be made up of 由……组成。'),
+    fb('初二上', '句型填空', '完成句子：他的话让我想起了我的童年。His words r______ me of my childhood.', 'remind', 'remind sb. of sth. 使某人想起某事。'),
+    fb('初二上', '句型填空', '完成句子：请把你的字典借给我。Please l______ me your dictionary.', 'lend', 'lend sb. sth. 把某物借给某人。'),
+    /* ===== 再扩一批：每个题型 +6 题（每类题库到 26 题左右，刷新不再重复） ===== */
+    mc('初一上', '读音', '读音判断：下列单词中，哪一个词的 sh 部分与其他三个读音不同？', ['usually', 'pleasure', 'sure', 'measure'], 'sure', 'sure 中 s 读 /ʃ/，其余读 /ʒ/。'),
+    mc('初一上', '读音', '读音判断：下列单词中，哪一个词的 ea 部分与其他三个读音不同？', ['bread', 'head', 'great', 'ready'], 'great', 'great 中 ea 读 /eɪ/，其余读 /e/。'),
+    mc('初一上', '读音', '读音判断：下列单词中，哪一个词的 ow 部分与其他三个读音不同？', ['how', 'now', 'cow', 'know'], 'know', 'know 中 ow 读 /əʊ/，其余读 /aʊ/。'),
+    mc('初一上', '读音', '读音判断：下列单词中，哪一个词的 th 部分与其他三个读音不同？', ['mother', 'father', 'brother', 'three'], 'three', 'three 中 th 读 /θ/，其余读 /ð/。'),
+    mc('初一上', '读音', '读音判断：下列单词中，哪一个词的 i 部分与其他三个读音不同？', ['in', 'it', 'is', 'like'], 'like', 'like 中 i 读 /aɪ/，其余读 /ɪ/。'),
+    mc('初一上', '读音', '读音判断：下列单词中，哪一个词的 y 部分与其他三个读音不同？', ['yes', 'you', 'my', 'yellow'], 'my', 'my 中 y 读 /aɪ/，其余读 /j/。'),
+    fb('初一上', '首字母填空', 'I have a new bike. I like it very m______.', 'much', 'very much 非常。'),
+    fb('初一上', '首字母填空', 'There is a big tree in f______ of our house.', 'front', 'in front of 在……前面。'),
+    fb('初一上', '首字母填空', 'We usually have a short b______ after each class.', 'break', '课间休息 have a break。'),
+    fb('初一上', '首字母填空', 'The film is very i______. We all like it.', 'interesting', '有趣的 interesting。'),
+    fb('初一上', '首字母填空', 'She is good at drawing. She wants to be an a______.', 'artist', '艺术家 artist。'),
+    fb('初一上', '首字母填空', 'Please write your name on the p______.', 'paper', '纸 paper，不可数名词。'),
+    mc('初一上', '选择', 'How many ______ are there in your class?', ['student', 'students', 'studentes', 'a student'], 'students', 'How many 后接可数名词复数。'),
+    mc('初一上', '选择', 'She often helps ______ with my homework.', ['I', 'me', 'my', 'mine'], 'me', '动词后用人称代词宾格 me。'),
+    mc('初一上', '选择', 'There ______ a lot of water in the glass.', ['is', 'are', 'be', 'have'], 'is', 'water 不可数，There be 用 is。'),
+    mc('初一上', '选择', 'My birthday is ______ August.', ['in', 'on', 'at', 'for'], 'in', '月份前用 in。'),
+    mc('初一上', '选择', '______ books are these?', ['Who', 'Whose', 'What', 'Which'], 'Whose', '问“谁的”用 Whose。'),
+    mc('初一上', '选择', 'He ______ TV after dinner every day.', ['watch', 'watches', 'watching', 'watched'], 'watches', '一般现在时三单，watch 加 -es。'),
+    mc('初一上', '语法', '语法：It ______ (be) Monday today.', ['is', 'are', 'am', 'be'], 'is', '主语 it 用 is。'),
+    mc('初一上', '语法', '语法：My sister and I ______ (be) in the same school.', ['is', 'am', 'are', 'be'], 'are', '主语是复数，用 are。'),
+    mc('初一上', '语法', '语法：He ______ (study) English every day.', ['study', 'studies', 'studying', 'studied'], 'studies', '辅音字母加 y 结尾，三单变 y 为 i 加 -es。'),
+    mc('初一上', '语法', '语法：There ______ (be) some bread on the table.', ['is', 'are', 'be', 'have'], 'is', 'bread 不可数，用 is。'),
+    mc('初一上', '语法', '语法：The twins ______ (have) a new computer.', ['have', 'has', 'having', 'had'], 'have', '主语 the twins 是复数，用 have。'),
+    mc('初一上', '语法', '语法：She can ______ (dance) well.', ['dance', 'dances', 'dancing', 'danced'], 'dance', '情态动词 can 后接动词原形。'),
+    mc('初一下', '读音', '读音判断：下列单词中，哪一个词的 th 部分与其他三个读音不同？', ['thank', 'three', 'throw', 'weather'], 'weather', 'weather 中 th 读 /ð/，其余读 /θ/。'),
+    mc('初一下', '读音', '读音判断：下列单词中，哪一个词的 igh 部分与其他三个读音不同？', ['high', 'light', 'night', 'weight'], 'weight', 'weight 中读音是 /eɪ/，其余 igh 读 /aɪ/。'),
+    mc('初一下', '读音', '读音判断：下列单词中，哪一个词的 s 部分与其他三个读音不同？', ['these', 'those', 'this', 'sure'], 'sure', 'sure 中 s 读 /ʃ/，其余读 /ð/ 或 /s/（this 读 /ð/）。'),
+    mc('初一下', '读音', '读音判断：下列单词中，哪一个词的 ch 部分与其他三个读音不同？', ['much', 'chair', 'teacher', 'school'], 'school', 'school 中 ch 读 /k/，其余读 /tʃ/。'),
+    mc('初一下', '读音', '读音判断：下列单词中，哪一个词的 or 部分与其他三个读音不同？', ['for', 'short', 'horse', 'word'], 'word', 'word 中 or 读 /ɜː/，其余读 /ɔː/。'),
+    mc('初一下', '读音', '读音判断：下列单词中，哪一个词的 u 部分与其他三个读音不同？', ['nurse', 'turn', 'but', 'hurt'], 'but', 'but 中 u 读 /ʌ/，其余读 /ɜː/。'),
+    fb('初一下', '首字母填空', 'We must keep the classroom c______ every day.', 'clean', 'keep ＋ 形容词，clean 干净的。'),
+    fb('初一下', '首字母填空', 'I am very t______. Let me have some water.', 'thirsty', '口渴的 thirsty。'),
+    fb('初一下', '首字母填空', 'The shopping mall is very c______ at weekends.', 'crowded', '拥挤的 crowded。'),
+    fb('初一下', '首字母填空', 'Please put the book back on the s______.', 'shelf', '书架 shelf，复数是 shelves。'),
+    fb('初一下', '首字母填空', 'My father is a doctor. He works in a h______.', 'hospital', '在医院工作。'),
+    fb('初一下', '首字母填空', 'It is very d______ to play with fire.', 'dangerous', '危险的 dangerous。'),
+    mc('初一下', '选择', 'He ______ to Beijing last month.', ['go', 'goes', 'went', 'going'], 'went', 'last month 提示一般过去时，用 went。'),
+    mc('初一下', '选择', 'Would you like ______ to drink?', ['something', 'anything', 'nothing', 'everything'], 'something', '表示请求、邀请的问句用 something。'),
+    mc('初一下', '选择', 'My father is busy ______ his work.', ['with', 'in', 'on', 'at'], 'with', 'be busy with sth. 忙于某事。'),
+    mc('初一下', '选择', 'The girl ______ a red dress is my sister.', ['in', 'on', 'with', 'wear'], 'in', 'in ＋ 衣服表示“穿着”。'),
+    mc('初一下', '选择', 'He asked me ______ help him.', ['to', 'for', 'with', 'of'], 'to', 'ask sb. to do sth. 请某人做某事。'),
+    mc('初一下', '选择', 'I am looking forward ______ seeing you.', ['to', 'for', 'at', 'in'], 'to', 'look forward to doing sth. 期待做某事。'),
+    mc('初一下', '语法', '语法：He ______ (not play) computer games last night.', ['did not play', 'does not play', 'not play', 'was not play'], 'did not play', '一般过去时否定用 did not ＋ 动词原形。'),
+    mc('初一下', '语法', '语法：My father ______ (leave) for Shanghai yesterday.', ['leaves', 'left', 'leaving', 'leave'], 'left', 'yesterday 提示一般过去时，leave 的过去式是 left。'),
+    mc('初一下', '语法', '语法：The children ______ (be) at home now.', ['is', 'am', 'are', 'be'], 'are', '主语 the children 是复数，用 are。'),
+    mc('初一下', '语法', '语法：It ______ (take) me an hour to get there.', ['take', 'takes', 'took', 'taking'], 'takes', 'It takes sb. some time to do sth.，主语 it 用 takes。'),
+    mc('初一下', '语法', '语法：She is ______ (interest) in music.', ['interesting', 'interested', 'interest', 'interestingly'], 'interested', 'be interested in 对……感兴趣，人作主语用 interested。'),
+    mc('初一下', '语法', '语法：They ______ (be) going to have a party.', ['is', 'am', 'are', 'be'], 'are', 'be going to 结构，主语 they 用 are。'),
+    mc('初二上', '读音', '读音判断：下列单词中，哪一个词的 oo 部分与其他三个读音不同？', ['food', 'moon', 'room', 'good'], 'good', 'good 中 oo 读 /ʊ/，其余读 /uː/。'),
+    mc('初二上', '读音', '读音判断：下列单词中，哪一个词的 a 部分与其他三个读音不同？', ['watch', 'want', 'what', 'name'], 'name', 'name 中 a 读 /eɪ/，其余读 /ɒ/。'),
+    mc('初二上', '读音', '读音判断：下列单词中，哪一个词的 th 部分与其他三个读音不同？', ['thin', 'thick', 'thank', 'than'], 'than', 'than 中 th 读 /ð/，其余读 /θ/。'),
+    mc('初二上', '读音', '读音判断：下列单词中，哪一个词的 ea 部分与其他三个读音不同？', ['heavy', 'bread', 'weather', 'great'], 'great', 'great 中 ea 读 /eɪ/，其余读 /e/。'),
+    mc('初二上', '读音', '读音判断：下列单词中，哪一个词的 c 部分与其他三个读音不同？', ['city', 'cinema', 'circle', 'cat'], 'cat', 'cat 中 c 读 /k/，其余读 /s/。'),
+    mc('初二上', '读音', '读音判断：下列单词中，哪一个词的 ou 部分与其他三个读音不同？', ['house', 'about', 'mouth', 'country'], 'country', 'country 中 ou 读 /ʌ/，其余读 /aʊ/。'),
+    fb('初二上', '首字母填空', 'He is very h______ and often helps others.', 'helpful', '乐于助人的 helpful。'),
+    fb('初二上', '首字母填空', 'This book is very i______. I want to read it again.', 'interesting', '有趣的 interesting。'),
+    fb('初二上', '首字母填空', 'We should be f______ to each other.', 'friendly', '友好的 friendly。'),
+    fb('初二上', '首字母填空', 'The weather is t______. Let us go out.', 'terrible', '糟糕的 terrible。'),
+    fb('初二上', '首字母填空', 'He is too young to make a d______.', 'decision', 'make a decision 做决定。'),
+    fb('初二上', '首字母填空', 'My mother always e______ me to study hard.', 'encourages', 'encourage sb. to do sth.，主语三单用 encourages。'),
+    mc('初二上', '选择', 'The book is worth ______.', ['read', 'reading', 'to read', 'reads'], 'reading', 'be worth doing sth. 值得做某事。'),
+    mc('初二上', '选择', 'It is the best film ______ I have ever seen.', ['which', 'that', 'who', 'what'], 'that', '先行词被最高级修饰时，定语从句用 that。'),
+    mc('初二上', '选择', 'Not only he but also I ______ interested in it.', ['am', 'is', 'are', 'be'], 'am', 'not only…but also… 连接主语时谓语就近一致，靠近 I 用 am。'),
+    mc('初二上', '选择', 'She ______ English since she was five.', ['learns', 'learned', 'has learned', 'is learning'], 'has learned', 'since ＋ 时间状语从句，用现在完成时。'),
+    mc('初二上', '选择', 'The harder you work, the ______ you will be.', ['lucky', 'luckier', 'luckiest', 'more lucky'], 'luckier', 'the more…the more… 越……越……，用比较级。'),
+    mc('初二上', '选择', 'He asked me ______ I could help him.', ['that', 'if', 'what', 'which'], 'if', '一般疑问句变宾语从句用 if/whether 引导。'),
+    mc('初二上', '语法', '语法：The bridge ______ (build) in 2010.', ['built', 'was built', 'is built', 'builds'], 'was built', '桥是被建造的，in 2010 用一般过去时的被动语态。'),
+    mc('初二上', '语法', '语法：She ______ (not finish) her homework yet.', ['does not finish', 'has not finished', 'did not finish', 'is not finishing'], 'has not finished', 'yet 常与现在完成时连用。'),
+    mc('初二上', '语法', '语法：When I got there, the film ______ (begin).', ['begins', 'began', 'had begun', 'is beginning'], 'had begun', '“我到的时候电影已经开始了”，用过去完成时。'),
+    mc('初二上', '语法', '语法：They ______ (visit) the museum next week.', ['visits', 'visited', 'will visit', 'visiting'], 'will visit', 'next week 提示一般将来时。'),
+    mc('初二上', '语法', '语法：Look! Someone ______ (swim) in the river.', ['swims', 'swam', 'is swimming', 'swim'], 'is swimming', 'Look! 提示现在进行时。'),
+    mc('初二上', '语法', '语法：He told me he ______ (be) busy the next day.', ['is', 'was', 'will be', 'would be'], 'would be', '宾语从句主句为过去时，从句用过去将来时。'),
   ];
   const engSecItems = {};
   function buildEngSections() {
@@ -3428,8 +4437,15 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
         seenQ[k] = 1;
         return true;
       });
-      // 每组从本题型的题库里随机抽 10 题：点「换一批」就会换一组新题
-      const items = shuffle(pool.slice()).slice(0, 10);
+      // 每组随机抽 10 题，并且优先抽「上一次没出现过的题」，保证「换一批」一定换新题
+      const seenKey = pk('eng_seen_v1') + '_' + engSem + '_' + t.key;
+      let prevQ = [];
+      try { prevQ = JSON.parse(lsGet('eng_seen_v1' + '_' + engSem + '_' + t.key) || '[]') || []; } catch (e) { prevQ = []; }
+      const prevSet = {};
+      prevQ.forEach(function (q) { prevSet[q] = 1; });
+      const freshPool = pool.filter(function (it) { return !prevSet[it.q]; });
+      const items = shuffle((freshPool.length >= 10 ? freshPool : pool).slice()).slice(0, 10);
+      try { localStorage.setItem(seenKey, JSON.stringify(items.map(function (it) { return it.q; }))); } catch (e) {}
       const gid = 'se' + ti;
       engSecItems[gid] = items;
       regGeneric(gid, t.title, items.map(function (it) { return { q: it.q, a: it.ans }; }));
@@ -3473,12 +4489,20 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             const ta = card.querySelector('.step-input');
-            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card);
+            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card) + ' <button type="button" class="ai-draft">&#128269; AI批改这题</button>';
           }
         }
       }
     });
     setText(gid + '-score', correct + ' / ' + total);
+    const cr = calLog(gid, correct, total);
+    calRenderPodium(gid);
+    if (cr.prevLast !== null && cr.score > cr.prevLast) {
+      completeModule(curGeneric.cfg.id, curGeneric.cfg.name, 5, 'æœ¬ç»„æ¯”ä¸Šæ¬¡æé«˜ ' + (cr.score - cr.prevLast) + ' åˆ†');
+      toast('ðŸ‘ è¿™ç»„æ¯”ä¸Šæ¬¡æé«˜ ' + (cr.score - cr.prevLast) + ' åˆ†ï¼Œå¥–åŠ± +5â­');
+    } else {
+      toast('æœ¬ç»„å¾—åˆ† ' + cr.score + ' åˆ†ï¼Œå·²è®°å½•');
+    }
     const ab = accBonus(total > 0 ? correct / total : 0);
     completeModule('sx-eng', '英语语法', ab, '正确率+' + ab);
   }
@@ -5994,8 +7018,10 @@ function reciteBodyHTML(cfg) {
       setTimeout(phRenderPodium, 0);
     } else if (cfg.kind === 'shawnmath') {
       html += buildShawnSections(SHAWN_TYPES, 'sm');
+      setTimeout(calRenderAllPodiums, 0);
     } else if (cfg.kind === 'shawncalc') {
       html += buildShawnSections(SHAWN_CALC, 'sc');
+      setTimeout(calRenderAllPodiums, 0);
     } else if (cfg.kind === 'engsec') {
       html += buildEngSections();
     } else if (cfg.kind === 'practice') {
@@ -6056,6 +7082,7 @@ function reciteBodyHTML(cfg) {
     initScratchCanvases();
     updateAddedMarks();
     updateWrongBadge();
+  syncBoot();
   }
   const shawnKeys = {};
   function shawnSectionInner(t, ti, prefix) {
@@ -6065,6 +7092,7 @@ function reciteBodyHTML(cfg) {
     regGeneric(gid, t.title, items.map(function (it) { return { q: it.q, a: it.ans }; }));
     let html = '<h2><span class="num">' + ti + '</span>' + escapeHtml(t.title) + ' <span class="badge">' + escapeHtml(t.grade || t.badge || '') + '</span></h2>';
     html += '<div class="mod-toolbar"><button class="primary-btn" onclick="gradeShawn(\'' + prefix + '\',\'' + t.id + '\')">✔ 批改本组</button> <button onclick="analyzeSectionDrafts(\'' + prefix + '\',\'' + t.id + '\')">🔍 AI 批改草稿</button> <button onclick="refreshShawnSection(\'' + prefix + '\',\'' + t.id + '\')">🎲 换一批</button> ' + scratchToolsHTML() + ' <span class="sec-score" id="' + gid + '-score"></span></div>';
+    html += '<div class="calc-pod" data-pod="' + gid + '"></div>';
     html += '<div class="mod-body text onecol" id="' + gid + '-body">';
     const ansList = [];
     items.forEach(function (it, i) {
@@ -6142,12 +7170,20 @@ function reciteBodyHTML(cfg) {
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             const ta = card.querySelector('.step-input');
-            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card);
+            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card) + ' <button type="button" class="ai-draft">&#128269; AI批改这题</button>';
           }
         }
       }
     });
     setText(gid + '-score', correct + ' / ' + total);
+    const cr = calLog(gid, correct, total);
+    calRenderPodium(gid);
+    if (cr.prevLast !== null && cr.score > cr.prevLast) {
+      completeModule(curGeneric.cfg.id, curGeneric.cfg.name, 5, 'æœ¬ç»„æ¯”ä¸Šæ¬¡æé«˜ ' + (cr.score - cr.prevLast) + ' åˆ†');
+      toast('ðŸ‘ è¿™ç»„æ¯”ä¸Šæ¬¡æé«˜ ' + (cr.score - cr.prevLast) + ' åˆ†ï¼Œå¥–åŠ± +5â­');
+    } else {
+      toast('æœ¬ç»„å¾—åˆ† ' + cr.score + ' åˆ†ï¼Œå·²è®°å½•');
+    }
     const ab = accBonus(total > 0 ? correct / total : 0);
     completeModule(curGeneric.cfg.id, curGeneric.cfg.name, ab, '正确率+' + ab);
   }
@@ -6186,7 +7222,7 @@ function reciteBodyHTML(cfg) {
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             const ta = card.querySelector('.step-input');
-            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card);
+            if ((sc && sc._inked) || (ta && ta.value.trim()))               r.innerHTML += stepVerdictHTML(card) + ' <button type="button" class="ai-draft">&#128269; AI批改这题</button>';
           }
         }
       }
@@ -6206,32 +7242,20 @@ function reciteBodyHTML(cfg) {
     completeModule(curGeneric.cfg.id, curGeneric.cfg.name, 0, '');
   }
 
-  /* ===== English phrases (moved back from newer build) ===== */
-  var PH_HIST_KEY = 'ph_hist_v1';
-  let phUnit = '1', phMode = 'zh-en';
-  (function () {
-    if (document.getElementById('ph-podium-css')) return;
-    var st = document.createElement('style');
-    st.id = 'ph-podium-css';
-    st.textContent = [
-      '#ph-top-wrap { display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap; margin:6px 0 10px; }',
-      '#ph-top-left { flex:1 1 320px; min-width:260px; }',
-      '#ph-top-right { flex:0 0 auto; min-width:276px; background:#fff; border:1px solid #e3edf7; border-radius:16px; padding:10px 12px 18px; box-shadow:0 2px 10px rgba(58,110,165,.06); }',
-      '.ph-pod-title { font-size:13px; color:#3a6ea5; font-weight:700; margin-bottom:8px; }',
-      '.ph-podium { display:flex; flex-wrap:nowrap; align-items:flex-end; gap:8px; justify-content:center; padding-bottom:2px; }',
-      '.ph-pod-col { width:64px; flex:0 0 auto; text-align:center; border-radius:12px 12px 0 0; padding:6px 4px 8px; color:#fff; box-shadow:0 2px 8px rgba(95,75,82,.14); }',
-      '.ph-pod-col.gold { background:linear-gradient(180deg,#f7cf6b,#dfa423); min-height:120px; }',
-      '.ph-pod-col.silver { background:linear-gradient(180deg,#e2e6ea,#b6bec7); min-height:102px; }',
-      '.ph-pod-col.bronze { background:linear-gradient(180deg,#e8bd92,#c8874d); min-height:88px; }',
-      '.ph-pod-medal { font-size:20px; line-height:1.1; }',
-      '.ph-pod-score { font-size:19px; font-weight:800; line-height:1.25; }',
-      '.ph-pod-time { font-size:10px; opacity:.96; line-height:1.35; }',
-      '.ph-pod-base { font-size:10px; opacity:.9; margin-top:6px; padding-bottom:2px; }',
-      '.ph-pod-empty { color:#8aa0b5; font-size:13px; text-align:center; padding:16px 8px; border:1px dashed #dbe7f3; border-radius:12px; line-height:1.7; }',
-      '@media (max-width:700px) { #ph-top-right { min-width:0; width:100%; } .ph-pod-col { width:64px; } }'
-    ].join('\n');
-    document.head.appendChild(st);
-  })();
+  // è‹±æ–‡/ä¸­æ–‡ç­”æ¡ˆâ€œä¸€å¯¹å¤šâ€ï¼šç”¨ / ; ã€æˆ– or åˆ†éš”çš„ä»»æ„ä¸€ç§å†™æ³•éƒ½ç®—å¯¹ï¼ˆæ”¾åœ¨æœ«å°¾ä»¥ç¡®ä¿è¦†ç›–å‰é¢çš„å®šä¹‰ï¼‰
+  gradeText = function (input, ans) {
+    const norm = function (x) {
+      return String(x).toLowerCase()
+        .replace(/[\u3000-\u303f\uff00-\uffef]/g, '')
+        .replace(/[\s'â€™\-.,!?;:]/g, '');
+    };
+    const b = norm(input);
+    if (!b) return false;
+    const variants = String(ans).split(/[\/;ã€]|\bor\b/i).map(norm).filter(function (x) { return x !== ''; });
+    if (!variants.length) return false;
+    if (variants.length === 1) return variants[0] === b;
+    return variants.some(function (v) { return v === b; });
+  };  // ===== 通用奖台 + 数学计算奖台机制（放在最后，覆盖同名函数） =====
   (function () {
     if (document.getElementById('pod-css2')) return;
     var st = document.createElement('style');
@@ -6245,133 +7269,7 @@ function reciteBodyHTML(cfg) {
     ].join('\n');
     document.head.appendChild(st);
   })();
-function phHist() { try { return JSON.parse(lsGet(PH_HIST_KEY) || '[]') || []; } catch (e) { return []; } }
-  function phKeyOf() { return 'U' + phUnit + '-' + phMode; }
-  function phStatOf() {
-    const list = phHist().filter(function (x) { return x.k === phKeyOf(); });
-    if (!list.length) return { last: null, best: null, n: 0 };
-    return {
-      last: list[list.length - 1].s,
-      best: Math.max.apply(null, list.map(function (x) { return x.s; })),
-      n: list.length
-    };
-  }
-function phKeyOf() { return 'U' + phUnit + '-' + phMode; }
-  function phStatOf() {
-    const list = phHist().filter(function (x) { return x.k === phKeyOf(); });
-    if (!list.length) return { last: null, best: null, n: 0 };
-    return {
-      last: list[list.length - 1].s,
-      best: Math.max.apply(null, list.map(function (x) { return x.s; })),
-      n: list.length
-    };
-  }
-function phStatOf() {
-    const list = phHist().filter(function (x) { return x.k === phKeyOf(); });
-    if (!list.length) return { last: null, best: null, n: 0 };
-    return {
-      last: list[list.length - 1].s,
-      best: Math.max.apply(null, list.map(function (x) { return x.s; })),
-      n: list.length
-    };
-  }
-function phStatLine() {
-    let el = document.getElementById('ph-stat');
-    if (el) return el;
-    el = document.createElement('p');
-    el.className = 'recite-count';
-    el.id = 'ph-stat';
-    const bar = document.querySelector('#page-module .recite-bar.units');
-    if (bar && bar.parentNode) bar.parentNode.insertBefore(el, bar.nextSibling);
-    return el;
-  }
-function phRefreshStat() {
-    const st = phStatOf();
-    const el = document.getElementById('ph-stat');
-    if (!el) return;
-    if (st.last === null) { el.textContent = '本题组还没有成绩记录，批改后就会记录在这里'; return; }
-    el.textContent = '上次 ' + st.last + ' 分　·　最好 ' + st.best + ' 分　·　共练 ' + st.n + ' 次';
-  }
-function phAfterGrading(correct, total) {
-    const score = Math.round(correct * 5);
-    const before = phStatOf();
-    let list = phHist();
-    list.push({ k: phKeyOf(), s: score, t: Date.now() });
-    if (list.length > 300) list = list.slice(-300);
-    try { localStorage.setItem(pk(PH_HIST_KEY), JSON.stringify(list)); } catch (e) {}
-    if (typeof cfg !== 'undefined' && cfg && cfg.kind === 'phrase') { phAfterGrading(correct, total); return; }
-    if (typeof cfg !== 'undefined' && cfg && cfg.kind === 'phrase') { phAfterGrading(correct, total); return; }
-    const sc = document.getElementById('generic-score');
-    if (sc) sc.textContent = '本次 ' + score + ' / 100（答对 ' + correct + '/' + total + '，每题 5 分）';
-    phStatLine();
-    phRenderPodium();
-    phRefreshStat();
-    if (before.last !== null && score > before.last) {
-      const gain = score - before.last;
-      completeModule(curGeneric.cfg.id, curGeneric.cfg.name, 5, '比上次提高 ' + gain + ' 分');
-      toast('👏 比上次提高 ' + gain + ' 分，奖励 +5⭐');
-    } else if (before.best !== null && score > before.best) {
-      toast('🎉 刷新最好成绩：' + score + ' 分！');
-    } else if (before.last !== null && score < before.last) {
-      toast('这次 ' + score + ' 分，比上次低 ' + (before.last - score) + ' 分，再来一次会更好');
-    } else {
-      toast('本次 ' + score + ' 分，已记录');
-    }
-  }
-function phUnits() { return Object.keys(ORAL_UNITS); }
-  function phSetUnit(u) { phUnit = u; refreshGeneric(); }
-  function phSetMode(m) { phMode = m; refreshGeneric(); }
-  function phItems() {
-    const list = (ORAL_UNITS[phUnit] || []).map(function (x) {
-      return { zh: x[0], en: x[1], q: phMode === 'zh-en' ? x[0] : x[1], ans: phMode === 'zh-en' ? x[1] : x[0] };
-    });
-    return shuffle(list.slice()).slice(0, 20);
-  }
-function phSetUnit(u) { phUnit = u; refreshGeneric(); }
-  function phSetMode(m) { phMode = m; refreshGeneric(); }
-  function phItems() {
-    const list = (ORAL_UNITS[phUnit] || []).map(function (x) {
-      return { zh: x[0], en: x[1], q: phMode === 'zh-en' ? x[0] : x[1], ans: phMode === 'zh-en' ? x[1] : x[0] };
-    });
-    return shuffle(list.slice()).slice(0, 20);
-  }
-function phSetMode(m) { phMode = m; refreshGeneric(); }
-  function phItems() {
-    const list = (ORAL_UNITS[phUnit] || []).map(function (x) {
-      return { zh: x[0], en: x[1], q: phMode === 'zh-en' ? x[0] : x[1], ans: phMode === 'zh-en' ? x[1] : x[0] };
-    });
-    return shuffle(list.slice()).slice(0, 20);
-  }
-function phItems() {
-    const list = (ORAL_UNITS[phUnit] || []).map(function (x) {
-      return { zh: x[0], en: x[1], q: phMode === 'zh-en' ? x[0] : x[1], ans: phMode === 'zh-en' ? x[1] : x[0] };
-    });
-    return shuffle(list.slice()).slice(0, 20);
-  }
-function phraseBodyHTML(cfg) {
-    const items = curGeneric.items || [];
-    const tid = cfg.id + '|' + phUnit + '|' + phMode;
-    regGeneric(tid, '英语词组 Unit ' + phUnit + (phMode === 'zh-en' ? '（中→英）' : '（英→中）'),
-      items.map(function (it) { return { q: it.q, a: it.ans }; }));
-    let html = '<div class="grade-bar recite-bar">' + phUnits().map(function (u) {
-      return '<button class="' + (u === phUnit ? 'active' : '') + '" onclick="phSetUnit(\'' + u + '\')">Unit ' + u + '</button>';
-    }).join('') + '</div>';
-    html += '<div class="grade-bar recite-bar units">'
-      + '<button class="' + (phMode === 'zh-en' ? 'active' : '') + '" onclick="phSetMode(\'zh-en\')">中 → 英（写英文）</button>'
-      + '<button class="' + (phMode === 'en-zh' ? 'active' : '') + '" onclick="phSetMode(\'en-zh\')">英 → 中（写中文）</button></div>';
-    html += '<p class="recite-count">本单元共 ' + ((ORAL_UNITS[phUnit] || []).length) + ' 个词组，本次抽 ' + items.length + ' 个　·　点「换一批」换一组</p>';
-    html += '<div class="mod-body text onecol">';
-    items.forEach(function (it, i) {
-      html += '<div class="calc-item" data-gi="' + i + '"><div class="calc-main">'
-        + '<div class="q">' + (i + 1) + '、' + escapeHtml(it.q) + '</div>'
-        + '<div class="a-row"><input class="ans-input g-input ph-input" data-i="' + i + '" type="text" placeholder="✏️ ' + (phMode === 'zh-en' ? '写英文短语' : '写中文意思') + '" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><span class="mark"></span></div>'
-        + '<button class="add-wrong" data-type="' + tid + '" data-i="' + i + '">＋错题本</button>'
-        + '<div class="reveal">参考答案：' + escapeHtml(it.ans) + '</div></div></div>';
-    });
-    html += '</div>';
-    return html;
-  }
-function podiumHTML(list, titleText, emptyText) {
+  function podiumHTML(list, titleText, emptyText) {
     const sorted = (list || []).slice().sort(function (a, b) { return b.s - a.s || a.t - b.t; });
     const top = sorted.slice(0, 3);
     const cls = ['gold', 'silver', 'bronze'], medal = ['🥇', '🥈', '🥉'], rank = ['第1名', '第2名', '第3名'];
@@ -6384,23 +7282,7 @@ function podiumHTML(list, titleText, emptyText) {
     });
     return '<div class="ph-pod-title">' + titleText + '</div><div class="ph-podium">' + cols + '</div>';
   }
-function phPodiumHTML() {
-    const list = phHist().filter(function (x) { return x.k === phKeyOf(); });
-    if (!list.length) return '<div class="ph-pod-title">🏆 前三名成绩</div><div class="ph-pod-empty">还没有成绩记录<br>批改一次就会出现在这里</div>';
-    const sorted = list.slice().sort(function (a, b) { return b.s - a.s || a.t - b.t; });
-    const top = sorted.slice(0, 3);
-    const cls = ['gold', 'silver', 'bronze'];
-    const medal = ['🥇', '🥈', '🥉'];
-    const rank = ['第1名', '第2名', '第3名'];
-    let cols = '';
-    top.forEach(function (x, i) {
-      const d = new Date(x.t);
-      const time = (d.getMonth() + 1) + '月' + d.getDate() + '日<br>' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-      cols += '<div class="ph-pod-col ' + cls[i] + '"><div class="ph-pod-medal">' + medal[i] + '</div><div class="ph-pod-score">' + x.s + '</div><div class="ph-pod-time">' + time + '</div><div class="ph-pod-base">' + rank[i] + '</div></div>';
-    });
-    return '<div class="ph-pod-title">🏆 前三名成绩（本单元 · 本方向）</div><div class="ph-podium">' + cols + '</div>';
-  }
-function phRenderPodium() {
+  function phRenderPodium() {
     const un = document.querySelector('#page-module .recite-bar.units');
     if (!un) return;
     const intro = document.querySelector('#page-module .intro');
@@ -6433,673 +7315,270 @@ function phRenderPodium() {
         '🏆 前三名成绩（本单元 · 本方向）', '还没有成绩记录<br>批改一次就会出现在这里');
     phRefreshStat();
   }
-var ORAL_UNITS = {
-    '1': [
-      ['这是我！', 'This is me!'],
-      ['我的英文名/中文名', 'my English/Chinese name'],
-      ['和我打招呼', 'greet me'],
-      ['介绍彼此', 'introduce each other'],
-      ['叫我西蒙', 'call me Simon'],
-      ['被称为', 'go by'],
-      ['早上好/下午好/晚上好', 'good morning / good afternoon / good evening'],
-      ['见到你很高兴！', 'Nice to meet you! / Glad to meet you!'],
-      ['你在哪个班级/年级？', 'Which class/grade are you in?'],
-      ['你呢？', 'And you?/What about you?'],
-      ['在同一个班级', 'in the same class'],
-      ['有一些爱好', 'have some hobbies'],
-      ['弹钢琴', 'play the piano'],
-      ['欢迎来到七(1)班！', 'Welcome to Class 1, Grade 7!'],
-      ['阳光中学的一名新学生', 'a new student at Sunshine Middle School'],
-      ['十二岁', '12 years old'],
-      ['喜爱阅读', 'love reading / enjoy reading'],
-      ['一个八岁的女孩', 'an 8-year-old girl'],
-      ['对别人友好', 'be friendly to others / be nice to others / be kind to others'],
-      ['这儿是我的新同学们。', 'Here are my new classmates.'],
-      ['充满活力', 'be full of energy'],
-      ['擅长运动', 'be good at sport'],
-      ['擅长踢足球', 'be good at playing football'],
-      ['放学后', 'after school'],
-      ['又高又苗条', 'tall and slim'],
-      ['留着长发', 'have long hair'],
-      ['一个留着长发的女孩', 'a girl with long hair'],
-      ['戴眼镜', 'wear glasses'],
-      ['戴着眼镜的那个男孩', 'the boy with/wearing glasses'],
-      ['聪明且有礼貌', 'smart and polite'],
-      ['愿意帮助别人', 'be ready to help others'],
-      ['对科学感兴趣', 'be interested in science'],
-      ['对跳舞感兴趣', 'be interested in dancing'],
-      ['乐于助人的', 'be helpful'],
-      ['对彼此友好', 'be friendly to each other'],
-      ['说“请”和“谢谢”', 'say "please" and "thank you"'],
-      ['他们两人都喜爱运动。', 'They both love sport./Both of them love sport.'],
-      ['那儿的那个女孩', 'the girl over there'],
-      ['有可爱的眼睛', 'have lovely/cute eyes'],
-      ['腼腆又文静', 'shy and quiet'],
-      ['小巧可爱', 'small and cute'],
-      ['擅长游泳', 'be good at swimming'],
-      ['看起来标志', 'look pretty'],
-      ['上舞蹈课', 'have dance classes'],
-      ['帮助我保持健康', 'help me stay/keep healthy'],
-      ['有一场和二班的足球赛', 'have a football match with Class 2'],
-      ['祝你好运！', 'Good luck!'],
-      ['和我爸爸打乒乓球', 'play ping-pong with my father'],
-      ['喜爱下国际象棋', 'enjoy/love playing chess'],
-      ['我最喜爱的科目', 'my favourite subject(s)'],
-      ['帮助我的同学解决数学难题', 'help my classmates with Maths problems'],
-      ['在周末', 'at the weekend'],
-      ['它们很有趣。', 'They are fun/interesting.'],
-      ['玩得开心', 'have fun/have a good time'],
-      ['和他们交朋友', 'make friends with them'],
-      ['成为我的朋友', 'be my friend(s)'],
-      ['喜爱计算机科学', 'love Computer Science']
-    ],
-    '2': [
-      ['你喜欢做什么？', 'What do you like to do?'],
-      ['各种各样的东西', 'all kinds of things'],
-      ['喜爱剪纸/慢跑/画画/阅读', 'enjoy paper-cutting / jogging / painting / reading'],
-      ['你最大的爱好是什么？', 'What’s your favourite hobby?'],
-      ['从书籍中学到很多', 'learn a lot from books'],
-      ['保持健康', 'keep fit / keep healthy'],
-      ['你多久游一次泳？', 'How often do you go swimming?'],
-      ['我的新朋友之一', 'one of my new friends'],
-      ['一位科学迷', 'a fan of science'],
-      ['遍布我们身边', 'all around us'],
-      ['改变我们的生活', 'change our lives'],
-      ['参观科技博物馆', 'visit science museums'],
-      ['有机会做某事', 'get to do sth'],
-      ['拆分东西', 'take things apart'],
-      ['它对我来说很有乐趣。', 'It’s great fun for me.'],
-      ['学习东西如何运作', 'learn how things work'],
-      ['在他的空闲时间', 'in his free time'],
-      ['帮助修理房子各处的东西', 'help fix things around the house'],
-      ['读许多科学书', 'read many science books'],
-      ['上网', 'go on the internet'],
-      ['找到问题的答案', 'find answers to the questions'],
-      ['有无穷无尽的问题', 'have endless questions'],
-      ['想成为一名科学家', 'want to be a scientist'],
-      ['将来某一天', 'one day'],
-      ['我确信他的梦想会实现。', 'I am sure his dream can come true.'],
-      ['他为何如此喜欢科学？', 'Why does he like science so much?'],
-      ['用这种方式', 'in this way'],
-      ['他想成为什么？', 'What does he want to be?'],
-      ['（经常）看我们游泳', 'see/watch us swim'],
-      ['看我们正在游泳', 'see/watch us swimming'],
-      ['音乐/画画/机器人/地理/排球俱乐部', 'the Music/Painting/Robot/Geography/Volleyball Club'],
-      ['俱乐部成员', 'the club members'],
-      ['打排球', 'play volleyball'],
-      ['总计', 'in all'],
-      ['我们中的每一个', 'each of us'],
-      ['每周一次', 'once a week'],
-      ['加入地理俱乐部', 'join the Geography Club'],
-      ['分享他们的想法', 'share their ideas'],
-      ['在周三下午见面', 'meet on Wednesday afternoons'],
-      ['放学后你喜欢做什么？', 'What do you like doing after school?'],
-      ['在会议上', 'at the meeting'],
-      ['让我感觉愉快', 'make me feel happy'],
-      ['听起来很棒！', 'Sounds nice!'],
-      ['计划做某事', 'plan to do sth'],
-      ['对机器人俱乐部感兴趣', 'be interested in the Robot Club'],
-      ['玩得很开心', 'have a great time / have a lot of fun'],
-      ['你的榜样', 'your role model'],
-      ['我的梦想是设计漂亮的衣服。', 'My dream is to design beautiful clothes.'],
-      ['学习绘画技巧', 'learn painting skills'],
-      ['帮助我很多', 'help me a lot'],
-      ['分享我们的画作', 'share our paintings'],
-      ['谈论艺术', 'talk about art'],
-      ['我最喜爱的艺术家', 'my favourite artist'],
-      ['艺术作品', 'works of art'],
-      ['一位中国画大师', 'a master of Chinese painting'],
-      ['成为一名设计师', 'become a designer'],
-      ['在未来', 'in the future'],
-      ['我希望我的梦想能实现。', 'I hope my dream can come true.']
-    ],
-    '3': [
-      ['一个学习的好地方', 'a great place for learning'],
-      ['多少幢教学楼', 'how many classroom buildings'],
-      ['一个实验室和一座体育馆', 'a lab and a gym'],
-      ['一个大的体育场', 'a big/large sports field'],
-      ['也有一个食堂', 'have a dining hall as well'],
-      ['见到你很高兴。', 'It’s good to see you.'],
-      ['你的新学校怎么样？', 'How’s your new school? / What’s your new school like?'],
-      ['最棒的部分', 'the best part'],
-      ['一座现代化的图书馆', 'a modern library'],
-      ['这儿是我们现代化的图书馆和教学楼。', 'Here’s our modern library and our classroom buildings.'],
-      ['供我们学习的一个绝佳场所', 'a perfect place for us to study'],
-      ['明亮又干净的', 'bright and clean'],
-      ['很多绿地', 'a lot of/lots of green spaces'],
-      ['喜欢在这儿花时间', 'enjoy spending time here'],
-      ['花时间做某事', 'spend time (in) doing sth'],
-      ['与老师们闲聊我们的难题', 'chat with teachers about our problems'],
-      ['很多令人兴奋的体育比赛', 'lots of exciting sports matches'],
-      ['看到学生正在跑步', 'see the students running'],
-      ['发生', 'take place'],
-      ['靠近学校大门', 'near the school gate'],
-      ['读到学校新闻', 'read about school news'],
-      ['看一下学校的布告板。', 'Look at the school noticeboard/board.'],
-      ['明星学生和老师的故事', 'stories of star students and teachers'],
-      ['展示学生的作品', 'show students’ works'],
-      ['例如画作和照片', 'like paintings and photos'],
-      ['享受校园生活', 'enjoy the school life'],
-      ['找到更多很棒的地方', 'find more great places'],
-      ['相信我！', 'Trust me!'],
-      ['一个我们运动的地方', 'a place for us to do sport'],
-      ['你过得怎么样？', 'How are you doing?'],
-      ['一个十分棒的地方', 'a really great place'],
-      ['回头再聊', 'talk soon'],
-      ['教我们英语', 'teach us English'],
-      ['像他们一样的好老师', 'nice teachers like them'],
-      ['在校足球队', 'in the school football team'],
-      ['班主任', 'the form teacher'],
-      ['在学校演出上弹钢琴', 'play the piano at the school shows'],
-      ['他是什么样的？', 'What’s he like?'],
-      ['跟她打招呼', 'say hello to her / greet her'],
-      ['等一下。', 'Wait a minute.'],
-      ['关于不同主题的书', 'books on different subjects'],
-      ['一座三层楼的灰色建筑', 'a grey building with three floors'],
-      ['数千本书', 'thousands of books'],
-      ['两千本书', 'two thousand books'],
-      ['事实上,确切地说', 'in fact'],
-      ['从图书馆借书', 'borrow books from the library'],
-      ['一间配备了电脑的阅览室', 'a reading room with computers'],
-      ['每次,逐一', 'at a time'],
-      ['在顶楼', 'on the top floor'],
-      ['关心', 'care about'],
-      ['阅读报纸杂志', 'read newspapers and magazines'],
-      ['你还喜欢我们学校的哪些方面？', 'What else do you like about our school?'],
-      ['你觉得你们学校怎么样？', 'What do you think of your school? / How do you like your school?'],
-      ['谢谢你的邮件。', 'Thanks for your email.'],
-      ['谢谢你帮助我。', 'Thanks for helping me.'],
-      ['很多有趣的活动', 'a lot of interesting events'],
-      ['一起打乒乓球', 'play ping-pong together'],
-      ['相当好', 'quite nice'],
-      ['一个对我来说特别的地方', 'a special place for me'],
-      ['我很开心能成为这儿的一名学生。', 'I am happy to be a student here.']
-    ],
-    '4': [
-      ['早上七点起床', 'get up at 7:00 a.m.'],
-      ['打开世界大门的钥匙', 'the key to unlocking the world'],
-      ['先做早操', 'do morning exercises first'],
-      ['进行课后活动', 'do after-school activities'],
-      ['帮忙做家务劳动', 'help with housework'],
-      ['做家庭作业', 'do homework'],
-      ['在工作日', 'on weekdays'],
-      ['小跑一下', 'go for a short jog'],
-      ['进行少量的阅读', 'read a little'],
-      ['有很多乐趣', 'have lots of fun'],
-      ['关于你的上学日你最喜欢什么？', 'What do you like best about your school days?'],
-      ['一个让我得到乐趣的好方法', 'a good way for me to enjoy myself'],
-      ['第一学期', 'the first term'],
-      ['在八点开始', 'start at 8:00'],
-      ['阅读很多知名作家的作品', 'read the works of many famous writers'],
-      ['一门让人惊奇的语言', 'an amazing language'],
-      ['上生物课', 'have Biology classes'],
-      ['研究很多生物', 'study many living things'],
-      ['了解大自然', 'learn about nature'],
-      ['练习足球', 'practise playing football'],
-      ['进行一次野外考察', 'have/go on a field trip'],
-      ['动身去农场', 'leave for a farm'],
-      ['摘苹果', 'pick apples'],
-      ['你的校园生活是什么样的？', 'What is your school life like? / How is your school life?'],
-      ['收到某人的信件（或电子邮件、电话等）', 'hear from sb'],
-      ['愿意/想要做某事', 'would like to do sth'],
-      ['说一些中文', 'speak a little Chinese'],
-      ['参观有趣的地方', 'visit fun places'],
-      ['我迫不及待了。', 'I can’t wait.'],
-      ['祝一切顺利', 'all the best'],
-      ['当然', 'of course'],
-      ['打网球', 'play tennis'],
-      ['去滑旱冰', 'go roller skating'],
-      ['游泳队的一员', 'a member of the swimming team'],
-      ['学习如何种苹果', 'learn how to grow apples'],
-      ['植树', 'plant trees'],
-      ['参观一次田野', 'have a tour of the fields'],
-      ['在学校网站上', 'on the school website'],
-      ['观看一个视频', 'watch a video'],
-      ['喜欢待在外面', 'like being outside'],
-      ['靠近大自然', 'get close to nature'],
-      ['享受平静和安宁', 'enjoy the peace and quiet'],
-      ['竭尽全力做某事', 'try one’s best to do sth'],
-      ['使事情更好', 'make things better'],
-      ['一次累人的学校旅行', 'a tiring school trip'],
-      ['保持我们学校区域清洁感觉很好。', 'It feels good to keep our school area clean.'],
-      ['我们的班级值日', 'our class duties'],
-      ['参加', 'take part in'],
-      ['以小组活动', 'work in groups'],
-      ['轮流做某事', 'take turns to do sth'],
-      ['扫地', 'sweep the floor'],
-      ['擦黑板', 'clean the blackboard'],
-      ['清空垃圾桶', 'empty the bins'],
-      ['给植物浇水', 'water the plants'],
-      ['照料植物', 'take care of plants'],
-      ['为我们班级做事', 'do something for our class'],
-      ['通过值日了解团队协作', 'learn about teamwork through chores'],
-      ['保持我们的教室干净整洁', 'keep our classroom clean and tidy']
-    ],
-    '5': [
-      ['一种健康的生活方式', 'a healthy lifestyle'],
-      ['一些糖果和巧克力', 'some sweets and chocolate'],
-      ['各种点心', 'all kinds of snacks'],
-      ['对健康有益/害', 'be good/bad for health'],
-      ['买一些黄瓜、西瓜和柠檬', 'buy some cucumbers, watermelons and lemons'],
-      ['像甜椒和胡萝卜那样健康的蔬菜', 'healthy vegetables like peppers and carrots'],
-      ['经常吃牛奶和鸡蛋对我们来说是健康的。', 'It’s healthy for us to have milk and eggs often.'],
-      ['其他什么', 'what else'],
-      ['美味的牛肉和猪肉', 'delicious beef and pork'],
-      ['睡九小时的觉', 'get nine hours of sleep'],
-      ['每天跳舞一小时', 'dance for an hour every day'],
-      ['保持健康对我来说很重要。', 'It is important for me to keep fit.'],
-      ['午饭吃羊肉、豆腐和蔬菜', 'have mutton, tofu and vegetables for lunch'],
-      ['有健康的饮食', 'have a healthy diet'],
-      ['不吃早饭去上学', 'go to school without breakfast'],
-      ['太多糖', 'too much sugar'],
-      ['早餐吃一个煎饼', 'have a pancake for breakfast'],
-      ['对我们的牙齿有害', 'be bad for our teeth'],
-      ['一个宅家的人', 'a homebody'],
-      ['经常锻炼', 'exercise very often'],
-      ['爱吃甜食', 'have a sweet tooth'],
-      ['对我来说拒绝蛋糕很难。', 'It’s hard for me to say no to cakes.'],
-      ['熬夜到很晚', 'stay up late'],
-      ['多吃果蔬', 'eat more fruit and vegetables'],
-      ['少吃糖', 'eat less sugar'],
-      ['需要做某事', 'need to do sth'],
-      ['改变他的不健康的生活方式', 'change his unhealthy lifestyle'],
-      ['确保', 'make sure'],
-      ['得到充足的睡眠/锻炼', 'get enough sleep/exercise'],
-      ['一块奶酪', 'a piece of cheese'],
-      ['一碗汤', 'a bowl of soup'],
-      ['一小袋盐', 'a packet of salt'],
-      ['两袋大米', 'two bags of rice'],
-      ['四千克肉', 'four kilos of meat'],
-      ['五盒牛奶', 'five cartons of milk'],
-      ['六瓶果汁', 'six bottles of juice'],
-      ['多于/少于三次', 'more/less than 3 times'],
-      ['爱吃甜食的人', 'people with a sweet tooth'],
-      ['几乎每天', 'almost every day'],
-      ['像炸薯条那样不健康的食物', 'unhealthy food like chips'],
-      ['你多久锻炼一次？', 'How often do you exercise?'],
-      ['你每晚睡多久？', 'How long do you sleep every night?'],
-      ['花时间在智能手机和平板电脑上', 'spend time on the smartphone and tablet'],
-      ['你的得分', 'your score'],
-      ['得三分', 'get three points'],
-      ['以健康的方式吃', 'eat in a healthy way'],
-      ['早饭吃一顿大餐', 'have a big meal for breakfast'],
-      ['对你的饮食、锻炼和睡眠做出一些改变', 'make some changes to your diet, exercise and sleep'],
-      ['煮美味的粥', 'cook delicious porridge'],
-      ['错过早餐', 'miss breakfast'],
-      ['给我们一上午的能量', 'give us energy for the whole morning'],
-      ['对我来说,健康的生活方式都是关于健康的饮食、足够的运动和休息。', 'For me, a healthy lifestyle is all about a healthy diet, enough exercise and rest.'],
-      ['早餐吃一个馅饼,一个鸡蛋和一些草莓', 'have a pie, an egg and some strawberries for breakfast'],
-      ['两餐之间吃酸奶', 'have a yoghurt between meals'],
-      ['用不同的方式煮面', 'cook noodles in different ways'],
-      ['晚上的好睡眠让我第二天精力充沛。', 'A good night’s sleep gives me lots of energy for the next day.']
-    ],
-    '6': [
-      ['着装是一种生活方式。', 'Dressing is a way of life.'],
-      ['不同种类的衣服', 'different types/kinds of clothes'],
-      ['戴着一条围巾/领带', 'wear a scarf/tie'],
-      ['一条牛仔裤', 'a pair of jeans'],
-      ['一件紫色的夹克衫', 'a purple jacket'],
-      ['像红色那样的暖色', 'warm colours like red'],
-      ['像蓝色那样的冷色', 'cool colours like blue'],
-      ['感到平静', 'feel calm'],
-      ['流行色', 'colours in fashion'],
-      ['选正确的颜色穿', 'choose the right colours to wear'],
-      ['你能给我一些建议吗？', 'Could you give me some advice?'],
-      ['取决于', 'depend on'],
-      ['我们的肤色', 'the colour of our skin'],
-      ['例如,诸如', 'such as/for example'],
-      ['穿暖/冷色好看', 'look good in warm/cool colours'],
-      ['搭配得好', 'go well together'],
-      ['选相似的颜色', 'pick similar colours'],
-      ['穿深蓝色牛仔裤配淡蓝色的女士衬衫', 'wear dark blue jeans with a light blue blouse'],
-      ['混合冷暖色', 'mix warm and cool colours'],
-      ['使彼此突出', 'make each other stand out'],
-      ['匹配所有', 'match all'],
-      ['穿超过三种颜色', 'wear more than three colours'],
-      ['与任何颜色都很相配', 'go well with/match any colour'],
-      ['既适合正装,也适合休闲装', 'be suitable for both formal suits and casual clothes'],
-      ['穿衣打扮', 'get dressed'],
-      ['穿舒适的衣服', 'wear comfortable clothes'],
-      ['一场正式的活动', 'a formal event'],
-      ['一名时装设计师', 'a fashion designer'],
-      ['顺便说一下', 'by the way'],
-      ['在网上查东西', 'look things up on the internet'],
-      ['对某事不清楚', 'have no idea about sth'],
-      ['好吧。', 'All right.'],
-      ['我明白了。', 'I see.'],
-      ['一位小学同学', 'a primary school classmate'],
-      ['穿牛仔裤看起来精神', 'look smart in the jeans'],
-      ['你穿这件橙色的更好看。', 'You look better in the orange one.'],
-      ['许多不同种类的传统服饰', 'many different types/kinds of traditional clothes'],
-      ['一些流行的种类', 'some popular types/kinds'],
-      ['在生活中的重要日子', 'on important days in life'],
-      ['节日和结婚日', 'festivals and wedding days'],
-      ['流行的一部分', 'a part of fashion'],
-      ['有一种不一样的样式和设计', 'have a different style and design'],
-      ['展示我国的传统文化', 'show the traditional culture of our country'],
-      ['有两千年的历史', 'have a history of two thousand years'],
-      ['由丝绸/棉花/皮革制成', 'be made of silk/cotton/leather'],
-      ['传统中国服饰', 'traditional Chinese clothes'],
-      ['有一根腰带', 'have a belt'],
-      ['受年轻人欢迎', 'be popular with young people'],
-      ['摸起来丝滑柔软', 'feel smooth and soft'],
-      ['它们穿起来宽松又舒适。', 'They are loose and comfortable to wear.'],
-      ['衣服的特点/材料', 'the features/materials of clothes'],
-      ['我赞同。', 'I agree.'],
-      ['有清爽的外观', 'have a clean look'],
-      ['一双运动鞋', 'a pair of sports shoes'],
-      ['既不太长也不太大', 'not too long or too large'],
-      ['又轻巧又适合运动', 'be light and good for sport'],
-      ['有不同的尺码', 'come in different sizes']
-    ],
-    '7': [
-      ['明智地使用钱财', 'be wise with money'],
-      ['我们的购物习惯', 'our shopping habit'],
-      ['如何理财', 'how to manage money well'],
-      ['起重要作用', 'play an important role'],
-      ['一个储蓄罐', 'a money box'],
-      ['一只招财猫', 'a lucky cat'],
-      ['戴着棒球帽', 'wear a baseball cap'],
-      ['五颜六色的俄罗斯套娃', 'colourful Russian dolls'],
-      ['一个套一个', 'one inside another'],
-      ['一套不同尺寸的玩偶', 'a set of dolls in different sizes'],
-      ['充满了惊喜', 'be full of surprises'],
-      ['从最大到最小', 'from the biggest to the smallest'],
-      ['保护运动员的眼睛不受阳光伤害', 'protect the players’ eyes from the sun'],
-      ['一种时尚', 'a kind of fashion'],
-      ['为花钱制订计划', 'make plans for using money'],
-      ['花最多的钱购物', 'spend the most money (in) (going) shopping'],
-      ['一双新的运动鞋', 'a new pair of sports shoes'],
-      ['街对面的一家商场', 'a mall across the street'],
-      ['花费很多钱', 'cost a lot of money'],
-      ['别担心。', 'Don’t worry.'],
-      ['很会理财', 'manage money well'],
-      ['做一个预算', 'make a budget'],
-      ['够付你的教育费用', 'cover your education'],
-      ['支付日常所需', 'pay for daily needs'],
-      ['花费我们预算的大约 50%', 'cost about 50 per cent of our budget'],
-      ['花另外一半在我们的公寓上', 'spend the other half on our flat'],
-      ['比如什么', 'like what'],
-      ['例如度假', 'like taking holidays'],
-      ['可能会很贵', 'can be expensive'],
-      ['存一些钱', 'save some money'],
-      ['留下一些钱在银行账户', 'leave some money in the bank account'],
-      ['未雨绸缪', 'save for a rainy day'],
-      ['买一个钥匙扣作为礼物', 'buy a key ring as a present'],
-      ['在每个家庭中钱都很重要。', 'Money matters in every family.'],
-      ['遵守预算', 'keep to the budget'],
-      ['有一些零花钱', 'have some pocket money'],
-      ['你想用你的零花钱做什么？', 'What do you want to do with your pocket money?'],
-      ['为我们的朋友买一些礼物', 'buy some gifts for our friends'],
-      ['你剩下的钱足够了。', 'The rest of your money is enough.'],
-      ['有一本笔记本和一些橡皮。', 'There is a notebook and some erasers.'],
-      ['远离我的学校', 'far away from my school'],
-      ['给你。', 'Here you are.'],
-      ['成交！', 'That’s a deal!'],
-      ['这儿是购买大米的 45 枚硬币。', 'Here are 45 coins for the rice.'],
-      ['在线购买电脑', 'buy a computer online'],
-      ['世界上第一个使用纸币的国家', 'the first country to use paper money in the world'],
-      ['从祖父母和亲戚那里拿到压岁钱', 'get lucky money from grandparents and relatives'],
-      ['我也是。', 'Same here.'],
-      ['给我发送在线红包', 'send me online red packets'],
-      ['一次压岁钱调查', 'a lucky money survey'],
-      ['帮助有需要的儿童', 'help children in need'],
-      ['把大部分压岁钱花在学习用品上', 'spend most of the pocket money on school things'],
-      ['为你的压岁钱做预算', 'make a budget for your lucky money'],
-      ['把剩下的存在银行账户', 'save the rest in the bank account'],
-      ['正如妈妈总是告诉我的那样,存钱以备不时之需很重要。', 'As Mum always tells me, it is important to save for a rainy day.'],
-      ['每年年初', 'at the beginning of each year'],
-      ['有好的消费习惯', 'have good spending habits'],
-      ['怎么处理零花钱', 'what to do with the pocket money']
-    ],
-    '6': [
-      ['着装是一种生活方式。', 'Dressing is a way of life.'],
-      ['不同种类的衣服', 'different types/kinds of clothes'],
-      ['戴着一条围巾/领带', 'wear a scarf/tie'],
-      ['一条牛仔裤', 'a pair of jeans'],
-      ['一件紫色的夹克衫', 'a purple jacket'],
-      ['像红色那样的暖色', 'warm colours like red'],
-      ['像蓝色那样的冷色', 'cool colours like blue'],
-      ['感到平静', 'feel calm'],
-      ['流行色', 'colours in fashion'],
-      ['选正确的颜色穿', 'choose the right colours to wear'],
-      ['你能给我一些建议吗？', 'Could you give me some advice?'],
-      ['取决于', 'depend on'],
-      ['我们的肤色', 'the colour of our skin'],
-      ['例如,诸如', 'such as/for example'],
-      ['穿暖/冷色好看', 'look good in warm/cool colours'],
-      ['搭配得好', 'go well together'],
-      ['选相似的颜色', 'pick similar colours'],
-      ['穿深蓝色牛仔裤配淡蓝色的女士衬衫', 'wear dark blue jeans with a light blue blouse'],
-      ['混合冷暖色', 'mix warm and cool colours'],
-      ['使彼此突出', 'make each other stand out'],
-      ['匹配所有', 'match all'],
-      ['穿超过三种颜色', 'wear more than three colours'],
-      ['与任何颜色都很相配', 'go well with/match any colour'],
-      ['既适合正装,也适合休闲装', 'be suitable for both formal suits and casual clothes'],
-      ['穿衣打扮', 'get dressed'],
-      ['穿舒适的衣服', 'wear comfortable clothes'],
-      ['一场正式的活动', 'a formal event'],
-      ['一名时装设计师', 'a fashion designer'],
-      ['顺便说一下', 'by the way'],
-      ['在网上查东西', 'look things up on the internet'],
-      ['对某事不清楚', 'have no idea about sth'],
-      ['好吧。', 'All right.'],
-      ['我明白了。', 'I see.'],
-      ['一位小学同学', 'a primary school classmate'],
-      ['穿牛仔裤看起来精神', 'look smart in the jeans'],
-      ['你穿这件橙色的更好看。', 'You look better in the orange one.'],
-      ['许多不同种类的传统服饰', 'many different types/kinds of traditional clothes'],
-      ['一些流行的种类', 'some popular types/kinds'],
-      ['在生活中的重要日子', 'on important days in life'],
-      ['节日和结婚日', 'festivals and wedding days'],
-      ['流行的一部分', 'a part of fashion'],
-      ['有一种不一样的样式和设计', 'have a different style and design'],
-      ['展示我国的传统文化', 'show the traditional culture of our country'],
-      ['有两千年的历史', 'have a history of two thousand years'],
-      ['由丝绸/棉花/皮革制成', 'be made of silk/cotton/leather'],
-      ['传统中国服饰', 'traditional Chinese clothes'],
-      ['有一根腰带', 'have a belt'],
-      ['受年轻人欢迎', 'be popular with young people'],
-      ['摸起来丝滑柔软', 'feel smooth and soft'],
-      ['它们穿起来宽松又舒适。', 'They are loose and comfortable to wear.'],
-      ['衣服的特点/材料', 'the features/materials of clothes'],
-      ['我赞同。', 'I agree.'],
-      ['有清爽的外观', 'have a clean look'],
-      ['一双运动鞋', 'a pair of sports shoes'],
-      ['既不太长也不太大', 'not too long or too large'],
-      ['又轻巧又适合运动', 'be light and good for sport'],
-      ['有不同的尺码', 'come in different sizes']
-    ],
-    '8': [
-      ['让我们庆祝吧！', 'Let’s celebrate!'],
-      ['通向不同文化的窗口', 'a window to different cultures'],
-      ['全世界不同的节日', 'different festivals around the world'],
-      ['春节', 'the Spring Festival'],
-      ['端午节', 'the Dragon Boat Festival'],
-      ['中秋节', 'the Mid-Autumn Festival'],
-      ['在圣诞节', 'at Christmas'],
-      ['彭斯之夜', 'Burns Night'],
-      ['喜欢泼水节', 'like the Water Festival'],
-      ['聚在一起', 'get together'],
-      ['观看龙舟赛', 'watch the dragon boat races'],
-      ['纪念伟大的诗人屈原', 'remember the great poet Qu Yuan'],
-      ['读诗', 'read poems'],
-      ['新年快乐！', 'Happy New Year!'],
-      ['女士们,先生们', 'ladies and gentlemen'],
-      ['美味的粽子', 'delicious rice dumplings'],
-      ['在门阶上撒盐', 'spread salt on the doorstep'],
-      ['好运和和平', 'good luck and peace'],
-      ['在即将到来的一年', 'in the coming year'],
-      ['在门上挂洋葱', 'hang onions on the door'],
-      ['让他们远离坏事', 'keep them from bad things'],
-      ['一种希腊传统', 'a Greek tradition'],
-      ['好运的象征', 'a symbol of good luck'],
-      ['将近午夜', 'near midnight'],
-      ['敲响 12 点', 'strike 12'],
-      ['跳下椅子进入新的一年', 'jump off the chairs into the new year'],
-      ['希望在', 'in the hope of'],
-      ['克服这个难题', 'get over the problem'],
-      ['在来年', 'in the year ahead'],
-      ['充满旅行的新年', 'a new year with lots of travel'],
-      ['提着手提箱在街区里转来转去', 'carry suitcases around the block'],
-      ['充满了精彩有趣的新年传统', 'be full of wonderful and interesting New Year traditions'],
-      ['无论你在哪里', 'wherever you are'],
-      ['辞旧迎新', 'out with the old, in with the new'],
-      ['拉小提琴', 'play the violin'],
-      ['做春卷', 'make spring rolls'],
-      ['为舞蹈演奏生动的音乐', 'play lively music for the dance'],
-      ['看新年音乐会', 'watch the New Year’s Concert'],
-      ['现在,此刻', 'at the moment/right now'],
-      ['演奏一首著名的曲子', 'play a famous piece'],
-      ['随着音乐起舞', 'dance to the music'],
-      ['那听起来很有趣！', 'That sounds like fun!'],
-      ['为今晚的一顿丰盛的家庭晚餐做准备', 'get ready for a big family dinner tonight'],
-      ['玩得开心', 'enjoy oneself'],
-      ['重阳节', 'the Double Ninth Festival'],
-      ['欣赏秋天的自然美景', 'enjoy the natural beauty of autumn'],
-      ['对长辈表示尊重和爱', 'show respect and love for the elders'],
-      ['听起来像中文中的“久久”这个词', 'sound like the word “forever” in Chinese'],
-      ['祝愿我们的长辈长寿、生活幸福', 'wish our elders a long and happy life'],
-      ['和家人朋友欢聚一堂', 'get together with family and friends'],
-      ['去爬山', 'go mountain climbing'],
-      ['给彼此礼物', 'give each other presents'],
-      ['唱圣诞歌曲', 'sing Christmas songs'],
-      ['装饰家里', 'decorate the homes'],
-      ['在除夕夜', 'on the Chinese New Year’s Eve'],
-      ['拜访亲戚朋友', 'visit relatives and friends'],
-      ['提前张帖春联', 'put up the Spring Festival couplets beforehand'],
-      ['准备一些有特殊意义的菜', 'prepare some dishes with special meanings'],
-      ['在假期中', 'during the holiday'],
-      ['祝他们好运', 'wish them good luck'],
-      ['持续到元宵节', 'last till the Lantern Festival'],
-      ['心中感到温暖', 'feel warm in the hearts']
-    ],
-    '7': [
-      ['明智地使用钱财', 'be wise with money'],
-      ['我们的购物习惯', 'our shopping habit'],
-      ['如何理财', 'how to manage money well'],
-      ['起重要作用', 'play an important role'],
-      ['一个储蓄罐', 'a money box'],
-      ['一只招财猫', 'a lucky cat'],
-      ['戴着棒球帽', 'wear a baseball cap'],
-      ['五颜六色的俄罗斯套娃', 'colourful Russian dolls'],
-      ['一个套一个', 'one inside another'],
-      ['一套不同尺寸的玩偶', 'a set of dolls in different sizes'],
-      ['充满了惊喜', 'be full of surprises'],
-      ['从最大到最小', 'from the biggest to the smallest'],
-      ['保护运动员的眼睛不受阳光伤害', 'protect the players’ eyes from the sun'],
-      ['一种时尚', 'a kind of fashion'],
-      ['为花钱制订计划', 'make plans for using money'],
-      ['花最多的钱购物', 'spend the most money (in) (going) shopping'],
-      ['一双新的运动鞋', 'a new pair of sports shoes'],
-      ['街对面的一家商场', 'a mall across the street'],
-      ['花费很多钱', 'cost a lot of money'],
-      ['别担心。', 'Don’t worry.'],
-      ['很会理财', 'manage money well'],
-      ['做一个预算', 'make a budget'],
-      ['够付你的教育费用', 'cover your education'],
-      ['支付日常所需', 'pay for daily needs'],
-      ['花费我们预算的大约 50%', 'cost about 50 per cent of our budget'],
-      ['花另外一半在我们的公寓上', 'spend the other half on our flat'],
-      ['比如什么', 'like what'],
-      ['例如度假', 'like taking holidays'],
-      ['可能会很贵', 'can be expensive'],
-      ['存一些钱', 'save some money'],
-      ['留下一些钱在银行账户', 'leave some money in the bank account'],
-      ['未雨绸缪', 'save for a rainy day'],
-      ['买一个钥匙扣作为礼物', 'buy a key ring as a present'],
-      ['在每个家庭中钱都很重要。', 'Money matters in every family.'],
-      ['遵守预算', 'keep to the budget'],
-      ['有一些零花钱', 'have some pocket money'],
-      ['你想用你的零花钱做什么？', 'What do you want to do with your pocket money?'],
-      ['为我们的朋友买一些礼物', 'buy some gifts for our friends'],
-      ['你剩下的钱足够了。', 'The rest of your money is enough.'],
-      ['有一本笔记本和一些橡皮。', 'There is a notebook and some erasers.'],
-      ['远离我的学校', 'far away from my school'],
-      ['给你。', 'Here you are.'],
-      ['成交！', 'That’s a deal!'],
-      ['这儿是购买大米的 45 枚硬币。', 'Here are 45 coins for the rice.'],
-      ['在线购买电脑', 'buy a computer online'],
-      ['世界上第一个使用纸币的国家', 'the first country to use paper money in the world'],
-      ['从祖父母和亲戚那里拿到压岁钱', 'get lucky money from grandparents and relatives'],
-      ['我也是。', 'Same here.'],
-      ['给我发送在线红包', 'send me online red packets'],
-      ['一次压岁钱调查', 'a lucky money survey'],
-      ['帮助有需要的儿童', 'help children in need'],
-      ['把大部分压岁钱花在学习用品上', 'spend most of the pocket money on school things'],
-      ['为你的压岁钱做预算', 'make a budget for your lucky money'],
-      ['把剩下的存在银行账户', 'save the rest in the bank account'],
-      ['正如妈妈总是告诉我的那样,存钱以备不时之需很重要。', 'As Mum always tells me, it is important to save for a rainy day.'],
-      ['每年年初', 'at the beginning of each year'],
-      ['有好的消费习惯', 'have good spending habits'],
-      ['怎么处理零花钱', 'what to do with the pocket money']
-    ],
-    '6': [
-      ['着装是一种生活方式。', 'Dressing is a way of life.'],
-      ['不同种类的衣服', 'different types/kinds of clothes'],
-      ['戴着一条围巾/领带', 'wear a scarf/tie'],
-      ['一条牛仔裤', 'a pair of jeans'],
-      ['一件紫色的夹克衫', 'a purple jacket'],
-      ['像红色那样的暖色', 'warm colours like red'],
-      ['像蓝色那样的冷色', 'cool colours like blue'],
-      ['感到平静', 'feel calm'],
-      ['流行色', 'colours in fashion'],
-      ['选正确的颜色穿', 'choose the right colours to wear'],
-      ['你能给我一些建议吗？', 'Could you give me some advice?'],
-      ['取决于', 'depend on'],
-      ['我们的肤色', 'the colour of our skin'],
-      ['例如,诸如', 'such as/for example'],
-      ['穿暖/冷色好看', 'look good in warm/cool colours'],
-      ['搭配得好', 'go well together'],
-      ['选相似的颜色', 'pick similar colours'],
-      ['穿深蓝色牛仔裤配淡蓝色的女士衬衫', 'wear dark blue jeans with a light blue blouse'],
-      ['混合冷暖色', 'mix warm and cool colours'],
-      ['使彼此突出', 'make each other stand out'],
-      ['匹配所有', 'match all'],
-      ['穿超过三种颜色', 'wear more than three colours'],
-      ['与任何颜色都很相配', 'go well with/match any colour'],
-      ['既适合正装,也适合休闲装', 'be suitable for both formal suits and casual clothes'],
-      ['穿衣打扮', 'get dressed'],
-      ['穿舒适的衣服', 'wear comfortable clothes'],
-      ['一场正式的活动', 'a formal event'],
-      ['一名时装设计师', 'a fashion designer'],
-      ['顺便说一下', 'by the way'],
-      ['在网上查东西', 'look things up on the internet'],
-      ['对某事不清楚', 'have no idea about sth'],
-      ['好吧。', 'All right.'],
-      ['我明白了。', 'I see.'],
-      ['一位小学同学', 'a primary school classmate'],
-      ['穿牛仔裤看起来精神', 'look smart in the jeans'],
-      ['你穿这件橙色的更好看。', 'You look better in the orange one.'],
-      ['许多不同种类的传统服饰', 'many different types/kinds of traditional clothes'],
-      ['一些流行的种类', 'some popular types/kinds'],
-      ['在生活中的重要日子', 'on important days in life'],
-      ['节日和结婚日', 'festivals and wedding days'],
-      ['流行的一部分', 'a part of fashion'],
-      ['有一种不一样的样式和设计', 'have a different style and design'],
-      ['展示我国的传统文化', 'show the traditional culture of our country'],
-      ['有两千年的历史', 'have a history of two thousand years'],
-      ['由丝绸/棉花/皮革制成', 'be made of silk/cotton/leather'],
-      ['传统中国服饰', 'traditional Chinese clothes'],
-      ['有一根腰带', 'have a belt'],
-      ['受年轻人欢迎', 'be popular with young people'],
-      ['摸起来丝滑柔软', 'feel smooth and soft'],
-      ['它们穿起来宽松又舒适。', 'They are loose and comfortable to wear.'],
-      ['衣服的特点/材料', 'the features/materials of clothes'],
-      ['我赞同。', 'I agree.'],
-      ['有清爽的外观', 'have a clean look'],
-      ['一双运动鞋', 'a pair of sports shoes'],
-      ['既不太长也不太大', 'not too long or too large'],
-      ['又轻巧又适合运动', 'be light and good for sport'],
-      ['有不同的尺码', 'come in different sizes']
-    ],
-  };
+  // ---- 数学计算 / 思维：每组记录成绩并展示奖台 ----
+  var CALC_HIST_KEY = 'calc_hist_v1';
+  function calHist() { try { return JSON.parse(lsGet(CALC_HIST_KEY) || '[]') || []; } catch (e) { return []; } }
+  function calLog(gid, correct, total) {
+    const score = total ? Math.round(correct * 100 / total) : 0;
+    const list = calHist();
+    const mine = list.filter(function (x) { return x.k === gid; });
+    const prevLast = mine.length ? mine[mine.length - 1].s : null;
+    const best = mine.length ? Math.max.apply(null, mine.map(function (x) { return x.s; })) : null;
+    list.push({ k: gid, s: score, t: Date.now() });
+    try { localStorage.setItem(pk(CALC_HIST_KEY), JSON.stringify(list.slice(-400))); } catch (e) {}
+    return { score: score, prevLast: prevLast, best: best };
+  }
+  function calRenderPodium(gid) {
+    const box = document.querySelector('.calc-pod[data-pod="' + gid + '"]');
+    if (!box) return;
+    box.innerHTML = podiumHTML(calHist().filter(function (x) { return x.k === gid; }), '🏆 前三名成绩（本组）', '还没有成绩<br>批改一次就会出现');
+  }
+  function calRenderAllPodiums() {
+    document.querySelectorAll('.calc-pod').forEach(function (b) { calRenderPodium(b.getAttribute('data-pod')); });
+  }
+  // ===== Supabase 云同步：本地永远先写，联网时自动补传；换浏览器/重发版本都不丢 =====
+  var SB_CFG_KEY = 'sb_cfg_v1';
+  var SB_TS_KEY = 'sb_ts_v1';
+  var SB_SKIP = { 'math_ai_cfg_v1': 1, 'sb_cfg_v1': 1, 'sb_ts_v1': 1 };
+  var sbDirty = false;
+  function sbCfg() { try { return JSON.parse(localStorage.getItem(SB_CFG_KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function saveSbCfg(c) { try { localStorage.setItem(SB_CFG_KEY, JSON.stringify(c)); } catch (e) {} }
+  function sbReady() { const c = sbCfg(); return !!(c.url && c.key); }
+  function sbBase(u) { return String(u || '').trim().replace(/\/+$/, '').replace(/\/rest\/v1$/, ''); }
+  function sbTable() { return sbCfg().table || 'elsa_kv'; }
+  // 收集属于当前孩子的所有数据（不包含密钥）
+  function syncCollect() {
+    const out = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const full = localStorage.key(i);
+      const suffix = '::' + PROFILE_ID;
+      if (full && full.slice(-suffix.length) === suffix) {
+        const base = full.slice(0, full.length - suffix.length);
+        if (SB_SKIP[base]) continue;
+        out[base] = localStorage.getItem(full);
+      }
+    }
+    return out;
+  }
+  function syncPush(force) {
+    if (!sbReady()) return Promise.resolve(false);
+    const c = sbCfg();
+    const ts = Date.now();
+    const last = +(localStorage.getItem(SB_TS_KEY) || 0);
+    if (!force && !sbDirty && ts - last < 30000) return Promise.resolve(false);
+    const body = JSON.stringify({ profile: PROFILE_ID, data: syncCollect(), ts: ts });
+    return fetch(sbBase(c.url) + '/rest/v1/' + sbTable() + '?on_conflict=profile', {
+      method: 'POST',
+      headers: {
+        'apikey': c.key,
+        'Authorization': 'Bearer ' + c.key,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: body
+    }).then(function (r) {
+      if (r.ok) { try { localStorage.setItem(SB_TS_KEY, String(ts)); } catch (e) {} sbDirty = false; return true; }
+      return r.text().then(function (t) { throw new Error('HTTP ' + r.status + '：' + String(t).slice(0, 120)); });
+    });
+  }
+  function syncPull() {
+    if (!sbReady()) return Promise.resolve(false);
+    const c = sbCfg();
+    const url = sbBase(c.url) + '/rest/v1/' + sbTable() + '?profile=eq.' + encodeURIComponent(PROFILE_ID) + '&select=*';
+    return fetch(url, { headers: { 'apikey': c.key, 'Authorization': 'Bearer ' + c.key } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (rows) {
+        if (!rows || !rows.length) return false;
+        const row = rows[0];
+        const remote = row.data || {};
+        const remoteTs = +(row.ts || 0);
+        const localTs = +(localStorage.getItem(SB_TS_KEY) || 0);
+        if (remoteTs && remoteTs <= localTs) return false;
+        let changed = false;
+        Object.keys(remote).forEach(function (base) {
+          if (SB_SKIP[base]) return;
+          const full = base + '::' + PROFILE_ID;
+          if (localStorage.getItem(full) !== remote[base]) { localStorage.setItem(full, remote[base]); changed = true; }
+        });
+        try { localStorage.setItem(SB_TS_KEY, String(remoteTs)); } catch (e) {}
+        return changed;
+      });
+  }
+  function syncNow() { return syncPush(true).catch(function (e) { toast('云同步失败：' + e.message); return false; }); }
+  function syncBoot() {
+    if (!sbReady()) return;
+    if (sessionStorage.getItem('sb_pulled') !== '1') {
+      sessionStorage.setItem('sb_pulled', '1');
+      syncPull().then(function (changed) {
+        if (changed) location.reload();
+        else syncPush(true).catch(function () {});
+      }).catch(function () {});
+    } else {
+      syncPush(false).catch(function () {});
+    }
+    setInterval(function () { syncPush(false).catch(function () {}); }, 30000);
+    window.addEventListener('pagehide', function () { try { syncPush(true); } catch (e) {} });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) { try { syncPush(true); } catch (e) {} } });
+  }
+  // 只保留“哪一步错了”的结论，丢掉模型的思考过程
+  function aiTidy(t) {
+    let x = String(t || '').replace(/\s+/g, ' ').trim();
+    if (!x) return '（模型没有返回结论，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
+    x = x.replace(/^(好的|首先|让我|我们需要|分析|思考[:：]?)/, '').trim();
+    const hits = x.match(/[^。；;.!?]{0,40}(第\s*[0-9一二三四五六七八九十]+\s*步)[^。；;.!?]{0,60}[。；;.!?]?/g);
+    if (hits && hits.length) {
+      x = hits[hits.length - 1].trim();
+    } else if (x.length > 160) {
+      x = x.slice(-160).trim();
+      const cut = x.search(/[。；;.!?]/);
+      if (cut > 0) x = x.slice(0, cut + 1);
+    }
+    if (x.length > 200) x = x.slice(0, 200) + '…';
+    return x;
+  }
+  // 只保留「读到的草稿 / 错在哪一步 / 正确过程」三行，丢掉思考过程
+  function aiTidy(t) {
+    let x = String(t || '').replace(/[ \t]+/g, ' ').trim();
+    if (!x) return '（模型没有返回内容，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
+    const keep = [];
+    x.split(/\n+/).forEach(function (line) {
+      const l = line.trim();
+      if (!l) return;
+      if (/读到的草稿|错在哪一步|正确过程|^[①②③]/.test(l)) keep.push(l);
+    });
+    if (keep.length) {
+      x = keep.join('\n');
+    } else {
+      const hits = x.match(/[^。；;.!?]{0,40}第\s*[0-9一二三四五六七八九十]+\s*[步行][^。；;.!?]{0,60}[。；;.!?]?/g);
+      if (hits && hits.length) x = hits[hits.length - 1].trim();
+      else if (x.length > 200) x = x.slice(-200).trim();
+    }
+    if (x.length > 460) x = x.slice(0, 460) + '…';
+    return x;
+  }
+  // 只保留「读到的草稿 / 错在哪一步 / 正确过程」三行，丢掉思考过程
+  function aiTidy(t) {
+    let x = String(t || '').replace(/[ \t]+/g, ' ').trim();
+    if (!x) return '（模型没有返回内容，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
+    const keep = [];
+    x.split(/\n+/).forEach(function (line) {
+      const l = line.trim();
+      if (!l) return;
+      if (/读到的草稿|错在哪一步|正确过程|^[①②③]/.test(l)) {
+        const mm = l.match(/[①②③]/);
+        keep.push(mm ? l.slice(l.indexOf(mm[0])).trim() : l);
+      }
+    });
+    if (keep.length) {
+      x = keep.join('\n');
+    } else {
+      const hits = x.match(/[^。；;.!?]{0,40}第\s*[0-9一二三四五六七八九十]+\s*[步行][^。；;.!?]{0,60}[。；;.!?]?/g);
+      if (hits && hits.length) x = hits[hits.length - 1].trim();
+      else if (x.length > 200) x = x.slice(-200).trim();
+    }
+    if (x.length > 460) x = x.slice(0, 460) + '…';
+    return x;
+  }
+  // 只保留「读到的草稿 / 错在哪一步 / 正确过程」三行，丢掉思考过程
+  function aiTidy(t) {
+    let x = String(t || '').replace(/[ \t]+/g, ' ').trim();
+    if (!x) return '（模型没有返回内容，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
+    const keep = [];
+    x.split(/\n+/).forEach(function (line) {
+      const l = line.trim();
+      if (!l) return;
+      if (/草稿共|步正确|错在哪里|错在哪一步|正确过程|读到的草稿|^[①②③④]/.test(l)) {
+        const mm = l.match(/[①②③④]/);
+        keep.push(mm ? l.slice(l.indexOf(mm[0])).trim() : l);
+      }
+    });
+    if (keep.length) {
+      x = keep.join('\n');
+    } else {
+      const hits = x.match(/[^。；;.!?]{0,40}第\s*[0-9一二三四五六七八九十]+\s*[步行][^。；;.!?]{0,60}[。；;.!?]?/g);
+      if (hits && hits.length) x = hits[hits.length - 1].trim();
+      else if (x.length > 200) x = x.slice(-200).trim();
+    }
+    if (x.length > 460) x = x.slice(0, 460) + '…';
+    return x;
+  }
+  // 构建版本号：显示在页脚，方便确认是否刷新到最新版
+  var BUILD_TAG = '2026-10-11 晚';
+  window.__BUILD_TAG = BUILD_TAG;
+  // 去掉开场客套和思考残留，保留“哪几行对 / 第几行错 / 正确过程”
+  function aiTidy(t) {
+    let x = String(t || '').replace(/[ \t]+/g, ' ').trim();
+    if (!x) return '（模型没有返回内容，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
+    x = x.replace(/^(好的|嗯|首先|让我|我们|这道题|分析|思考)[^。！？\n]*[。！？\n]\s*/, '');
+    x = x.replace(/\n{3,}/g, '\n\n');
+    if (x.length > 320) x = x.slice(0, 320) + '…';
+    return x;
+  }
+  // 去掉开场客套和思考残留，保留“哪几行对 / 第几行错 / 正确过程”
+  function aiTidy(t) {
+    let x = String(t || '').replace(/[ \t]+/g, ' ').trim();
+    if (!x) return '（模型没有返回内容，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
+    x = x.replace(/^(好的|嗯|首先|让我|我们|这道题|分析|思考)[^。！？\n]*[。！？\n]\s*/, '');
+    x = x.replace(/\n{3,}/g, '\n\n');
+    if (x.length > 320) x = x.slice(0, 320) + '…';
+    return x;
+  }
+  // 过滤推理模型漏出的“自言自语/提示词回声”，只保留结论与正确过程
+  function aiTidy(t) {
+    let x = String(t || '').replace(/[ \t]+/g, ' ').trim();
+    if (!x) return '（模型没有返回内容，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
+    const meta = /(用户|让我|我们|检查|期望|不影响|不需要|可以指出|不是主要|最终输出|可以分点|Markdown|客套|首先|接下来|也就是说|这说明|可能可以|那就|所以最终)/;
+    const latex = /(\\frac|\\\(|\\\)|\\times|"role"|"content")/;
+    const segs = x.split(/[\n。；;]/).map(function (s) { return s.trim(); })
+      .filter(function (s) { return s && !meta.test(s) && !latex.test(s); });
+    var err = segs.filter(function (s) { return /第\s*[0-9一二三四五六七八九十]+\s*[行步]/.test(s) && /(应|正确|错)/.test(s); });
+    var proc = x.match(/正确过程[：:]([\s\S]{0,220})/);
+    var out = [];
+    if (err.length) out.push(err.slice(-2).join('；'));
+    else {
+      var tail = segs.filter(function (s) { return /(=|＝|应为|答案)/.test(s); });
+      if (tail.length) out.push(tail.slice(-2).join('；'));
+    }
+    if (proc) out.push('正确过程：' + proc[1].replace(/[\n]+/g, ' ').trim());
+    var res = out.join('\n').trim();
+    if (!res) res = segs.slice(-2).join('；') || x.slice(-160);
+    if (res.length > 320) res = res.slice(0, 320) + '…';
+    return res;
+  }
+  // 最终过滤：去掉推理残留与 LaTeX 碎片，只保留「错：」「正确：」两行
+  function aiTidy(t) {
+    let x = String(t || '');
+    x = x.replace(/\\[a-zA-Z]+/g, ' ').replace(/[{}]/g, ' ').replace(/[\u0000-\u0008\u000b-\u001f]/g, ' ');
+    x = x.replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+    if (!x) return '（模型没有返回内容：请在 ⚙️ 关闭思考模式，或换用非推理视觉模型）';
+    const noise = /(用户|让我|我们|检查|期望|不影响|不需要|可以指出|不是主要|最终输出|可以分点|Markdown|客套|让我再|第一行写|第二行写|第三行写|认为|imes\(|rac\{|frac|\\|\(|\)|原来|这说明|可能可以)/;
+    const segs = x.split(/[\n。；;]/).map(function (s) { return s.trim(); })
+      .filter(function (s) { return s && !noise.test(s); });
+    function pick(re) {
+      for (var i = segs.length - 1; i >= 0; i--) { if (re.test(segs[i])) return segs[i]; }
+      return '';
+    }
+    var wrong = pick(/第\s*[0-9一二三四五六七八九十]+\s*[行步]/);
+    if (!wrong) wrong = pick(/(错|应)/);
+    var proc = pick(/正确过程|正确[：:]/);
+    if (!proc) {
+      var cands = segs.filter(function (s) { return (s.match(/[=＝]/g) || []).length >= 1; });
+      if (cands.length) proc = '正确：' + cands.slice(-3).join(' = ');
+    }
+    var out = [];
+    if (wrong) out.push('错：' + wrong.replace(/^(错[：:]|错在哪[一步]*[：:]?)/, '').trim());
+    if (proc) out.push(/^正确/.test(proc) ? proc : ('正确：' + proc));
+    var res = out.join('\n').trim();
+    if (!res) res = '（模型只返回了推理内容，没有得到简洁结论：请在 ⚙️ 里关闭思考模式，或换用非推理视觉模型，如 qwen-vl-max / glm-4v）';
+    if (res.length > 300) res = res.slice(0, 300) + '…';
+    return res;
+  }
   initCalc();
   initThink();
   applyProfile();
   updatePointsUI();
   updateWrongBadge();
+  syncBoot();
   showPage('dashboard');
 </script>
 <script id="generated-ui-icons">
