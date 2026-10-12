@@ -1022,7 +1022,25 @@ body.theme-shawn .module-card:nth-child(6) { background: #eaf1fb; }
 .geofig { margin: 8px 0 4px; }
 .geofig svg { display: block; max-width: 100%; height: auto; }
 /* 年级筛选 */
-.grade-bar { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 6px; }
+.grade-bar { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 6px; align-items: center; }
+/* åˆ†ç»„å·¥å…·æ å¸é¡¶ï¼šæ»‘åˆ°é¢˜ç›®ä¸­æ®µä¹Ÿèƒ½ç›´æŽ¥ã€Œæ‰¹æ”¹æœ¬ç»„ / AI æ‰¹æ”¹ã€ */
+section.type > .mod-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 2px 9px;
+  margin-bottom: 10px;
+  background: rgba(255,255,255,.97);
+  border-bottom: 1px solid #eef4fb;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+section.type > .mod-toolbar button, section.type > .mod-toolbar .sec-score { margin: 0; }
+.recite-bar { margin: 8px 0 4px; align-items: center; }
+.recite-bar.units { margin-top: 4px; }
+.bottom-nav button { min-width: 62px; }
 .grade-bar button { border: 1px solid #d6e4f2; background: #fff; color: #3a6ea5; border-radius: 999px; padding: 5px 16px; cursor: pointer; font-size: 13px; font-family: inherit; }
 .grade-bar button.active { background: #3d7fd0; border-color: #3d7fd0; color: #fff; font-weight: 700; }
 .grade-bar button:hover { border-color: #3d7fd0; }
