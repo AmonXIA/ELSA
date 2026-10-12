@@ -1072,12 +1072,42 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   .recite-bar.units button { font-size: 14px; }
   .recite-count { font-size: 15px; }
 }
+
+  /* 悬浮「按组批改」菜单：数学计算 / 数学思维 页右上角常驻 */
+  .gg-btn { right: 156px; font-size: 18px; font-weight: 700; }
+  .gg-btn.on { background: #4a86d8; color: #fff; border-color: #4a86d8; }
+  .gg-panel {
+    position: fixed; top: 58px; right: 12px; z-index: 62;
+    width: min(360px, calc(100vw - 24px)); max-height: 66vh; overflow-y: auto;
+    background: #fff; border: 1px solid #e3e9f2; border-radius: 14px;
+    box-shadow: 0 14px 34px rgba(35, 50, 75, .22); padding: 8px; display: none;
+  }
+  .gg-panel.open { display: block; }
+  .gg-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px 8px; font-size: 14px; font-weight: 700; color: #33475f; }
+  .gg-head button { border: 0; background: transparent; color: #8a97a8; font-size: 13px; cursor: pointer; }
+  .gg-row { display: flex; align-items: center; gap: 6px; padding: 7px 6px; border-radius: 10px; }
+  .gg-row.cur { background: #eaf3ff; }
+  .gg-row .gg-name { flex: 1 1 auto; min-width: 0; font-size: 13px; color: #33475f; line-height: 1.35; }
+  .gg-row .gg-name em { font-style: normal; background: #4a86d8; color: #fff; border-radius: 6px; padding: 1px 5px; font-size: 11px; margin-right: 4px; }
+  .gg-row .gg-score { color: #5d8fd6; font-weight: 700; }
+  .gg-row button { flex: 0 0 auto; font-size: 12px; padding: 5px 10px; border-radius: 999px; border: 1px solid #d7e2ee; background: #fff; color: #2f5f96; cursor: pointer; }
+  .gg-row button.pri { background: #4a86d8; border-color: #4a86d8; color: #fff; }
+  body.theme-elsa .gg-row.cur { background: #fdeff5; }
+  body.theme-elsa .gg-row .gg-name em, body.theme-elsa .gg-row button.pri { background: #e0648f; border-color: #e0648f; }
+  body.theme-elsa .gg-btn.on { background: #e0648f; border-color: #e0648f; }
+  @media (max-width: 640px) {
+    .gg-panel { top: 50px; }
+    .gg-row .gg-name { font-size: 12px; }
+  }
 </style></head>
 <body>
 
 <button class="fs-btn" id="fs-btn" onclick="toggleFullscreen()" title="切换全屏">⛶</button>
 <button class="fs-btn wb-btn" id="wb-quick-btn" onclick="openWrongBook()" title="错题本" aria-label="错题本">📓<span class="wb-badge" id="wb-badge-quick">0</span></button>
   <button class="fs-btn ai-btn" id="ai-quick-btn" onclick="openAiSettings()" title="AI " aria-label="AI">&#9881;</button>
+<button class="fs-btn gg-btn" id="gg-btn" onclick="toggleGradeMenu()" title="按组批改" aria-label="按组批改" style="display:none">&#10004;</button>
+<div class="gg-panel" id="gg-panel"></div>
+
 
 <header class="hero">
   <div class="brand">
@@ -1792,7 +1822,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     if (!cfg.key) { openAiSettings(); toast('请先填写接口地址与 API Key'); return; }
     if (!cv || !cv._inked) { toast('这一格还没有草稿'); return; }
     const qEl = card.querySelector('.q');
-    const q = qEl ? qEl.textContent.replace(/^\d+、\s*/, '') : '';
+    const q = qEl ? (qEl.getAttribute('data-q') || qEl.textContent.replace(/^\d+、\s*/, '')) : '';
     const ans = cardAnswer(card);
     let out = card.querySelector('.ai-result');
     if (!out) { out = document.createElement('div'); out.className = 'ai-result'; (card.querySelector('.calc-main') || card).appendChild(out); }
@@ -2789,6 +2819,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
 
   /* ============ 标签切换与初始化 ============ */
   function showPage(name) {
+    setTimeout(function () { if (typeof ggSync === 'function') ggSync(); }, 0);
     document.querySelectorAll('.page').forEach(p => { p.style.display = 'none'; });
     const el = document.getElementById('page-' + name);
     if (el) el.style.display = 'block';
@@ -5044,7 +5075,6 @@ const RATIONAL500 = [
   { q: "计算：1/(2×3)+1/(4×5)+…+1/(98×99)+1/51+1/52+…+1/99", ans: "49/50", key: ["49/50"], exp: "前一段 1/(2k(2k+1))=1/(2k)−1/(2k+1) 裂项，后一段直接相加。" },
   { q: "计算：1/(1×3)+2/(3×5)+2²/(5×7)+…+2⁸/(17×19)−(2³/(1×3×5)+2⁴/(3×5×7)+…+2¹¹/(17×19×21))", ans: "379/399", key: ["379/399"], exp: "写成两个和：2^k/((2k+1)(2k+3)) 与 2^k/((2k−5)(2k−3)(2k−1))，分别裂项相消。" },
 ];
-
   const SHAWN_POOLS = {
     rational: RATIONAL500.map(function (it) { return function () { return it; }; }),
     expr: [
@@ -5348,10 +5378,97 @@ const RATIONAL500 = [
  function revealHTML(ans, exp) {
     return '<div class="reveal">答案：' + fmtMath(ans) + (exp ? '<span class="exp">解析：' + fmtMath(exp) + '</span>' : '') + '</div>';
   }
+  /* ===== 分数标准排版：把 a/b（含复合分子分母）渲染成上下结构 ===== */
+  function fracHTML(num, den) {
+    return '<span class="frac"><span class="fnum">' + num + '</span><span class="fden">' + den + '</span></span>';
+  }
+  function isSup(c) { return '\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079'.indexOf(c) >= 0; }
+  function matchBracket(s, i) {
+    const open = s[i];
+    const pairs = { '(': ')', '[': ']', '{': '}' };
+    const stack = [];
+    for (let j = i; j < s.length; j++) {
+      const c = s[j];
+      if (open === '|') {
+        if (j > i && c === '|') return j;
+        if (pairs[c]) stack.push(pairs[c]);
+        else if (stack.length && c === stack[stack.length - 1]) stack.pop();
+      } else {
+        if (pairs[c]) stack.push(pairs[c]);
+        else if (stack.length && c === stack[stack.length - 1]) {
+          stack.pop();
+          if (!stack.length) return j;
+        }
+      }
+    }
+    return -1;
+  }
+  function mathTokens(s) {
+    const toks = [], pairs = { '(': ')', '[': ']', '{': '}' }, OPS = '\u2212-+\u00d7\u00f7=/';
+    let i = 0;
+    while (i < s.length) {
+      const c = s[i];
+      if (/\s/.test(c)) { i++; continue; }
+      if (OPS.indexOf(c) >= 0) { toks.push(['op', c]); i++; continue; }
+      if (c === '|' || pairs[c]) {
+        const j = matchBracket(s, i);
+        if (j > i) {
+          if (c === '|') toks.push(['abs', mathRender(s.slice(i + 1, j))]);
+          else toks.push(['grp', c, mathRender(s.slice(i + 1, j)), pairs[c]]);
+          i = j + 1;
+          continue;
+        }
+      }
+      if (c >= '0' && c <= '9') {
+        const m = /^[0-9]+/.exec(s.slice(i))[0];
+        let k = i + m.length, sup = '';
+        while (k < s.length && isSup(s[k])) { sup += s[k]; k++; }
+        const mm = /^\s+([0-9]+)\s*\/\s*([0-9]+)/.exec(s.slice(k));
+        if (mm) { toks.push(['prim', m + ' ' + fracHTML(mm[1], mm[2])]); i = k + mm[0].length; continue; }
+        if (s[k] === '%') { sup += '%'; k++; }
+        if (s[k] === '!') { sup += '!'; k++; }
+        toks.push(['prim', m + sup]);
+        i = k;
+        continue;
+      }
+      if (c === '\u2026') {
+        const m2 = /^\u2026+/.exec(s.slice(i))[0];
+        toks.push(['prim', m2]);
+        i += m2.length;
+        continue;
+      }
+      toks.push(['prim', c]);
+      i++;
+    }
+    return toks;
+  }
+  function tokHTML(t, dropBrackets) {
+    if (t[0] === 'prim' || t[0] === 'op') return t[1];
+    if (t[0] === 'abs') return '|' + t[1] + '|';
+    if (t[0] === 'grp') return dropBrackets ? t[2] : (t[1] + t[2] + t[3]);
+    return '';
+  }
+  function mathRender(src) {
+    const toks = mathTokens(src);
+    const out = [];
+    let i = 0;
+    while (i < toks.length) {
+      const t = toks[i];
+      if (t[0] === 'op' && t[1] === '/' && out.length && i + 1 < toks.length) {
+        const num = out.pop(), den = toks[i + 1];
+        out.push(['frac', tokHTML(num, true), tokHTML(den, true)]);
+        i += 2;
+        continue;
+      }
+      out.push(t);
+      i++;
+    }
+    return out.map(function (x) {
+      return x[0] === 'frac' ? fracHTML(x[1], x[2]) : tokHTML(x, false);
+    }).join('');
+  }
   function fmtMath(s) {
-    return escapeHtml(s).replace(/(\d+)\s*\/\s*(\d+)/g, function (m, a, b) {
-      return '<span class="frac"><span class="fnum">' + a + '</span><span class="fden">' + b + '</span></span>';
-    });
+    return mathRender(escapeHtml(s === null || s === undefined ? '' : String(s)));
   }
   function genFromPool(pool, n) {
     const out = [], seen = {};
@@ -7594,7 +7711,7 @@ function reciteBodyHTML(cfg) {
     items.forEach(function (it, i) {
       ansList.push('<li>' + escapeHtml(it.ans) + '</li>');
       html += '<div class="calc-item" data-gi="' + gid + '-' + i + '"><div class="calc-main">' +
-        '<div class="q">' + (i + 1) + '、' + fmtMath(it.q) + '</div>' +
+        '<div class="q" data-q="' + escapeHtml(it.q) + '">' + (i + 1) + '、' + (it.qhtml || fmtMath(it.q)) + '</div>' +
         (it.svg ? '<div class="geofig">' + it.svg + '</div>' : '') +
         '<div class="a-row"><input class="ans-input sm-input" data-g="' + gid + '" data-i="' + i + '" type="text" inputmode="text" placeholder="✏️ 如 1/6" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><span class="mark"></span></div>' +
         '<button class="add-wrong" data-type="' + gid + '" data-i="' + i + '">＋错题本</button>' +
@@ -7610,6 +7727,7 @@ function reciteBodyHTML(cfg) {
   function shawnFilter(g) {
     shawnGrade = g;
     renderGenericBody();
+    setTimeout(function () { if (typeof ggSync === 'function') ggSync(); }, 0);
     toast('已切换到「' + g + '」');
   }
   function buildShawnSections(types, prefix) {
@@ -7646,6 +7764,100 @@ function reciteBodyHTML(cfg) {
     if (!c) return;
     c.querySelectorAll('.mod-body').forEach(function (b) { b.classList.toggle('show-ans', open); });
   }
+  /* ===== 悬浮「按组批改」菜单 ===== */
+  function ggCtx() {
+    if (!curGeneric) return null;
+    const kind = curGeneric.cfg.kind;
+    if (kind === 'shawncalc') return { prefix: 'sc', arr: SHAWN_CALC };
+    if (kind === 'shawnmath') return { prefix: 'sm', arr: SHAWN_TYPES };
+    return null;
+  }
+  function ggGroups() {
+    const ctx = ggCtx();
+    if (!ctx) return [];
+    const out = [];
+    ctx.arr.forEach(function (t) {
+      const gid = ctx.prefix + '-' + t.id;
+      const sec = document.getElementById(gid);
+      const body = document.getElementById(gid + '-body');
+      if (!sec || !body) return;
+      const h = sec.querySelector('h2');
+      let name = t.title;
+      if (h) {
+        const c = h.cloneNode(true);
+        const num = c.querySelector('.num'), bd = c.querySelector('.badge');
+        if (num) num.remove();
+        if (bd) bd.remove();
+        name = c.textContent.replace(/\s+/g, ' ').trim() || t.title;
+      }
+      out.push({ gid: gid, prefix: ctx.prefix, tid: t.id, name: name, sec: sec });
+    });
+    return out;
+  }
+  function ggCurrent(list) {
+    const mid = (window.innerHeight || 800) / 2;
+    let best = list.length ? list[0] : null;
+    list.forEach(function (g) {
+      if (g.sec.getBoundingClientRect().top <= mid) best = g;
+    });
+    return best;
+  }
+  function ggSync() {
+    const btn = document.getElementById('gg-btn');
+    if (!btn) return;
+    const on = !!ggCtx();
+    btn.style.display = on ? '' : 'none';
+    if (!on) toggleGradeMenu(false);
+  }
+  function toggleGradeMenu(force) {
+    const p = document.getElementById('gg-panel'), btn = document.getElementById('gg-btn');
+    if (!p || !btn) return;
+    const open = (typeof force === 'boolean') ? force : !p.classList.contains('open');
+    if (!open) {
+      p.classList.remove('open');
+      btn.classList.remove('on');
+      return;
+    }
+    const list = ggGroups();
+    if (!list.length) { toast('这个页面没有可批改的分组'); return; }
+    const cur = ggCurrent(list);
+    let html = '<div class="gg-head"><span>&#10004; 按组批改</span><button type="button" onclick="toggleGradeMenu(false)">关闭</button></div>';
+    list.forEach(function (g) {
+      const sc = (document.getElementById(g.gid + '-score') || {}).textContent || '';
+      const isCur = cur && cur.gid === g.gid;
+      html += '<div class="gg-row' + (isCur ? ' cur' : '') + '">' +
+        '<span class="gg-name">' + (isCur ? '<em>当前</em> ' : '') + escapeHtml(g.name) +
+        (sc ? ' <span class="gg-score">' + escapeHtml(sc) + '</span>' : '') + '</span>' +
+        '<button type="button" class="' + (isCur ? 'pri' : '') + '" onclick="ggGrade(\'' + g.prefix + '\',\'' + g.tid + '\')">&#10004; 批改</button>' +
+        '<button type="button" onclick="ggDraft(\'' + g.prefix + '\',\'' + g.tid + '\')">&#128269; 草稿</button>' +
+        '</div>';
+    });
+    p.innerHTML = html;
+    p.classList.add('open');
+    btn.classList.add('on');
+  }
+  function ggGrade(prefix, tid) {
+    const gid = prefix + '-' + tid;
+    gradeShawn(prefix, tid);
+    const sc = (document.getElementById(gid + '-score') || {}).textContent || '';
+    toggleGradeMenu(false);
+    const sec = document.getElementById(gid);
+    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    toast('已批改这一组：' + sc);
+  }
+  function ggDraft(prefix, tid) {
+    toggleGradeMenu(false);
+    analyzeSectionDrafts(prefix, tid);
+  }
+  document.addEventListener('click', function (e) {
+    const p = document.getElementById('gg-panel');
+    if (!p || !p.classList.contains('open')) return;
+    if (p.contains(e.target)) return;
+    const btn = document.getElementById('gg-btn');
+    if (btn && btn.contains(e.target)) return;
+    toggleGradeMenu(false);
+  }, true);
+
   function gradeShawn(prefix, tid) {
     const gid = prefix + '-' + tid;
     const keys = shawnKeys[gid] || [];
@@ -7999,7 +8211,7 @@ function reciteBodyHTML(cfg) {
     return x;
   }
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-12 有理数500题库';
+  var BUILD_TAG = '2026-10-12 分数标准排版';
   window.__BUILD_TAG = BUILD_TAG;
   // 去掉开场客套和思考残留，保留“哪几行对 / 第几行错 / 正确过程”
   function aiTidy(t) {
