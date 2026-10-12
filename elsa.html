@@ -1099,6 +1099,8 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     .gg-panel { top: 50px; }
     .gg-row .gg-name { font-size: 12px; }
   }
+.sec-tip { margin: 2px 0 8px; padding: 7px 10px; background: #f3f7fc; border-left: 3px solid #9dc0ea; border-radius: 8px; font-size: 13px; line-height: 1.5; color: #4a5b70; }
+  body.theme-elsa .sec-tip { background: #fdf3f7; border-left-color: #f0b1c8; }
 </style></head>
 <body>
 
@@ -1820,31 +1822,44 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     const cv = card.querySelector('canvas.scratch');
     const cfg = aiCfg();
     if (!cfg.key) { openAiSettings(); toast('请先填写接口地址与 API Key'); return; }
-    if (!cv || !cv._inked) { toast('这一格还没有草稿'); return; }
+    if (!cv || !cv._inked) { toast('这一格还没有草稿：先在草稿区写过程，再点我'); return; }
     const qEl = card.querySelector('.q');
     const q = qEl ? (qEl.getAttribute('data-q') || qEl.textContent.replace(/^\d+、\s*/, '')) : '';
     const ans = cardAnswer(card);
-    let out = card.querySelector('.ai-result');
-    if (!out) { out = document.createElement('div'); out.className = 'ai-result'; (card.querySelector('.calc-main') || card).appendChild(out); }
-    out.textContent = '🤖 正在读你的草稿…';
+    const stu = studentAnswer(card);
+    const out = aiResultBox(card, '🤖 正在读你的草稿…');
     btn.disabled = true;
-    const prompt = '你是初中数学老师，请读图里学生的手写解题草稿。题目：' + q + '。正确答案：' + ans + '。'
-      + '注意：分数按文字理解（1/3 就是三分之一）；−3⁴ 表示 −(3⁴)。'
-      + '只输出下面两行，不要任何多余文字、不要 LaTeX、不要公式符号（用 × ÷ − + = 这些普通符号）：\n'
-      + '错：第几行错，他把什么写成了什么，正确应为多少\n'
-      + '正确：用等号连起来的一步式子（2~4 步）';
     let img = '';
     try { img = shrinkCanvas(cv); } catch (e) { img = ''; }
     if (!img) { out.textContent = '🤖 这一格草稿读取失败，请重新写一下再试'; btn.disabled = false; if (done) done(); return; }
     aiPost(cfg, [
-      { type: 'text', text: prompt },
+      { type: 'text', text: draftPrompt(q, ans, stu) },
       { type: 'image_url', image_url: { url: img } }
     ]).then(function (t) {
       out.textContent = '🤖 ' + aiTidy(t);
     }).catch(function (e) {
-      out.textContent = '🤖 出错：' + (e && e.message ? e.message : e) + (/image|vision|content|400|model|multimodal/i.test(String(e && e.message)) ? '　👉 多半是这个模型不支持图片：请在 ⚙️ 里换成支持视觉的模型（如 gpt-4o-mini、qwen-vl-max、glm-4v、doubao-vision）。' : '');
+      out.textContent = '🤖 出错：' + aiErr(e);
     }).then(function () { btn.disabled = false; if (done) done(); });
   }
+  // 只看题目和学生的答案，让 AI 讲一遍（不需要草稿、不需要视觉模型）
+  function analyzeQuestion(btn) {
+    const card = btn.closest('.calc-item') || btn.closest('.vcol');
+    if (!card) return;
+    const cfg = aiCfg();
+    if (!cfg.key) { openAiSettings(); toast('请先填写接口地址与 API Key'); return; }
+    const qEl = card.querySelector('.q');
+    const q = qEl ? (qEl.getAttribute('data-q') || qEl.textContent.replace(/^\d+、\s*/, '')) : '';
+    const ans = cardAnswer(card);
+    const stu = studentAnswer(card);
+    const out = aiResultBox(card, '🤖 正在讲这题…');
+    btn.disabled = true;
+    aiPost(cfg, [{ type: 'text', text: explainPrompt(q, ans, stu) }]).then(function (t) {
+      out.textContent = '🤖 ' + aiTidy(t);
+    }).catch(function (e) {
+      out.textContent = '🤖 出错：' + aiErr(e);
+    }).then(function () { btn.disabled = false; });
+  }
+
   // 一键读完这一组所有有草稿的题目
   function analyzeSectionDrafts(prefix, tid) {
     const gid = prefix + '-' + tid;
@@ -1874,6 +1889,8 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   }
   document.addEventListener('click', function (e) {
     if (!e.target.closest) return;
+    const x = e.target.closest('.ai-explain');
+    if (x) { e.preventDefault(); analyzeQuestion(x); return; }
     const b = e.target.closest('.ai-draft');
     if (b) { e.preventDefault(); analyzeDraft(b); return; }
     const s = e.target.closest('.ai-settings-btn');
@@ -1976,7 +1993,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     return { bad: 'ok', last: last };
   }
   function stepVerdictHTML(card) {
-    const generic = '<span class="exp">📝 你在这一格有草稿：把过程写进上面的「步骤」框（每行一步），批改时我就能直接指出第几步不成立。常见错因：去括号没变号、乘方符号、除以分数忘记取倒数、加减法进位借位算错。</span>';
+    const generic = '<span class="exp">✍️ 点「🔍 AI 读草稿指错步」，我可以直接告诉你是第几步、错在哪里。</span>';
     const ta = card.querySelector('.step-input');
     if (!ta || !ta.value.trim()) return generic;
     const res = checkStepText(ta.value);
@@ -2774,7 +2791,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             const ta = card.querySelector('.step-input');
-            r.innerHTML += stepVerdictHTML(card) + ' <button type="button" class="ai-draft">&#128269; AI批改这题</button>';
+            addAiVerdict(r, card);
           }
         }
       }
@@ -4537,7 +4554,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             const ta = card.querySelector('.step-input');
-            r.innerHTML += stepVerdictHTML(card) + ' <button type="button" class="ai-draft">&#128269; AI批改这题</button>';
+            addAiVerdict(r, card);
           }
         }
       }
@@ -7704,6 +7721,8 @@ function reciteBodyHTML(cfg) {
     shawnKeys[gid] = items.map(function (it) { return it.key; });
     regGeneric(gid, t.title, items.map(function (it) { return { q: it.q, a: it.ans }; }));
     let html = '<h2><span class="num">' + ti + '</span>' + escapeHtml(t.title) + ' <span class="badge">' + escapeHtml(t.grade || t.badge || '') + '</span></h2>';
+    const _poolTip = SHAWN_POOL_TIPS[t.pool] || '';
+    if (_poolTip) html += '<p class="sec-tip">📘 ' + escapeHtml(_poolTip) + '</p>';
     html += '<div class="mod-toolbar"><button class="primary-btn" onclick="gradeShawn(\'' + prefix + '\',\'' + t.id + '\')">✔ 批改本组</button> <button onclick="analyzeSectionDrafts(\'' + prefix + '\',\'' + t.id + '\')">🔍 AI 批改草稿</button> <button onclick="refreshShawnSection(\'' + prefix + '\',\'' + t.id + '\')">🎲 换一批</button> ' + scratchToolsHTML() + ' <span class="sec-score" id="' + gid + '-score"></span></div>';
     html += '<div class="calc-pod" data-pod="' + gid + '"></div>';
     html += '<div class="mod-body text onecol" id="' + gid + '-body">';
@@ -7715,8 +7734,8 @@ function reciteBodyHTML(cfg) {
         (it.svg ? '<div class="geofig">' + it.svg + '</div>' : '') +
         '<div class="a-row"><input class="ans-input sm-input" data-g="' + gid + '" data-i="' + i + '" type="text" inputmode="text" placeholder="✏️ 如 1/6" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><span class="mark"></span></div>' +
         '<button class="add-wrong" data-type="' + gid + '" data-i="' + i + '">＋错题本</button>' +
-        '<button type="button" class="ai-draft">🔍 AI 批改这题</button>' +
-        revealHTML(it.ans, it.exp || SHAWN_POOL_TIPS[t.pool]) + '</div>' +
+        '<button type="button" class="ai-draft">🔍 AI 读草稿指错步</button>' +
+        revealHTML(it.ans, it.exp) + '</div>' +
         '<canvas class="scratch" aria-label="草稿区"></canvas></div>';
     });
     html += '</div>';
@@ -7878,7 +7897,7 @@ function reciteBodyHTML(cfg) {
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             const ta = card.querySelector('.step-input');
-            r.innerHTML += stepVerdictHTML(card) + ' <button type="button" class="ai-draft">&#128269; AI批改这题</button>';
+            addAiVerdict(r, card);
           }
         }
       }
@@ -7930,7 +7949,7 @@ function reciteBodyHTML(cfg) {
             r.style.display = 'block';
             const sc = card.querySelector('canvas.scratch');
             const ta = card.querySelector('.step-input');
-            r.innerHTML += stepVerdictHTML(card) + ' <button type="button" class="ai-draft">&#128269; AI批改这题</button>';
+            addAiVerdict(r, card);
           }
         }
       }
@@ -8128,157 +8147,89 @@ function reciteBodyHTML(cfg) {
     window.addEventListener('pagehide', function () { try { syncPush(true); } catch (e) {} });
     document.addEventListener('visibilitychange', function () { if (document.hidden) { try { syncPush(true); } catch (e) {} } });
   }
-  // 只保留“哪一步错了”的结论，丢掉模型的思考过程
-  function aiTidy(t) {
-    let x = String(t || '').replace(/\s+/g, ' ').trim();
-    if (!x) return '（模型没有返回结论，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
-    x = x.replace(/^(好的|首先|让我|我们需要|分析|思考[:：]?)/, '').trim();
-    const hits = x.match(/[^。；;.!?]{0,40}(第\s*[0-9一二三四五六七八九十]+\s*步)[^。；;.!?]{0,60}[。；;.!?]?/g);
-    if (hits && hits.length) {
-      x = hits[hits.length - 1].trim();
-    } else if (x.length > 160) {
-      x = x.slice(-160).trim();
-      const cut = x.search(/[。；;.!?]/);
-      if (cut > 0) x = x.slice(0, cut + 1);
-    }
-    if (x.length > 200) x = x.slice(0, 200) + '…';
-    return x;
-  }
-  // 只保留「读到的草稿 / 错在哪一步 / 正确过程」三行，丢掉思考过程
-  function aiTidy(t) {
-    let x = String(t || '').replace(/[ \t]+/g, ' ').trim();
-    if (!x) return '（模型没有返回内容，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
-    const keep = [];
-    x.split(/\n+/).forEach(function (line) {
-      const l = line.trim();
-      if (!l) return;
-      if (/读到的草稿|错在哪一步|正确过程|^[①②③]/.test(l)) keep.push(l);
-    });
-    if (keep.length) {
-      x = keep.join('\n');
-    } else {
-      const hits = x.match(/[^。；;.!?]{0,40}第\s*[0-9一二三四五六七八九十]+\s*[步行][^。；;.!?]{0,60}[。；;.!?]?/g);
-      if (hits && hits.length) x = hits[hits.length - 1].trim();
-      else if (x.length > 200) x = x.slice(-200).trim();
-    }
-    if (x.length > 460) x = x.slice(0, 460) + '…';
-    return x;
-  }
-  // 只保留「读到的草稿 / 错在哪一步 / 正确过程」三行，丢掉思考过程
-  function aiTidy(t) {
-    let x = String(t || '').replace(/[ \t]+/g, ' ').trim();
-    if (!x) return '（模型没有返回内容，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
-    const keep = [];
-    x.split(/\n+/).forEach(function (line) {
-      const l = line.trim();
-      if (!l) return;
-      if (/读到的草稿|错在哪一步|正确过程|^[①②③]/.test(l)) {
-        const mm = l.match(/[①②③]/);
-        keep.push(mm ? l.slice(l.indexOf(mm[0])).trim() : l);
-      }
-    });
-    if (keep.length) {
-      x = keep.join('\n');
-    } else {
-      const hits = x.match(/[^。；;.!?]{0,40}第\s*[0-9一二三四五六七八九十]+\s*[步行][^。；;.!?]{0,60}[。；;.!?]?/g);
-      if (hits && hits.length) x = hits[hits.length - 1].trim();
-      else if (x.length > 200) x = x.slice(-200).trim();
-    }
-    if (x.length > 460) x = x.slice(0, 460) + '…';
-    return x;
-  }
-  // 只保留「读到的草稿 / 错在哪一步 / 正确过程」三行，丢掉思考过程
-  function aiTidy(t) {
-    let x = String(t || '').replace(/[ \t]+/g, ' ').trim();
-    if (!x) return '（模型没有返回内容，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
-    const keep = [];
-    x.split(/\n+/).forEach(function (line) {
-      const l = line.trim();
-      if (!l) return;
-      if (/草稿共|步正确|错在哪里|错在哪一步|正确过程|读到的草稿|^[①②③④]/.test(l)) {
-        const mm = l.match(/[①②③④]/);
-        keep.push(mm ? l.slice(l.indexOf(mm[0])).trim() : l);
-      }
-    });
-    if (keep.length) {
-      x = keep.join('\n');
-    } else {
-      const hits = x.match(/[^。；;.!?]{0,40}第\s*[0-9一二三四五六七八九十]+\s*[步行][^。；;.!?]{0,60}[。；;.!?]?/g);
-      if (hits && hits.length) x = hits[hits.length - 1].trim();
-      else if (x.length > 200) x = x.slice(-200).trim();
-    }
-    if (x.length > 460) x = x.slice(0, 460) + '…';
-    return x;
-  }
+
+
+
+
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-12 分数标准排版';
+  var BUILD_TAG = '2026-10-12 AI批改修复2';
   window.__BUILD_TAG = BUILD_TAG;
-  // 去掉开场客套和思考残留，保留“哪几行对 / 第几行错 / 正确过程”
-  function aiTidy(t) {
-    let x = String(t || '').replace(/[ \t]+/g, ' ').trim();
-    if (!x) return '（模型没有返回内容，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
-    x = x.replace(/^(好的|嗯|首先|让我|我们|这道题|分析|思考)[^。！？\n]*[。！？\n]\s*/, '');
-    x = x.replace(/\n{3,}/g, '\n\n');
-    if (x.length > 320) x = x.slice(0, 320) + '…';
-    return x;
+
+
+
+
+  // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====
+  // ===== AI 批改：结论块只保留一份，重复批改不会叠加 =====
+  function studentAnswer(card) {
+    const inp = card.querySelector('.sm-input') || card.querySelector('.ans-input') || card.querySelector('.g-input');
+    return inp && inp.value ? String(inp.value).trim() : '';
   }
-  // 去掉开场客套和思考残留，保留“哪几行对 / 第几行错 / 正确过程”
-  function aiTidy(t) {
-    let x = String(t || '').replace(/[ \t]+/g, ' ').trim();
-    if (!x) return '（模型没有返回内容，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
-    x = x.replace(/^(好的|嗯|首先|让我|我们|这道题|分析|思考)[^。！？\n]*[。！？\n]\s*/, '');
-    x = x.replace(/\n{3,}/g, '\n\n');
-    if (x.length > 320) x = x.slice(0, 320) + '…';
-    return x;
+  function aiResultBox(card, msg) {
+    let out = card.querySelector('.ai-result');
+    if (!out) {
+      out = document.createElement('div');
+      out.className = 'ai-result';
+      (card.querySelector('.calc-main') || card).appendChild(out);
+    }
+    out.textContent = msg;
+    return out;
   }
-  // 过滤推理模型漏出的“自言自语/提示词回声”，只保留结论与正确过程
-  function aiTidy(t) {
-    let x = String(t || '').replace(/[ \t]+/g, ' ').trim();
-    if (!x) return '（模型没有返回内容，可换用非推理型视觉模型，如 qwen-vl-max / glm-4v）';
-    const meta = /(用户|让我|我们|检查|期望|不影响|不需要|可以指出|不是主要|最终输出|可以分点|Markdown|客套|首先|接下来|也就是说|这说明|可能可以|那就|所以最终)/;
-    const latex = /(\\frac|\\\(|\\\)|\\times|"role"|"content")/;
-    const segs = x.split(/[\n。；;]/).map(function (s) { return s.trim(); })
-      .filter(function (s) { return s && !meta.test(s) && !latex.test(s); });
-    var err = segs.filter(function (s) { return /第\s*[0-9一二三四五六七八九十]+\s*[行步]/.test(s) && /(应|正确|错)/.test(s); });
-    var proc = x.match(/正确过程[：:]([\s\S]{0,220})/);
-    var out = [];
-    if (err.length) out.push(err.slice(-2).join('；'));
-    else {
-      var tail = segs.filter(function (s) { return /(=|＝|应为|答案)/.test(s); });
-      if (tail.length) out.push(tail.slice(-2).join('；'));
-    }
-    if (proc) out.push('正确过程：' + proc[1].replace(/[\n]+/g, ' ').trim());
-    var res = out.join('\n').trim();
-    if (!res) res = segs.slice(-2).join('；') || x.slice(-160);
-    if (res.length > 320) res = res.slice(0, 320) + '…';
-    return res;
+  function aiErr(e) {
+    const m = e && e.message ? e.message : String(e);
+    return m + (/image|vision|content|400|model|multimodal/i.test(m)
+      ? '　👉 多半是模型不支持图片：请在 ⚙️ 里换成支持视觉的模型（如 qwen-vl-max、glm-4v、doubao-vision、gpt-4o-mini）。'
+      : '');
   }
-  // 最终过滤：去掉推理残留与 LaTeX 碎片，只保留「错：」「正确：」两行
+  function addAiVerdict(r, card) {
+    const boxes = r.querySelectorAll('.ai-verdict');
+    for (let i = 1; i < boxes.length; i++) boxes[i].remove();
+    let box = boxes[0];
+    if (!box) {
+      box = document.createElement('div');
+      box.className = 'ai-verdict';
+      r.appendChild(box);
+    }
+    r.querySelectorAll('.ai-draft, .ai-explain').forEach(function (b) { if (!box.contains(b)) b.remove(); });
+    const cv = card.querySelector('canvas.scratch');
+    box.innerHTML = stepVerdictHTML(card)
+      + ' <button type="button" class="ai-explain">🤖 AI 讲这题</button>'
+      + ((cv && cv._inked && !card.querySelector('.ai-draft'))
+         ? ' <button type="button" class="ai-draft">🔍 AI 读草稿指错步</button>' : '');
+  }
+  function draftPrompt(q, ans, stu) {
+    return '你是初中数学老师。图里是学生的手写草稿，题目与正确答案已给出。\n'
+      + '题目：' + q + '\n正确答案：' + ans + '\n学生填的答案：' + (stu || '（空）') + '\n'
+      + '草稿里每出现一个等号就算一步。只输出下面三行，不要任何思考过程、不要复述这段话、不要用 LaTeX：\n'
+      + '1) 草稿共 X 步\n'
+      + '2) 第 Y 步错：他把「…」写成了「…」，正确应为「…」（若整份都对就写：全部正确）\n'
+      + '3) 正确过程：一步=一步=一步（2~4 步）\n'
+      + '分数写成 1/3、−5/6，乘方写成 2^3，用 × ÷ − + = 这些普通符号。\n'
+      + '如果照片看不清或草稿是空的，第2行就写：草稿看不清，请重写清楚一点。不要猜。';
+  }
+  function explainPrompt(q, ans, stu) {
+    return '你是初中数学老师，请给一个初中生讲这道题。\n'
+      + '题目：' + q + '\n正确答案：' + ans + '\n学生填的答案：' + (stu || '（空）') + '\n'
+      + '只输出下面三行，不要思考过程、不要复述这段话、不要用 LaTeX：\n'
+      + '1) 思路：一句话说清先算什么、再算什么\n'
+      + '2) 错在哪：' + (stu ? '学生答案不对，指出他这一步为什么不行' : '学生没填答案，指出最容易踩的坑') + '\n'
+      + '3) 正确过程：一步=一步=一步（2~4 步）';
+  }
   function aiTidy(t) {
-    let x = String(t || '');
-    x = x.replace(/\\[a-zA-Z]+/g, ' ').replace(/[{}]/g, ' ').replace(/[\u0000-\u0008\u000b-\u001f]/g, ' ');
-    x = x.replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
-    if (!x) return '（模型没有返回内容：请在 ⚙️ 关闭思考模式，或换用非推理视觉模型）';
-    const noise = /(用户|让我|我们|检查|期望|不影响|不需要|可以指出|不是主要|最终输出|可以分点|Markdown|客套|让我再|第一行写|第二行写|第三行写|认为|imes\(|rac\{|frac|\\|\(|\)|原来|这说明|可能可以)/;
-    const segs = x.split(/[\n。；;]/).map(function (s) { return s.trim(); })
-      .filter(function (s) { return s && !noise.test(s); });
-    function pick(re) {
-      for (var i = segs.length - 1; i >= 0; i--) { if (re.test(segs[i])) return segs[i]; }
-      return '';
-    }
-    var wrong = pick(/第\s*[0-9一二三四五六七八九十]+\s*[行步]/);
-    if (!wrong) wrong = pick(/(错|应)/);
-    var proc = pick(/正确过程|正确[：:]/);
-    if (!proc) {
-      var cands = segs.filter(function (s) { return (s.match(/[=＝]/g) || []).length >= 1; });
-      if (cands.length) proc = '正确：' + cands.slice(-3).join(' = ');
-    }
-    var out = [];
-    if (wrong) out.push('错：' + wrong.replace(/^(错[：:]|错在哪[一步]*[：:]?)/, '').trim());
-    if (proc) out.push(/^正确/.test(proc) ? proc : ('正确：' + proc));
-    var res = out.join('\n').trim();
-    if (!res) res = '（模型只返回了推理内容，没有得到简洁结论：请在 ⚙️ 里关闭思考模式，或换用非推理视觉模型，如 qwen-vl-max / glm-4v）';
-    if (res.length > 300) res = res.slice(0, 300) + '…';
+    let x = String(t === null || t === undefined ? '' : t);
+    if (!x.replace(/\s+/g, '')) return '（模型没有返回内容：请在 ⚙️ 里关闭思考模式，或换用支持视觉的模型）';
+    x = x.replace(/\\frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g, '$1/$2')
+      .replace(/\\times/g, '×').replace(/\\div/g, '÷').replace(/\\cdot/g, '·')
+      .replace(/\\(left|right|,|;|!)/g, ' ')
+      .replace(/\\[a-zA-Z]+/g, ' ')
+      .replace(/[{}$]/g, ' ')
+      .replace(/[\u0000-\u0008\u000b-\u001f]/g, ' ');
+    const lines = x.split(/\n+/).map(function (s) { return s.replace(/[ \t]+/g, ' ').trim(); })
+      .filter(function (s) { return s !== ''; });
+    const meta = /^(好的|嗯|明白|收到|首先|让我|我们|这道题|分析|思考|注意[:：]|要求[:：]|说明[:：]|输出[:：])/;
+    let kept = lines.filter(function (s) { return !meta.test(s); });
+    if (!kept.length) kept = lines;
+    let res = kept.join('\n').trim();
+    if (res.length > 420) res = res.slice(0, 420) + '…';
     return res;
   }
   initCalc();
