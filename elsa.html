@@ -1136,7 +1136,10 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   .listen-player button { border: 1px solid #cfe0f2; background: #fff; color: #2f6ba8; border-radius: 999px; padding: 7px 16px; font-size: 14px; cursor: pointer; }
   .listen-player button.pri { background: #4a86d8; border-color: #4a86d8; color: #fff; font-weight: 700; }
   .listen-player button.on { background: #dceafb; border-color: #9dc0ea; font-weight: 700; }
-  .listen-player .lp-note { font-size: 12px; color: #7b8ca0; }
+  .listen-player .lp-note { font-size: 12px; color: #7b8ca0; flex: 1 1 100%; }
+  .listen-player .lp-lab { font-size: 12px; color: #7b8ca0; margin-left: 6px; }
+  .listen-player .lp-pitch.on, .listen-player .lp-rate.on { background: #dceafb; border-color: #9dc0ea; font-weight: 700; }
+  .listen-player .lp-sel { border: 1px solid #cfe0f2; border-radius: 999px; padding: 5px 10px; font-size: 13px; color: #2f6ba8; background: #fff; max-width: 220px; }
   .ls-text { font-size: 18px; line-height: 2; color: #2f3b4a; }
   .ls-sent { border-radius: 6px; padding: 1px 2px; cursor: pointer; }
   .ls-sent.on { background: #fff2b8; box-shadow: 0 0 0 2px #ffe58a inset; }
@@ -2906,7 +2909,12 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   }
   /* ===== 磨耳朵 · 每日英语听读（100 篇，英音朗读） ===== */
   var LISTEN_DONE_KEY = 'listen_done_v1';
-  var listenCur = null, listenPlaying = false, listenIdx = -1, listenRate = 0.85, listenVoice = null;
+  var listenCur = null, listenPlaying = false, listenIdx = -1, listenVoice = null;
+  var listenRate = 0.85;
+  var listenPitch = 1.35, listenVoiceName = '';
+  try { listenRate = parseFloat(localStorage.getItem(pk('listen_rate_v1')) || '') || 0.85; } catch (e) {}
+  try { listenPitch = parseFloat(localStorage.getItem(pk('listen_pitch_v1')) || '') || 1.35; } catch (e) {}
+  try { listenVoiceName = localStorage.getItem(pk('listen_voice_v1')) || ''; } catch (e) {}
   function listenDoneMap() { try { return JSON.parse(lsGet(LISTEN_DONE_KEY) || '{}') || {}; } catch (e) { return {}; } }
   function listenMarkDone(n) {
     const m = listenDoneMap(); m['a' + n] = Date.now();
@@ -2921,22 +2929,68 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   function listenSents(en) {
     return (String(en).match(/[^.!?]+[.!?]*/g) || []).map(function (s) { return s.trim(); }).filter(function (s) { return s.length > 1; });
   }
+  // 更清亮的音色优先：小朋友听的女声/童声在前
+  var LISTEN_CHILD = ['ana', 'maisie', 'libby', 'sonia', 'kate', 'serena', 'zoe', 'michelle', 'jenny', 'aria', 'emma', 'ava', 'samantha', 'zira', 'karen', 'moira', 'google uk english female', 'google us english'];
+  function listenVoiceScore(v) {
+    const n = (v.name || '').toLowerCase();
+    const lang = (v.lang || '').replace('_', '-').toLowerCase();
+    let s = 0;
+    const idx = LISTEN_CHILD.findIndex(function (k) { return n.indexOf(k) >= 0; });
+    if (idx >= 0) s += 100 - idx * 2;
+    if (lang.indexOf('en-gb') === 0) s += 45;
+    else if (lang.indexOf('en') === 0) s += 12;
+    else s -= 50;
+    if (/natural|enhanced|premium|neural/.test(n)) s += 18;
+    if (/child|kid|junior|girl/.test(n)) s += 40;
+    return s;
+  }
+  function listenEnVoices() {
+    if (!('speechSynthesis' in window)) return [];
+    const vs = (window.speechSynthesis.getVoices() || []).filter(function (v) {
+      return (v.lang || '').toLowerCase().indexOf('en') === 0;
+    });
+    return vs.slice().sort(function (a, b) { return listenVoiceScore(b) - listenVoiceScore(a); });
+  }
   function listenPickVoice() {
-    if (!('speechSynthesis' in window)) return null;
-    const vs = window.speechSynthesis.getVoices() || [];
-    const prefer = ['Serena', 'Kate', 'Daniel', 'Oliver', 'Sonia', 'Libby', 'Ryan', 'Google UK English Female', 'Google UK English Male'];
-    for (let i = 0; i < prefer.length; i++) {
-      const v = vs.filter(function (x) { return x.name.indexOf(prefer[i]) >= 0; })[0];
-      if (v) return v;
+    const vs = listenEnVoices();
+    if (!vs.length) return null;
+    if (listenVoiceName) {
+      const hit = vs.filter(function (v) { return v.name === listenVoiceName; })[0];
+      if (hit) return hit;
     }
-    return vs.filter(function (x) { return (x.lang || '').replace('_', '-').toLowerCase().indexOf('en-gb') === 0; })[0]
-      || vs.filter(function (x) { return (x.lang || '').toLowerCase().indexOf('en') === 0; })[0] || null;
+    return vs[0];
   }
   function listenVoiceNote() {
     if (!('speechSynthesis' in window)) return '这台设备不支持朗读（请用 Safari / Chrome 打开）';
     listenVoice = listenPickVoice();
-    if (!listenVoice) return '没找到英音语音：可在 iPad「设置 → 辅助功能 → 朗读内容 → 声音」里下载英语（英国）语音';
-    return '英音语音：' + listenVoice.name;
+    if (!listenVoice) return '没找到英语语音：可在 iPad「设置 → 辅助功能 → 朗读内容 → 声音 → 英语」里多下载几个';
+    return '当前音色：' + listenVoice.name;
+  }
+  function listenSetPitch(p) {
+    listenPitch = p;
+    try { localStorage.setItem(pk('listen_pitch_v1'), String(p)); } catch (e) {}
+    const box = document.getElementById('listen-body');
+    if (box) box.querySelectorAll('.lp-pitch').forEach(function (b) { b.classList.toggle('on', +b.getAttribute('data-p') === p); });
+    if (listenPlaying) { listenStop(true); listenSpeakAt(listenIdx); }
+  }
+  function listenSetVoiceName(name) {
+    listenVoiceName = name;
+    try { localStorage.setItem(pk('listen_voice_v1'), name); } catch (e) {}
+    listenVoice = listenPickVoice();
+    const note = document.getElementById('lp-note');
+    if (note) note.textContent = '当前音色：' + (listenVoice ? listenVoice.name : name);
+    listenPreview();
+  }
+  function listenPreview() {
+    if (!('speechSynthesis' in window)) return;
+    try { window.speechSynthesis.cancel(); } catch (e) {}
+    const u = new SpeechSynthesisUtterance('Hello! I am your English reading friend. Let us read together!');
+    if (!listenVoice) listenVoice = listenPickVoice();
+    if (listenVoice) u.voice = listenVoice;
+    u.lang = (listenVoice && listenVoice.lang) || 'en-GB';
+    u.rate = listenRate;
+    u.pitch = listenPitch;
+    window.speechSynthesis.speak(u);
   }
   function listenStop(keepSentence) {
     try { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch (e) {}
@@ -2978,7 +3032,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     if (listenVoice) u.voice = listenVoice;
     u.lang = (listenVoice && listenVoice.lang) || 'en-GB';
     u.rate = listenRate;
-    u.pitch = 1.12;
+    u.pitch = listenPitch;
     u.onend = function () { if (listenPlaying) listenSpeakAt(i + 1); };
     u.onerror = function () { listenPlaying = false; listenPaint(true); };
     try { window.speechSynthesis.speak(u); } catch (e) { listenPlaying = false; toast('朗读失败：' + e.message); }
@@ -2994,6 +3048,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   }
   function listenSetRate(r) {
     listenRate = r;
+    try { localStorage.setItem(pk('listen_rate_v1'), String(r)); } catch (e) {}
     const box = document.getElementById('listen-body');
     if (box) box.querySelectorAll('.lp-rate').forEach(function (b) { b.classList.toggle('on', +b.getAttribute('data-r') === r); });
     if (listenPlaying) { listenStop(true); listenSpeakAt(listenIdx); }
@@ -3027,13 +3082,23 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     h += '<div class="listen-card">';
     h += '<img class="listen-hero" src="' + a.img + '" alt="">';
     h += '<div class="listen-title">' + escapeHtml(a.title) + '</div>';
+    const voices = listenEnVoices();
     h += '<div class="listen-player">' +
       '<button class="pri" id="lp-play" onclick="listenToggle()">▶ 播放</button>' +
       '<button onclick="listenStop()">⏹ 停止</button>' +
-      '<button class="lp-rate on" data-r="0.7" onclick="listenSetRate(0.7)">慢</button>' +
-      '<button class="lp-rate" data-r="0.85" onclick="listenSetRate(0.85)">中</button>' +
-      '<button class="lp-rate" data-r="1" onclick="listenSetRate(1)">快</button>' +
-      '<span class="lp-note" id="lp-note">' + escapeHtml(listenVoiceNote()) + '</span></div>';
+      '<button onclick="listenPreview()">🔊 试听音色</button>' +
+      '<span class="lp-lab">语速</span>' +
+      '<button class="lp-rate' + (Math.abs(listenRate - 0.7) < 0.01 ? ' on' : '') + '" data-r="0.7" onclick="listenSetRate(0.7)">慢</button>' +
+      '<button class="lp-rate' + (Math.abs(listenRate - 0.85) < 0.01 ? ' on' : '') + '" data-r="0.85" onclick="listenSetRate(0.85)">中</button>' +
+      '<button class="lp-rate' + (Math.abs(listenRate - 1) < 0.01 ? ' on' : '') + '" data-r="1" onclick="listenSetRate(1)">快</button>' +
+      '<span class="lp-lab">音调</span>' +
+      '<button class="lp-pitch' + (listenPitch <= 1.15 ? ' on' : '') + '" data-p="1.05" onclick="listenSetPitch(1.05)">低</button>' +
+      '<button class="lp-pitch' + (listenPitch > 1.15 && listenPitch < 1.55 ? ' on' : '') + '" data-p="1.35" onclick="listenSetPitch(1.35)">童声</button>' +
+      '<button class="lp-pitch' + (listenPitch >= 1.55 ? ' on' : '') + '" data-p="1.7" onclick="listenSetPitch(1.7)">更高</button>' +
+      (voices.length > 1 ? '<span class="lp-lab">音色</span><select class="lp-sel" onchange="listenSetVoiceName(this.value)">' +
+        voices.map(function (v) { return '<option value="' + escapeHtml(v.name) + '"' + ((listenVoice && v.name === listenVoice.name) ? ' selected' : '') + '>' + escapeHtml(v.name) + '</option>'; }).join('') +
+        '</select>' : '') +
+      '<span class="lp-note" id="lp-note">' + escapeHtml(listenVoiceNote()) + '　·　想更像小朋友：音色挑 Ana / Maisie / Libby，音调点「童声」或「更高」</span></div>';
     h += '<div class="ls-text">' + sents.map(function (s, i) {
       return '<span class="ls-sent" data-i="' + i + '" onclick="listenSpeakFrom(' + i + ')">' + escapeHtml(s) + '</span> ';
     }).join('') + '</div>';
@@ -8985,7 +9050,7 @@ function reciteBodyHTML(cfg) {
 
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-13 磨耳朵100篇';
+  var BUILD_TAG = '2026-10-14 童声音色';
   window.__BUILD_TAG = BUILD_TAG;
 
 
