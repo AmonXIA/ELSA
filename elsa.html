@@ -1101,6 +1101,12 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   }
 .sec-tip { margin: 2px 0 8px; padding: 7px 10px; background: #f3f7fc; border-left: 3px solid #9dc0ea; border-radius: 8px; font-size: 13px; line-height: 1.5; color: #4a5b70; }
   body.theme-elsa .sec-tip { background: #fdf3f7; border-left-color: #f0b1c8; }
+.passage { margin: 6px 0 12px; border: 1px solid #e3e9f2; border-radius: 12px; background: #f7fafd; padding: 8px 12px; }
+  .passage summary { cursor: pointer; font-weight: 600; color: #33517a; font-size: 14px; }
+  .passage .p-text { margin-top: 6px; font-size: 14.5px; line-height: 1.8; color: #33475f; }
+  .passage .p-text p { margin: 7px 0; }
+  .real-src { font-size: 12.5px; color: #6b7a8d; margin: 4px 0 8px; line-height: 1.6; }
+  body.theme-shawn .passage { background: #f6faff; border-color: #dbe7f5; }
 </style></head>
 <body>
 
@@ -4488,6 +4494,292 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     mc('初二上', '语法', '语法：Look! Someone ______ (swim) in the river.', ['swims', 'swam', 'is swimming', 'swim'], 'is swimming', 'Look! 提示现在进行时。'),
     mc('初二上', '语法', '语法：He told me he ______ (be) busy the next day.', ['is', 'was', 'will be', 'would be'], 'would be', '宾语从句主句为过去时，从句用过去将来时。'),
   ];
+/* 近三年各地中考英语真题（题目取自无忧考网公布的真题预览页，按省市·年份标注） */
+const ENG_REAL = [
+  {
+    label: '2026·江苏连云港 中考英语', badge: '单项选择 10 题', type: '单选',
+    items: [
+      { q: 'The clothes that we wear send a message to the people around ______.', options: ['we', 'us', 'our', 'ours'], ans: 'us', exp: '介词 around 后面用宾格，we 的宾格是 us。' },
+      { q: 'It is good manners to keep quiet in museums, so we ______ play music on our phones without wearing earphones.', options: ['can', 'must', "shouldn't", "needn't"], ans: "shouldn't", exp: '在博物馆保持安静是礼貌，所以“不应该”不带耳机放音乐，用 shouldn\'t。' },
+      { q: 'Zhurong, China\'s first Mars rover (火星车), has ______ a new age of exploring planets for humans.', options: ['given up', 'made up', 'turned up', 'opened up'], ans: 'opened up', exp: 'open up a new age 表示“开启一个新时代”。' },
+      { q: 'Engineers put their hearts ______ into every detail because a miss is as good as a mile.', options: ['suddenly', 'completely', 'politely', 'carelessly'], ans: 'completely', exp: 'put one\'s heart completely into… “全身心投入”，与后半句“差之毫厘，谬以千里”呼应。' },
+      { q: 'Sometimes happiness is not about big plans ______ small moments, when you slow down and simply enjoy being together.', options: ['so', 'for', 'and', 'but'], ans: 'but', exp: 'not… but… 表示“不是……而是……”。' },
+      { q: 'Nature has a ______ power as it makes people relaxed after wandering in a park for just 20 minutes.', options: ['magic', 'weak', 'strict', 'harmful'], ans: 'magic', exp: '能让人放松，说明大自然有“神奇的”力量，magic power。' },
+      { q: 'The Jiangsu Super League or Suchao ______ football grow more popular in China at present.', options: ['helped', 'is helping', 'will help', 'was helping'], ans: 'is helping', exp: 'at present 表示“目前”，用现在进行时强调正在起作用。' },
+      { q: 'Since 3D printing ______ in the medical area, making a hearing aid has become faster.', options: ['used', 'will be used', 'was used', 'has used'], ans: 'was used', exp: 'since 引导的时间状语从句用一般过去时，主句用现在完成时；3D 打印是被使用，用被动 was used。' },
+      { q: '______ the Dragon Boat Festival, our community will organize a zongzi-making competition.', options: ['Celebrating', 'Celebrated', 'To celebrate', 'Celebrate'], ans: 'To celebrate', exp: '表示目的用动词不定式 To celebrate。' },
+      { q: '— Millie, I plan to visit Mount Huaguo tomorrow. But I can\'t decide ______.\n— Try light shoes. They\'re fit for climbing.', options: ['what to wear', 'when to leave', 'how to get there', 'where to take photos'], ans: 'what to wear', exp: '答句说“穿轻便的鞋”，说明他在纠结穿什么，用 what to wear。' }
+    ]
+  },
+  {
+    label: '2026·江苏连云港 中考英语', badge: '完形填空 15 题', type: '完形',
+    passage: [
+      'While I was growing up, I spent each summer with my grandma. Grandma loved to cook. Every morning, I would jump out of bed, get __11__, and hurry downstairs. Grandma was always in the __12__.',
+      'But her special gift was hospitality (好客). Often, the neighbor ladies would stop in to visit, and Grandma was __13__ too busy to sit and talk with them. Grandma always had homemade cookies. We all __14__ Grandma\'s sweet spirit.',
+      'For holiday meals, the dining table, with Grandma\'s white lace (蕾丝) tablecloth, was __15__ with home-cooked foods. I felt so __16__ being a dinner guest and eating on that pretty tablecloth.',
+      'Grandma __17__ the lace tablecloth for me when she passed away. At first I __18__ to keep it safe. But when I thought about Grandma, I could almost hear her say, "__19__ it! Enjoy it!" So, I started bringing it out __20__ special family and holiday meals.',
+      'I brought it along __21__ our neighbor moved into their new apartment. I __22__ it over their table and served vegetable soup and homemade bread. Another time, after three new families moved onto our street, I __23__ them to my home one evening. On my dining table was Grandma\'s lace tablecloth, and plates of __24__ cookies.',
+      'These days, that old lace tablecloth gets plenty of use, and I __25__ many more years of enjoying family and friends around it.'
+    ],
+    items: [
+      { q: '11. I would jump out of bed, get ______, and hurry downstairs.', options: ['lost', 'hurt', 'locked', 'dressed'], ans: 'dressed', exp: 'get dressed 表示“穿好衣服”，起床后穿衣再下楼。' },
+      { q: '12. Grandma was always in the ______.', options: ['yard', 'study', 'kitchen', 'bedroom'], ans: 'kitchen', exp: '上文说 Grandma loved to cook，所以她总在厨房。' },
+      { q: '13. Grandma was ______ too busy to sit and talk with them.', options: ['never', 'sometimes', 'often', 'always'], ans: 'never', exp: 'never too busy to do sth 表示“再忙也会做某事”，体现她的好客。' },
+      { q: '14. We all ______ Grandma\'s sweet spirit.', options: ['refused', 'forgot', 'enjoyed', 'taught'], ans: 'enjoyed', exp: 'enjoy one\'s spirit 表示“喜爱、享受……的性情”。' },
+      { q: '15. The dining table … was ______ with home-cooked foods.', options: ['fixed', 'covered', 'compared', 'painted'], ans: 'covered', exp: 'be covered with 表示“被……覆盖”，桌上摆满了家常菜。' },
+      { q: '16. I felt so ______ being a dinner guest and eating on that pretty tablecloth.', options: ['sleepy', 'lonely', 'special', 'afraid'], ans: 'special', exp: '被当作客人、用漂亮的桌布，感到“特别”。' },
+      { q: '17. Grandma ______ the lace tablecloth for me when she passed away.', options: ['left', 'designed', 'bought', 'repaired'], ans: 'left', exp: 'leave sth to/for sb 表示“把……留给某人”。' },
+      { q: '18. At first I ______ to keep it safe.', options: ['showed it off', 'put it away', 'picked it up', 'handed it in'], ans: 'put it away', exp: 'put it away 表示“把它收起来”，与 keep it safe 呼应。' },
+      { q: '19. — I could almost hear her say, "______ it! Enjoy it!"', options: ['Hide', 'Drop', 'Wear', 'Use'], ans: 'Use', exp: '与 Enjoy it 并列，应是“用它”。' },
+      { q: '20. So, I started bringing it out ______ special family and holiday meals.', options: ['of', 'for', 'from', 'between'], ans: 'for', exp: 'for special meals 表示“为了特别的家庭聚餐、节日聚餐”。' },
+      { q: '21. I brought it along ______ our neighbor moved into their new apartment.', options: ['when', 'until', 'before', 'though'], ans: 'when', exp: 'when 引导时间状语从句，表示“当……时”。' },
+      { q: '22. I ______ it over their table and served vegetable soup and homemade bread.', options: ['cut', 'spread', 'burnt', 'sold'], ans: 'spread', exp: 'spread sth over the table 表示“把……铺在桌上”。' },
+      { q: '23. I ______ them to my home one evening.', options: ['invited', 'allowed', 'advised', 'ordered'], ans: 'invited', exp: 'invite sb to one\'s home 表示“邀请某人来家里”。' },
+      { q: '24. … and plates of ______ cookies.', options: ['cheap', 'strange', 'homemade', 'long-lost'], ans: 'homemade', exp: '上文出现 homemade cookies / homemade bread，呼应“自制的”。' },
+      { q: '25. … and I ______ many more years of enjoying family and friends around it.', options: ['prevent', 'change', 'escape', 'expect'], ans: 'expect', exp: 'expect 表示“期待”，期待今后很多年都能与家人朋友共享。' }
+    ]
+  },
+  {
+    label: '2025·江苏苏州 中考英语', badge: '完形填空 10 题', type: '完形',
+    passage: [
+      'Light rain continued to fall as I arrived at the mountain village. With a heavy bag on my back, I was excited to teach at a small school here, but a little __1__. What would these students be like?',
+      'The school had only 18 students. Most were quiet, __2__ they ran and laughed at break. One girl, Wen, always sat alone in the corner, seldom saying anything. On my first day in the classroom, I shared with them a __3__ with the words "You are seen" on it and put it up on the wall. Some smiled shyly and some spoke quietly. "That\'s why I\'m here," I said. However, Wen didn\'t __4__. She was just drawing circles on the desk with her finger.',
+      'Days passed quickly. The lessons were __5__ planned. The children were kind. But my effort seemed to make little difference. I was not sure if I was doing anything __6__.',
+      'One night, a heavy storm caused a power cut, leaving the classroom in darkness. As everyone was frozen, a soft light appeared. It was Wen who was holding a __7__ in her hand. "We can still read," she whispered. That was the first time I heard her voice.',
+      'The next day, she sat __8__. In the following days, she began to talk more. In my last class, she came up and gave me the lantern. "So you will always have some __9__," she smiled gently.',
+      'I came to give light, but found it was quietly __10__. Volunteering isn\'t always loud or big. Sometimes, it\'s a quiet lantern—shared between the two, and shining in both directions.'
+    ],
+    items: [
+      { q: '1. … but a little ______.', options: ['bored', 'relaxed', 'nervous', 'surprised'], ans: 'nervous', exp: '初到山村小学，心里有点“紧张”，下文自问“这些学生会是什么样”也提示 nervous。' },
+      { q: '2. Most were quiet, ______ they ran and laughed at break.', options: ['though', 'so', 'since', 'when'], ans: 'though', exp: '前后是让步关系：虽然课间又跑又笑，但多数时候很安静。' },
+      { q: '3. I shared with them a ______ with the words "You are seen" on it and put it up on the wall.', options: ['dictionary', 'poster', 'cake', 'cup'], ans: 'poster', exp: '上面有字又贴在墙上，是“海报”。' },
+      { q: '4. However, Wen didn\'t ______.', options: ['stand up', 'give up', 'wake up', 'look up'], ans: 'look up', exp: '她只是在用手指在桌上画圈，没有“抬头”。' },
+      { q: '5. The lessons were ______ planned.', options: ['slowly', 'carefully', 'directly', 'finally'], ans: 'carefully', exp: 'carefully planned 表示“精心准备的”。' },
+      { q: '6. I was not sure if I was doing anything ______.', options: ['simple', 'interesting', 'popular', 'meaningful'], ans: 'meaningful', exp: '“努力似乎没什么改变”，所以怀疑自己做的事是否有意义。' },
+      { q: '7. It was Wen who was holding a ______ in her hand.', options: ['book', 'lantern', 'candle', 'lamp'], ans: 'lantern', exp: '下段“she came up and gave me the lantern”已明确是灯笼。' },
+      { q: '8. The next day, she sat ______.', options: ['farther', 'lower', 'closer', 'longer'], ans: 'closer', exp: '她开始愿意接近我，所以“坐得更近”。' },
+      { q: '9. — "So you will always have some ______," she smiled gently.', options: ['fun', 'time', 'light', 'hope'], ans: 'light', exp: '她把灯笼给我，希望我“一直有光”。' },
+      { q: '10. I came to give light, but found it was quietly ______.', options: ['returned', 'collected', 'connected', 'accepted'], ans: 'returned', exp: '“我来给予光，却发现光被悄悄还了回来”，与下句“照亮彼此”呼应。' }
+    ]
+  },
+  {
+    label: '2024·江苏苏州 中考英语', badge: '完形填空 10 题', type: '完形',
+    passage: [
+      'The first person in our family to do yoga (瑜伽) was my mum. Her best friend, Sissy, who lived next door to us, __1__ yoga to her. She said if Mum was tired of the rush of modern life and wanted to feel less __2__, then yoga could help. Sissy was a very peaceful person so Mum __3__ accepted.',
+      'I watched Mum every day doing her breathing exercises and __4__ her postures (动作). After a few months, she said she felt much __5__. Dad was getting envious. He wasn\'t going to be left out so he __6__ yoga too. He goes to a class twice a week now.',
+      'Then Mum had the bright __7__ that my sister and I should do yoga. She researched the kind of yoga that is __8__ for children and learned as much as she could about it. Then she became our __9__. To my surprise, it turned out really well.',
+      'At first, we mostly did breathing exercises but then we moved on to stretching (伸展) exercises. We had to lift our ribcage (胸廓), reach our arms to the side and circle our body with them. Mum told us to __10__ we were enjoying ourselves in the sunshine. It was really fun!',
+      'Our whole family does yoga now. Even our dog, Bingo, likes to join in!'
+    ],
+    items: [
+      { q: '1. Her best friend, Sissy … ______ yoga to her.', options: ['took', 'recommended', 'donated', 'sent'], ans: 'recommended', exp: 'recommend sth to sb 表示“向某人推荐”。' },
+      { q: '2. She said if Mum … wanted to feel less ______, then yoga could help.', options: ['surprised', 'excited', 'stressed', 'amazed'], ans: 'stressed', exp: '厌烦现代生活的忙碌，想“减轻压力”。' },
+      { q: '3. Sissy was a very peaceful person so Mum ______ accepted.', options: ['easily', 'hardly', 'luckily', 'strictly'], ans: 'easily', exp: '因为 Sissy 很平和，所以妈妈“很容易就”接受了。' },
+      { q: '4. I watched Mum … doing her breathing exercises and ______ her postures.', options: ['testing', 'raising', 'practising', 'protecting'], ans: 'practising', exp: 'practise postures 表示“练习动作”。' },
+      { q: '5. After a few months, she said she felt much ______.', options: ['healthier', 'luckier', 'heavier', 'cleverer'], ans: 'healthier', exp: '练瑜伽几个月后感觉“更健康”。' },
+      { q: '6. He wasn\'t going to be left out so he ______ yoga too.', options: ['set up', 'made up', 'put up', 'took up'], ans: 'took up', exp: 'take up yoga 表示“开始练瑜伽”。' },
+      { q: '7. Then Mum had the bright ______ that my sister and I should do yoga.', options: ['future', 'idea', 'smile', 'start'], ans: 'idea', exp: 'have the bright idea that… 表示“有个好主意”。' },
+      { q: '8. She researched the kind of yoga that is ______ for children.', options: ['noisy', 'difficult', 'secret', 'helpful'], ans: 'helpful', exp: 'be helpful for children 表示“对孩子有帮助”。' },
+      { q: '9. Then she became our ______.', options: ['friend', 'student', 'teacher', 'partner'], ans: 'teacher', exp: '妈妈研究后教我们练，成了我们的“老师”。' },
+      { q: '10. Mum told us to ______ we were enjoying ourselves in the sunshine.', options: ['imagine', 'show', 'learn', 'prove'], ans: 'imagine', exp: 'imagine + 从句，表示“想象……”，让练习更有画面感。' }
+    ]
+  }
+];
+
+/* 江苏各市中考英语真题 · 单项选择（题目取自无忧考网公开的真题预览页） */
+const ENG_REAL_BATCH2 = [
+  {
+    label: '2025·江苏连云港 中考英语', badge: '单项选择 10 题', type: '单选',
+    items: [
+      { q: 'From April 8, pet owners in China ______ bring their cats or dogs on some high-speed trains.', options: ['must', 'should', 'can', 'need'], ans: 'can', exp: '新规允许，用 can 表示许可。' },
+      { q: 'Dolphins are good at driving fish to the coast. Fishermen often work ______ with them to catch fish.', options: ['heavily', 'closely', 'slowly', 'politely'], ans: 'closely', exp: 'work closely with 与……密切合作。' },
+      { q: 'New types of energy from the sun, wind and water ______ little pollution and will never run out.', options: ['burn', 'recycle', 'separate', 'produce'], ans: 'produce', exp: 'produce little pollution 产生很少污染。' },
+      { q: 'Our class went on a camping trip last Sunday. We ______ our tent near a lake.', options: ['put up', 'made up', 'took up', 'woke up'], ans: 'put up', exp: 'put up a tent 搭帐篷。' },
+      { q: 'The use of China\'s first home-built ocean drilling (钻探) ship shows a big ______ forward in China\'s deep sea exploring.', options: ['hole', 'flag', 'bridge', 'step'], ans: 'step', exp: 'a big step forward 向前迈出一大步。' },
+      { q: 'A local charity organization teaches the disabled ______ skills to find jobs on their own.', options: ['lively', 'strict', 'practical', 'medium'], ans: 'practical', exp: 'practical skills 实用技能。' },
+      { q: '______ over 400 million adults are too heavy, China has made a plan to help its people with weight control.', options: ['Since', 'Unless', 'Though', 'Until'], ans: 'Since', exp: 'since 引导原因状语从句：既然……。' },
+      { q: 'The mini-programme "Clear Plate" is popular among young people. It ______ to help deal with food waste.', options: ['will design', 'will be designed', 'designs', 'is designed'], ans: 'is designed', exp: 'be designed to do 被设计来做某事。' },
+      { q: 'As people pay more and more attention to cultural treasures, the industry of ancient book repairing ______ fast in China now.', options: ['developed', 'was developing', 'is developing', 'will develop'], ans: 'is developing', exp: 'now 提示现在进行时。' },
+      { q: '—Could you help me plan a day out in Lianyungang?\n—You can try Donghai Crystal (水晶) Museum. There you can learn ______.', options: ['whether crystal is formed', 'how crystal is formed', 'whether is crystal formed', 'how is crystal formed'], ans: 'how crystal is formed', exp: '宾语从句用陈述语序。' }
+    ]
+  },
+  {
+    label: '2024·江苏无锡 中考英语', badge: '单项选择 14 题', type: '单选',
+    items: [
+      { q: '______ is the girl wearing a scarf? Is she your sister?', options: ['Who', 'Which', 'What', 'Where'], ans: 'Who', exp: '问“是谁”，用 Who 作主语。' },
+      { q: '—Look at the traffic sign on the right. What does it mean?\n—It means ______.', options: ["you mustn't turn left", 'you must turn left', "you mustn't turn right", 'you must turn right'], ans: "you mustn't turn right", exp: '图中是禁止右转标志。' },
+      { q: 'Oh, come on! Stop telling me what to do. Mind ______ own business.', options: ['you', 'your', 'us', 'our'], ans: 'your', exp: 'Mind your own business. 管好你自己的事。' },
+      { q: 'Everyone loves my dog Coffee, ______ he often makes a mess at home.', options: ['until', 'since', 'though', 'whether'], ans: 'though', exp: '前后是让步关系：虽然……。' },
+      { q: '—How are you feeling today, young man?\n—Much ______. The medicine works. Thank you, Doctor.', options: ['best', 'better', 'worst', 'worse'], ans: 'better', exp: 'much 修饰比较级。' },
+      { q: 'What great news! But has it been confirmed yet? It just sounds ______ to be true.', options: ['bad enough', 'too bad', 'good enough', 'too good'], ans: 'too good', exp: 'too…to… 太……以至于不……。' },
+      { q: 'Hey, John! What\'s up? I ______ a shower when you called.', options: ['had taken', 'have taken', 'was taking', 'am taking'], ans: 'was taking', exp: 'when + 一般过去时，主句用过去进行时。' },
+      { q: 'We\'re looking for ______ who can deal with the new computer virus.', options: ['someone', 'everyone', 'something', 'everything'], ans: 'someone', exp: 'who 指人，用 someone。' },
+      { q: 'Shh…! This is a library. You ______ keep your voice down.', options: ['can', "can't", 'should', "shouldn't"], ans: 'should', exp: '在图书馆应该小声，用 should。' },
+      { q: 'It\'s such an important meeting that everyone is advised to dress ______.', options: ['careful', 'carefully', 'proper', 'properly'], ans: 'properly', exp: 'dress 是动词，用副词修饰。' },
+      { q: 'I know how busy you are and I won\'t ______ too much of your time.', options: ['take up', 'set up', 'make up', 'put up'], ans: 'take up', exp: 'take up one\'s time 占用时间。' },
+      { q: 'I thought I did badly in the exam. ______, I got a 60 and passed. Hooray!', options: ['Maybe', 'Instead', 'Almost', 'However'], ans: 'However', exp: '前后转折，用 However。' },
+      { q: 'I couldn\'t ______ what else he has to say. Everyone knows that\'s a lie.', options: ['suppose', 'imagine', 'realize', 'consider'], ans: 'imagine', exp: 'can\'t imagine 无法想象。' },
+      { q: '—Would you like to go to the concert with me this Friday?\n—Oh, I\'m going to the cinema with Sam. ______ Why didn\'t you tell me earlier?', options: ['Are you sure?', 'What a pity!', 'Are you serious?', 'What a surprise!'], ans: 'What a pity!', exp: '有约在先、感到可惜，用 What a pity!。' }
+    ]
+  },
+  {
+    label: '2024·江苏扬州 中考英语', badge: '单项选择 15 题', type: '单选',
+    items: [
+      { q: 'The Marco Polo Memorial Hall stands at the east end of Dongguan Street ______ Yangzhou.', options: ['to', 'on', 'at', 'in'], ans: 'in', exp: '大地点用 in。' },
+      { q: '"What\'s that?" is ______ of the first things that children say.', options: ['some', 'each', 'one', 'that'], ans: 'one', exp: 'one of the + 复数 结构。' },
+      { q: 'Teamwork doesn\'t happen ______ in the workplace or school. It needs training.', options: ['naturally', 'correctly', 'wildly', 'especially'], ans: 'naturally', exp: '合作不是自然发生的。' },
+      { q: 'Look! My sister ______ the table. Let\'s give her a hand.', options: ['set', 'sets', 'is setting', 'was setting'], ans: 'is setting', exp: 'Look! 提示现在进行时。' },
+      { q: 'China has made great efforts ______ other countries build high-speed railways.', options: ['help', 'to help', 'helping', 'helped'], ans: 'to help', exp: 'make efforts to do sth。' },
+      { q: 'Our monitor is ______. He always spends a lot of time helping with our class projects.', options: ['generous', 'humorous', 'nervous', 'curious'], ans: 'generous', exp: '乐于助人、慷慨大方。' },
+      { q: 'As we all know, the Yangtze River ______ as a "mother river" of the Chinese nation.', options: ['knows', 'knew', 'is known', 'was known'], ans: 'is known', exp: 'be known as 被称为。' },
+      { q: '—How does this new washing machine work?\n—It\'s easy. You ______ touch this icon.', options: ['even', 'almost', 'ever', 'just'], ans: 'just', exp: 'just 只需要……。' },
+      { q: 'Many think SOS is short for "save our ship", but it doesn\'t really ______ anything.', options: ['look for', 'stand for', 'pay for', 'try for'], ans: 'stand for', exp: 'stand for 表示、代表。' },
+      { q: 'You can\'t eat an elephant all at once. Eat it one bite ______.', options: ['on time', 'at a time', 'all the time', 'at the same time'], ans: 'at a time', exp: 'at a time 每次。' },
+      { q: 'Since I was born, my family ______ in the same flat.', options: ['live', 'will live', 'are living', 'have lived'], ans: 'have lived', exp: 'since 引导时间状语，主句用现在完成时。' },
+      { q: '______ you are too tired to do all the things on your To-Do list, try a To-Don\'t list.', options: ['If', 'Until', 'Although', 'Unless'], ans: 'If', exp: '条件状语从句，用 If。' },
+      { q: '—Do you know why zebrafish are taken to Shenzhou-18?\n—They have ______ like small size and short development cycle.', options: ['stages', 'advantages', 'messages', 'passages'], ans: 'advantages', exp: '体型小、周期短是“优势”。' },
+      { q: 'Teenagers don\'t always understand ______ their parents have so many rules.', options: ['why', 'which', 'where', 'what'], ans: 'why', exp: '从句“父母为什么有这么多规矩”，用 why。' },
+      { q: '—I hear you\'re leaving for Guilin for your holiday?\n—______. And I\'m looking forward to it.', options: ["It doesn't matter", "It's a pleasure", "That's right", 'Never mind'], ans: "That's right", exp: '肯定对方所说，用 That\'s right。' }
+    ]
+  },
+  {
+    label: '2025·江苏扬州 中考英语', badge: '单项选择 12 题', type: '单选',
+    items: [
+      { q: 'The best things ______ life are free, like hugs, smiles, love and good memories.', options: ['on', 'at', 'by', 'in'], ans: 'in', exp: 'in life 在生活中。' },
+      { q: 'Red squirrels depend on ______ thicker winter fur and food hidden in autumn to survive.', options: ['its', 'our', 'their', 'your'], ans: 'their', exp: 'squirrels 是复数，用 their。' },
+      { q: '—Will you be able to finish the work in time?\n—I ______ promise anything, but I\'ll do my best.', options: ["can't", "shouldn't", "couldn't", "mustn't"], ans: "can't", exp: '不能保证，但会尽力。' },
+      { q: '—______ do you remember about this week\'s news?\n—None, I\'m afraid.', options: ['How many', 'How much', 'How soon', 'How long'], ans: 'How much', exp: 'news 不可数，用 How much。' },
+      { q: 'The wind power of our country develops more quickly ______ we push for green energy.', options: ['though', 'before', 'as', 'until'], ans: 'as', exp: 'as 引导时间/原因：随着……。' },
+      { q: '______ the whole of this article ______ any part of it will be published unless the writer agrees.', options: ['Either; or', 'Neither; nor', 'Not only; but also', 'Both; and'], ans: 'Neither; nor', exp: 'neither…nor… 既不……也不……。' },
+      { q: '—What\'s the advantage of your transport services?\n—Whether it\'s by land, sea or air, we use our ______ to serve you.', options: ['courage', 'challenge', 'passage', 'knowledge'], ans: 'knowledge', exp: '用专业知识为您服务。' },
+      { q: 'With hard work and clear plans, you will become ______ in your study.', options: ['successful', 'honest', 'generous', 'cheerful'], ans: 'successful', exp: '努力加计划会“成功”。' },
+      { q: 'Stress comes and goes. Sometimes you just need to ______.', options: ['sit down', 'fall down', 'calm down', 'come down'], ans: 'calm down', exp: '压力大时要“冷静下来”。' },
+      { q: 'He wouldn\'t allow bad moods to get ______ when he was doing his job.', options: ['on the way', 'in the way', 'along the way', 'by the way'], ans: 'in the way', exp: 'get in the way 妨碍。' },
+      { q: 'We should build on past achievements and work together ______ a better world.', options: ['make', 'making', 'made', 'to make'], ans: 'to make', exp: '不定式表目的。' },
+      { q: 'When you feel cold air coming through your window, energy ______.', options: ['wastes', 'is wasted', 'wasted', 'was wasted'], ans: 'is wasted', exp: '能量“被浪费”，用被动语态。' }
+    ]
+  }
+];
+  ENG_REAL_BATCH2.forEach(function (p) { ENG_REAL.push(p); });
+/* 2023 年江苏各市中考英语真题 · 单项选择/选择填空 */
+const ENG_REAL_BATCH3 = [
+  {
+    label: '2023·江苏南通 中考英语', badge: '单项选择 12 题', type: '单选',
+    items: [
+      { q: 'As a student in modern China, everybody should work hard to live ______ meaningful life.', options: ['a', 'an', 'the', '不填'], ans: 'a', exp: 'live a meaningful life 过有意义的生活。' },
+      { q: 'Shenzhou 16 was sent up into space ______ the morning of May 30, 2023.', options: ['in', 'on', 'at', 'from'], ans: 'on', exp: '具体某天的早晨用 on。' },
+      { q: '—It\'s neither too cold nor too hot all year round in Kunming, making ______ a perfect place to live in or visit.\n—Right. I went there last year.', options: ['that', 'one', 'this', 'it'], ans: 'it', exp: 'make it + 名词，it 作形式宾语。' },
+      { q: '—Our English teacher is very confident. And he is always ready to ______ a challenge.\n—So he is. We all like him.', options: ['touch', 'choose', 'discuss', 'accept'], ans: 'accept', exp: 'accept a challenge 接受挑战。' },
+      { q: 'The first Nobel Prize was presented to a German scientist for the discovery of rays, which are ______ used to look for problems inside our bodies.', options: ['quiet', 'successfully', 'hardly', 'gently'], ans: 'successfully', exp: '被成功地用于检查身体。' },
+      { q: '______ you can\'t work out the problem, perhaps you need to ask your classmates for help.', options: ['Unless', 'Though', 'Since', 'Whether'], ans: 'Since', exp: 'since 既然……。' },
+      { q: '—Life is like a road. It isn\'t always ______.\n—I can\'t agree more. So we should learn to deal with all kinds of difficulties.', options: ['smooth', 'silent', 'serious', 'special'], ans: 'smooth', exp: '道路不总是平坦的。' },
+      { q: '—______ are easily made, but not easily kept.\n—That\'s true. Once you make one, be sure to keep it.', options: ['Speeches', 'Decisions', 'Promises', 'Suggestions'], ans: 'Promises', exp: '承诺易许难守。' },
+      { q: 'The wind energy costs very little and will never ______. Besides, it produces little pollution.', options: ['blow out', 'run out', 'put out', 'break out'], ans: 'run out', exp: 'run out 用完、耗尽。' },
+      { q: '—Excuse me, ______ is the Gengsu Theatre from this hotel?\n—It\'s about ten minutes if you take a taxi.', options: ['how far', 'how long', 'how soon', 'how much'], ans: 'how far', exp: '问距离用 how far。' },
+      { q: 'If a football team wants to enter the World Cup, it ______ become a member of FIFA first.', options: ['may', 'must', 'can', 'might'], ans: 'must', exp: '必须成为成员，用 must。' },
+      { q: '______ healthy, we\'ve got used to washing hands before meals and using public chopsticks.', options: ['Keeping', 'Keep', 'To keep', 'To'], ans: 'To keep', exp: '不定式表目的。' }
+    ]
+  },
+  {
+    label: '2023·江苏常州 中考英语', badge: '单项选择 10 题', type: '单选',
+    items: [
+      { q: 'We ______ on the countryside road when a sudden storm hit, so we made our way back.', options: ['jogged', 'were jogging', 'have jogged', 'will jog'], ans: 'were jogging', exp: 'when + 一般过去时，主句用过去进行时。' },
+      { q: 'My father goes back to Nanjing for the Spring Festival every year ______ last year because he was busy with his work in Changzhou.', options: ['including', 'since', 'except', 'till'], ans: 'except', exp: 'except last year 除去年外。' },
+      { q: 'As we live in a rapidly developing world, we will be left behind ______ we keep learning.', options: ['unless', 'if', 'after', 'though'], ans: 'unless', exp: 'unless 除非。' },
+      { q: 'When you have fixed this type of lock, you ______ take a key with you. You can open the door with your fingerprint.', options: ["shouldn't", "needn't", "mustn't", "can't"], ans: "needn't", exp: '用指纹开门，所以“不必”带钥匙。' },
+      { q: 'I\'ve visited New York and Los Angeles, but I don\'t like ______ of them very much.', options: ['either', 'any', 'neither', 'none'], ans: 'either', exp: 'not…either 两者都不。' },
+      { q: 'After she was brought back to China, the sick giant panda Ya Ya received good ______ in her new home and got better.', options: ['education', 'communication', 'entertainment', 'treatment'], ans: 'treatment', exp: '生病得到“治疗”。' },
+      { q: '—Can you ______ the sign for the community party?\n—Sure, where should I hang it?', options: ['keep up', 'take up', 'give up', 'put up'], ans: 'put up', exp: 'put up 张贴。' },
+      { q: '—Let\'s invite some more people to help with the project on air pollution in this area.\n—Good idea! ______.', options: ['Many hands make light work', 'The early bird catches the worm', 'The grass is always greener on the other side', 'When in Rome, do as the Romans do'], ans: 'Many hands make light work', exp: '人多力量大，与“多请些人帮忙”呼应。' },
+      { q: 'Could you tell me something about Qu Qiubai? I need to know about ______.', options: ['how many books did he publish', 'that he studied and worked in Russia', 'which part of Changzhou did he live in', 'what foreign languages he could speak'], ans: 'what foreign languages he could speak', exp: '宾语从句要用陈述语序。' },
+      { q: '—Shall we be volunteers in Changzhou Museum during the summer holiday?\n—______. I\'m looking forward to that.', options: ["Don't mention it", "That's not the case", "It couldn't be better", "I'm afraid not"], ans: "It couldn't be better", exp: '再好不过了，表示赞同。' }
+    ]
+  },
+  {
+    label: '2023·江苏徐州 中考英语', badge: '选择填空 15 题', type: '单选',
+    items: [
+      { q: 'In the picture, people are celebrating ______.（图中是赛龙舟）', options: ['Spring Festival', 'Mid-Autumn Festival', 'Lantern Festival', 'Dragon Boat Festival'], ans: 'Dragon Boat Festival', exp: '赛龙舟是端午节的活动。' },
+      { q: 'Of all the ______, I love summer best.', options: ['seasons', 'subjects', 'colours', 'hobbies'], ans: 'seasons', exp: 'summer 属于季节。' },
+      { q: 'No one helped me. I did it all ______ myself.', options: ['for', 'of', 'by', 'about'], ans: 'by', exp: 'by oneself 独自。' },
+      { q: 'Please move your car away, sir. This is "______" area.', options: ['No smoking', 'No parking', 'No swimming', 'No littering'], ans: 'No parking', exp: '让车移开，说明是禁止停车区。' },
+      { q: 'My cousin is ______. He never forgets the things he needs to do.', options: ['energetic', 'curious', 'organized', 'confident'], ans: 'organized', exp: '做事有条理。' },
+      { q: 'I loved the book so much that I could hardly ______.', options: ['put it up', 'put it down', 'put it on', 'put it out'], ans: 'put it down', exp: 'put down 放下，爱不释手。' },
+      { q: '______ other nurses in the hospital have worked here longer than Helen; only Lucy and Mary started working here before her.', options: ['All', 'Most', 'Some', 'Few'], ans: 'Few', exp: '只有两人比她早，说明很少有人比她久。' },
+      { q: 'I saw Harry in February and I ______ him since then.', options: ["didn't see", "won't see", "haven't seen", "don't see"], ans: "haven't seen", exp: 'since then 与现在完成时连用。' },
+      { q: 'Mum opened the door ______ because she didn\'t want to wake up her baby.', options: ['angrily', 'loudly', 'quickly', 'quietly'], ans: 'quietly', exp: '不想吵醒孩子，所以轻轻地。' },
+      { q: 'If you put all your eggs in one basket, you ______ losing everything all at one time.', options: ['risk', 'enjoy', 'avoid', 'consider'], ans: 'risk', exp: 'risk doing sth 冒……的风险。' },
+      { q: 'Let\'s take the simple steps today ______ we will save the world for our grandsons and granddaughters tomorrow.', options: ['unless', 'until', 'so that', 'though'], ans: 'so that', exp: 'so that 引导目的状语从句。' },
+      { q: 'The Monkey King is a traditional Chinese character. It ______ by people of all ages.', options: ['is loved', 'was loved', 'will love', 'is loving'], ans: 'is loved', exp: '被各年龄段的人喜爱，用一般现在时被动。' },
+      { q: 'I have decided to go to Beijing and ______ one of my old friends there.', options: ['visiting', 'visited', 'visits', 'visit'], ans: 'visit', exp: 'and 连接两个并列的动词原形。' },
+      { q: '—I guess you want to go fishing.\n—______. That\'s exactly what I was thinking.', options: ['You read my mind', 'You are welcome', 'You never know', "It's up to you"], ans: 'You read my mind', exp: '你懂我的心思。' },
+      { q: 'Amy: You can just drop me here. / Tom: But we are two blocks away from the office. / Amy: It\'s fine. I had a big lunch, and feel like a bit of walk. What does Amy want to do?', options: ['Have lunch.', 'Take a walk.', 'Call her office.', 'Drive a car.'], ans: 'Take a walk.', exp: '她说想走一走。' }
+    ]
+  },
+  {
+    label: '2023·江苏泰州 中考英语', badge: '单项选择 9 题', type: '单选',
+    items: [
+      { q: '"Hello, my dear friend. What a lucky day ______ I\'m sure you will do well in this exam." Which of the following fits in the blank best?', options: ['!', ',', '?', '.'], ans: '!', exp: 'What a lucky day! 是感叹句。' },
+      { q: '—Good news! The Chinese women table tennis team won a gold and a silver again.\n—Great! No matter who wins the medals, it is the ______ of our country.', options: ['price', 'pioneer', 'pride', 'pain'], ans: 'pride', exp: '奖牌是国家的骄傲。' },
+      { q: 'Zhang Hua, our monitor, is organized and thoughtful enough to ______ time well.', options: ['reduce', 'manage', 'control', 'influence'], ans: 'manage', exp: 'manage time 安排好时间。' },
+      { q: 'Most neighbours ______ the habit of square dancing to create a quieter environment for us.', options: ['get into', 'care about', 'carry on', 'give up'], ans: 'give up', exp: '为安静环境放弃这个习惯。' },
+      { q: 'Tips: For our own safety, we\'d better not stand under big trees on ______ days in summer.', options: ['sunny', 'cloudy', 'rainy', 'foggy'], ans: 'rainy', exp: '雷雨天不要站在大树下。' },
+      { q: '（表格：Sunshine Science Museum — Open: Tue–Fri 9:00–12:00, 14:00–18:00；Sat–Sun 8:30–12:00, 13:00–20:00；Closed: Mon）How long is Sunshine Science Museum open on Wednesday afternoon?', options: ['3 hours', '7 hours', '3.5 hours', '4 hours'], ans: '4 hours', exp: '周三下午 14:00—18:00，共 4 小时。' },
+      { q: 'The news … "C" appears beautifully in the sky makes us excited ______ "C" is C919 from China, with many Jiangsu elements (元素).', options: ['because', 'so', 'though', 'then'], ans: 'because', exp: '前后是因果关系。' },
+      { q: '—Tony, remember it\'s rude to ______.\n—OK, mom. I will keep it in mind. Thank you!', options: ['push in before others', 'wait in a line', 'say "please" all the time', 'greet each other'], ans: 'push in before others', exp: '插队是不礼貌的。' },
+      { q: '—Can anyone give me an example of an event in the past?\n—I can. ______', options: ['Shenzhou XVI will come back.', 'Quan Hongchan won the gold medal.', 'I am taking the English exam.', 'My classmate is going to watch a film.'], ans: 'Quan Hongchan won the gold medal.', exp: '问的是“过去”的事件，只有 B 用了一般过去时。' }
+    ]
+  }
+];
+  ENG_REAL_BATCH3.forEach(function (p) { ENG_REAL.push(p); });
+/* 2024 年江苏连云港中考英语真题 */
+const ENG_REAL_BATCH4 = [
+  {
+    label: '2024·江苏连云港 中考英语', badge: '单项选择 10 题', type: '单选',
+    items: [
+      { q: 'Huaguoshan Airport will open up international flights. It will make it ______ for us to travel abroad.', options: ['happier', 'easier', 'closer', 'safer'], ans: 'easier', exp: 'make it easier for sb to do sth。' },
+      { q: 'Modern medicine is developing quickly and now most eye problems ______ be cured.', options: ['can', 'must', 'should', 'need'], ans: 'can', exp: '能被治愈，用 can be cured。' },
+      { q: 'Our school life is more interesting now ______ we can enjoy ourselves in different clubs.', options: ['because', 'whether', 'unless', 'although'], ans: 'because', exp: '前后为因果关系。' },
+      { q: 'UNICEF helps build a better world for everyone, ______ children all over the world.', options: ['probably', 'luckily', 'especially', 'closely'], ans: 'especially', exp: 'especially 尤其是。' },
+      { q: 'The movie Chang An ______ China\'s rich history and culture to people around the world.', options: ['protects', 'compares', 'introduces', 'discovers'], ans: 'introduces', exp: 'introduce…to… 把……介绍给……。' },
+      { q: 'To live a green life, we should remember to ______ the lights when we leave a room.', options: ['turn on', 'turn off', 'turn up', 'turn down'], ans: 'turn off', exp: '离开房间要关灯。' },
+      { q: 'Robot dogs ______ as volunteers for the first time during the 2023 Asian Games.', options: ['use', 'used', 'are used', 'were used'], ans: 'were used', exp: '2023 年亚运会，过去时的被动语态。' },
+      { q: 'As a Chinese traditional martial art (武术), Taijiquan ______ to more than 150 countries all over the world so far.', options: ['spreads', 'is spreading', 'will spread', 'has spread'], ans: 'has spread', exp: 'so far 与现在完成时连用。' },
+      { q: '—John, can you tell me ______ in the future?\n—I want to be a football player.', options: ['what will you do', 'where will you go', 'what you will do', 'where you will go'], ans: 'what you will do', exp: '宾语从句用陈述语序。' },
+      { q: 'Don\'t ______, otherwise, you\'ll be tired out.', options: ['do as the Romans do', 'burn the candle at both ends', 'put yourself in others\' shoes', 'put all your eggs in one basket'], ans: 'burn the candle at both ends', exp: 'burn the candle at both ends 过度消耗精力。' }
+    ]
+  },
+  {
+    label: '2024·江苏连云港 中考英语', badge: '完形填空 15 题', type: '完形',
+    passage: [
+      '"Meera, do you remember what day it is tomorrow?" asked Rani.',
+      '"It\'s Mummy\'s birthday!" cried Meera. "What are we going to give her as a __11__?"',
+      'That was the __12__. They couldn\'t think of anything! Maybe they could buy her some flowers or make her a birthday card. But that didn\'t seem __13__ enough for Mummy!',
+      'Both girls __14__ how they could make Mummy\'s birthday an extra surprise. They asked Papa for help. After an hour of discussing with Papa, the girls nodded to each other. They finally had a __15__!',
+      'Next morning Papa __16__ the girls very early, even before the sun had risen properly. Quickly and quietly, the three of them started to __17__. Papa and Rani blew up balloons—red, yellow, green, blue—and Meera __18__ them all around. Soon the room was looking very __19__ indeed.',
+      'Then they got into the __20__. "Let\'s make breakfast!" Papa began giving __21__ in a low voice. Rani and Meera did as Papa said. __22__ the children made the breakfast ready. There were sandwiches, a fruit salad, a glass full of __23__ orange juice and another full of warm milk.',
+      'Mummy came out of her room. The girls __24__ to her and hugged (拥抱) her. "Happy birthday!"',
+      '"What a wonderful __25__!" cried Mummy, looking at the balloons and the breakfast table. It was the best breakfast Mummy had ever eaten.'
+    ],
+    items: [
+      { q: '11. What are we going to give her as a ______?', options: ['praise', 'present', 'promise', 'prize'], ans: 'present', exp: '送妈妈的生日“礼物”。' },
+      { q: '12. That was the ______. They couldn\'t think of anything!', options: ['answer', 'reason', 'problem', 'decision'], ans: 'problem', exp: '想不出送什么，成了难题。' },
+      { q: '13. But that didn\'t seem ______ enough for Mummy!', options: ['special', 'simple', 'expensive', 'easy'], ans: 'special', exp: '花或卡片不够“特别”。' },
+      { q: '14. Both girls ______ how they could make Mummy\'s birthday an extra surprise.', options: ['knew', 'learned', 'forgot', 'wondered'], ans: 'wondered', exp: 'wonder 琢磨、想知道。' },
+      { q: '15. They finally had a ______!', options: ['dream', 'plan', 'chance', 'product'], ans: 'plan', exp: '商量之后有了“计划”。' },
+      { q: '16. Next morning Papa ______ the girls very early.', options: ['woke up', 'made up', 'looked after', 'ran after'], ans: 'woke up', exp: 'wake up 叫醒。' },
+      { q: '17. Quickly and quietly, the three of them started to ______.', options: ['exercise', 'read', 'work', 'play'], ans: 'work', exp: '开始动手准备。' },
+      { q: '18. … and Meera ______ them all around.', options: ['broke', 'bought', 'hid', 'hung'], ans: 'hung', exp: 'hang 气球（hang-hung-hung）。' },
+      { q: '19. Soon the room was looking very ______ indeed.', options: ['clean', 'empty', 'beautiful', 'huge'], ans: 'beautiful', exp: '气球挂满，房间很漂亮。' },
+      { q: '20. Then they got into the ______.', options: ['garden', 'bedroom', 'kitchen', 'study'], ans: 'kitchen', exp: '要做早餐，所以进厨房。' },
+      { q: '21. Papa began giving ______ in a low voice.', options: ['choices', 'challenges', 'invitations', 'instructions'], ans: 'instructions', exp: '低声下达指令。' },
+      { q: '22. ______ the children made the breakfast ready.', options: ['Quietly', 'Carelessly', 'Suddenly', 'Usually'], ans: 'Quietly', exp: '为了不吵醒妈妈，安静地准备。' },
+      { q: '23. … a glass full of ______ orange juice …', options: ['free', 'fresh', 'strange', 'terrible'], ans: 'fresh', exp: 'fresh orange juice 鲜榨橙汁。' },
+      { q: '24. The girls ______ to her and hugged (拥抱) her.', options: ['agreed', 'rushed', 'pointed', 'complained'], ans: 'rushed', exp: 'rush to sb 冲向某人。' },
+      { q: '25. "What a wonderful ______!" cried Mummy.', options: ['surprise', 'joke', 'flower', 'card'], ans: 'surprise', exp: '总结整件事是个“惊喜”。' }
+    ]
+  }
+];
+  ENG_REAL_BATCH4.forEach(function (p) { ENG_REAL.push(p); });
   const engSecItems = {};
   function buildEngSections() {
     let html = '<div class="grade-bar">' + ['初一上', '初一下', '初二上'].map(function (g) {
@@ -4522,6 +4814,29 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
         var inner = '<div class="q">' + (i + 1) + '、' + escapeHtml(it.q) + '</div>';
         if (it.options) { inner += '<div class="mc">' + it.options.map(function (o) { return '<button class="mc-opt" data-i="' + i + '">' + escapeHtml(o) + '</button>'; }).join('') + '</div><span class="mark"></span>'; }
         else { inner += '<div class="a-row"><input class="ans-input g-input" data-i="' + i + '" type="text" placeholder="✏️ 写单词" autocomplete="off" spellcheck="false"><span class="mark"></span></div>'; }
+        html += '<div class="calc-item" data-gi="' + gid + '-' + i + '"><div class="calc-main">' + inner +
+          '<button class="add-wrong" data-type="' + gid + '" data-i="' + i + '">＋错题本</button>' + revealHTML(it.ans, it.exp) + '</div></div>';
+      });
+      html += '</div></section>';
+    });
+    // ===== 近三年各地中考英语真题（按省市·年份标注） =====
+    html += '<section class="type" id="er-head"><h2><span class="num">🎯</span>真题 · 近三年（按省市 · 年份）<span class="badge">真实试卷</span></h2></section>';
+    ENG_REAL.forEach(function (p, pi) {
+      const gid = 'er' + pi;
+      engSecItems[gid] = p.items;
+      regGeneric(gid, p.label + '（' + p.type + '）', p.items.map(function (it) { return { q: it.q, a: it.ans }; }));
+      html += '<section class="type" id="' + gid + '">';
+      html += '<h2><span class="num">' + (pi + 1) + '</span>' + escapeHtml(p.label) + ' <span class="badge">' + escapeHtml(p.badge) + '</span></h2>';
+      html += '<div class="mod-toolbar"><button class="primary-btn" onclick="gradeEng(\'' + gid + '\')">✔ 批改本组</button> <span class="sec-score" id="' + gid + '-score"></span></div>';
+      html += '<p class="real-src">📄 卷源：' + escapeHtml(p.label) + ' · ' + escapeHtml(p.type) + '（' + p.items.length + ' 题）｜题目取自公开的真题试卷，已按「省市 · 年份」标注；写完后点「批改本组」，错题会给出讲解。</p>';
+      if (p.passage) {
+        html += '<details class="passage" open><summary>📖 阅读材料（可收起）</summary><div class="p-text">' +
+          p.passage.map(function (para) { return '<p>' + escapeHtml(para) + '</p>'; }).join('') + '</div></details>';
+      }
+      html += '<div class="mod-body text">';
+      p.items.forEach(function (it, i) {
+        var inner = '<div class="q">' + (i + 1) + '、' + escapeHtml(it.q).replace(/\n/g, '<br>') + '</div>';
+        inner += '<div class="mc">' + it.options.map(function (o) { return '<button class="mc-opt" data-i="' + i + '">' + escapeHtml(o) + '</button>'; }).join('') + '</div><span class="mark"></span>';
         html += '<div class="calc-item" data-gi="' + gid + '-' + i + '"><div class="calc-main">' + inner +
           '<button class="add-wrong" data-type="' + gid + '" data-i="' + i + '">＋错题本</button>' + revealHTML(it.ans, it.exp) + '</div></div>';
       });
@@ -8152,7 +8467,7 @@ function reciteBodyHTML(cfg) {
 
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-12 AI批改修复2';
+  var BUILD_TAG = '2026-10-13 英语真题167题'
   window.__BUILD_TAG = BUILD_TAG;
 
 
