@@ -2526,7 +2526,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
         + '<div class="a-row"><input class="ans-input" data-type="' + typeId + '" data-i="' + i + '" type="text" inputmode="numeric" placeholder="✏️ 写答案" autocomplete="off"><span class="mark"></span></div>'
         + '<div class="reveal">答案：' + escapeHtml(it.ans) + '</div>'
         + '</div>'
-        + '<canvas class="scratch" aria-label="草稿区"></canvas>'
+        + '<canvas class="scratch" width="2" height="2" aria-label="草稿区"></canvas>'
         + '</div>';
     });
     return html;
@@ -2842,6 +2842,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
 
   /* ============ 标签切换与初始化 ============ */
   function showPage(name) {
+    if (name !== 'module') { try { releaseScratch(document.getElementById('module-content')); } catch (e) {} }
     setTimeout(function () { if (typeof ggSync === 'function') ggSync(); }, 0);
     document.querySelectorAll('.page').forEach(p => { p.style.display = 'none'; });
     const el = document.getElementById('page-' + name);
@@ -7912,16 +7913,65 @@ function reciteBodyHTML(cfg) {
       return '<button class="' + (g === cur ? 'active' : '') + '" onclick="' + fnName + '(\'' + g + '\')">' + g + '</button>';
     }).join('') + '</div>';
   }
+  // ===== 连点保护：快速连按底部按钮时只渲染最后一次，避免连续重绘把页面拖死 =====
+  var _pendingModule = null, _moduleTimer = null, _rendering = false, _lastRenderAt = 0;
+  var MODULE_MIN_GAP = 260;   // 两次整页渲染之间至少间隔 260ms，连点只会渲染最后一次
   function openModule(id) {
     const cfg = GENERIC_MODULES[id];
     if (!cfg) return;
-    curGeneric = { cfg: cfg, items: (cfg.gen ? cfg.gen() : []) };
-    setText('module-title', cfg.title);
-    buildGenericToolbar();
-    renderGenericBody();
-    showPage('module');
-    document.querySelectorAll('.bottom-nav button').forEach(function (b) {
-      b.classList.toggle('active', b.getAttribute('data-page') === id);
+    // 已经在这个页面了：只把页面切回来，不重新生成（避免误触清空已写内容）
+    var modal = document.getElementById('page-module');
+    if (curGeneric && curGeneric.cfg.id === id && modal && modal.classList.contains('active')) {
+      showPage('module');
+      return;
+    }
+    _pendingModule = id;
+    if (_moduleTimer) clearTimeout(_moduleTimer);
+    const wait = Math.max(40, MODULE_MIN_GAP - (Date.now() - _lastRenderAt));
+    _moduleTimer = setTimeout(function () {
+      _moduleTimer = null;
+      const mid = _pendingModule;
+      _pendingModule = null;
+      if (!mid) return;
+      openModuleNow(mid);
+    }, wait);
+  }
+  function openModuleNow(id) {
+    const cfg = GENERIC_MODULES[id];
+    if (!cfg) return;
+    if (_rendering) { _pendingModule = id; return; }
+    _rendering = true;
+    try {
+      releaseScratch(document.getElementById('module-content'));
+      curGeneric = { cfg: cfg, items: (cfg.gen ? cfg.gen() : []) };
+      setText('module-title', cfg.title);
+      buildGenericToolbar();
+      renderGenericBody();
+      showPage('module');
+      document.querySelectorAll('.bottom-nav button').forEach(function (b) {
+        b.classList.toggle('active', b.getAttribute('data-page') === id);
+      });
+    } finally {
+      _lastRenderAt = Date.now();
+      setTimeout(function () {
+        _rendering = false;
+        if (_pendingModule) {
+          const n = _pendingModule;
+          _pendingModule = null;
+          _lastRenderAt = Date.now();
+          openModuleNow(n);
+        }
+      }, 0);
+    }
+  }
+  // 离开页面时把草稿画布缩到 1×1，立刻释放显存与内存（否则连点几下就会卡死）
+  function releaseScratch(root) {
+    if (!root) return;
+    root.querySelectorAll('canvas.scratch').forEach(function (cv) {
+      try { cv.width = 1; cv.height = 1; } catch (e) {}
+      cv._ink = null;
+      cv._inked = false;
+      cv._parked = true;
     });
   }
   function buildGenericToolbar() {
@@ -8051,7 +8101,7 @@ function reciteBodyHTML(cfg) {
         '<button class="add-wrong" data-type="' + gid + '" data-i="' + i + '">＋错题本</button>' +
         '<button type="button" class="ai-draft">🔍 AI 读草稿指错步</button>' +
         revealHTML(it.ans, it.exp) + '</div>' +
-        '<canvas class="scratch" aria-label="草稿区"></canvas></div>';
+        '<canvas class="scratch" width="2" height="2" aria-label="草稿区"></canvas></div>';
     });
     html += '</div>';
     html += '<details class="answers"><summary>查看本组答案</summary><ol class="answer-list">' + ansList.join('') + '</ol></details>';
