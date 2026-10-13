@@ -1107,6 +1107,18 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   .passage .p-text p { margin: 7px 0; }
   .real-src { font-size: 12.5px; color: #6b7a8d; margin: 4px 0 8px; line-height: 1.6; }
   body.theme-shawn .passage { background: #f6faff; border-color: #dbe7f5; }
+  .ph-all { margin: 4px 0 12px; border: 1px solid #e3edf7; border-radius: 12px; background: #f7fbff; padding: 8px 12px; }
+  .ph-all summary { cursor: pointer; font-weight: 700; color: #2f6ba8; font-size: 14px; }
+  .ph-all-body { margin-top: 8px; }
+  .ph-all-group { font-size: 13px; font-weight: 700; color: #3a6ea5; margin: 10px 0 2px; }
+  .ph-all-ol { margin: 0; padding-left: 22px; }
+  .ph-all-ol li { font-size: 14px; line-height: 1.9; color: #33475f; }
+  .ph-all-ol .ph-zh { margin-right: 10px; }
+  .ph-all-ol .ph-en { color: #4a7fbf; }
+  .recite-bar.groups button { font-size: 13px; padding: 5px 14px; }
+  .ph-grade-btn { background: #4a86d8; border-color: #4a86d8; color: #fff; font-weight: 700; border-radius: 999px; padding: 6px 16px; border: 1px solid transparent; cursor: pointer; }
+  body.theme-shawn .ph-all { background: #f6faff; border-color: #dbe7f5; }
+  @media print { .ph-all { break-inside: avoid; } }
 </style></head>
 <body>
 
@@ -2947,7 +2959,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   // ===== 词组计分：每题 5 分、满分 100；记录每次成绩，进步给奖励 =====
   var PH_HIST_KEY = 'ph_hist_v1';
   function phHist() { try { return JSON.parse(lsGet(PH_HIST_KEY) || '[]') || []; } catch (e) { return []; } }
-  function phKeyOf() { return 'U' + phUnit + '-' + phMode; }
+  function phKeyOf() { return 'U' + phUnit + 'G' + phGroup + '-' + phMode; }
   function phStatOf() {
     const list = phHist().filter(function (x) { return x.k === phKeyOf(); });
     if (!list.length) return { last: null, best: null, n: 0 };
@@ -2975,15 +2987,14 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     el.textContent = '上次 ' + st.last + ' 分　·　最好 ' + st.best + ' 分　·　共练 ' + st.n + ' 次';
   }
   function phAfterGrading(correct, total) {
-    const score = Math.round(correct * 5);
+    const score = total ? Math.round(correct / total * 100) : 0;
     const before = phStatOf();
     let list = phHist();
     list.push({ k: phKeyOf(), s: score, t: Date.now() });
     if (list.length > 300) list = list.slice(-300);
     try { localStorage.setItem(pk(PH_HIST_KEY), JSON.stringify(list)); } catch (e) {}
-    if (typeof cfg !== 'undefined' && cfg && cfg.kind === 'phrase') { phAfterGrading(correct, total); return; }
     const sc = document.getElementById('generic-score');
-    if (sc) sc.textContent = '本次 ' + score + ' / 100（答对 ' + correct + '/' + total + '，每题 5 分）';
+    if (sc) sc.textContent = '本次 ' + score + ' / 100（答对 ' + correct + '/' + total + '，按比例折算）';
     phStatLine();
     phRenderPodium();
     phRefreshStat();
@@ -3065,14 +3076,38 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     phRefreshStat();
   }
   let phUnit = '1', phMode = 'zh-en';
+  let phGroup = 1;
   function phUnits() { return Object.keys(ORAL_UNITS); }
   function phSetUnit(u) { phUnit = u; refreshGeneric(); }
   function phSetMode(m) { phMode = m; refreshGeneric(); }
+  function phSetGroup(g) { phGroup = g; refreshGeneric(); }
+  // 把整个单元平均切成 3 组，保证所有词组都能练到
+  function phSplit(list) {
+    const n = list.length, out = [];
+    for (let g = 0; g < 3; g++) {
+      out.push(list.slice(Math.round(n * g / 3), Math.round(n * (g + 1) / 3)));
+    }
+    return out;
+  }
+  function phGroupList(u, g) { return phSplit(ORAL_UNITS[u] || [])[(g || phGroup) - 1] || []; }
   function phItems() {
-    const list = (ORAL_UNITS[phUnit] || []).map(function (x) {
+    return phGroupList(phUnit).map(function (x) {
       return { zh: x[0], en: x[1], q: phMode === 'zh-en' ? x[0] : x[1], ans: phMode === 'zh-en' ? x[1] : x[0] };
     });
-    return shuffle(list.slice()).slice(0, 20);
+  }
+  // 整单元一览：按 3 组把全部词组列出来，方便对照背诵与打印
+  function phUnitListHTML() {
+    const list = ORAL_UNITS[phUnit] || [];
+    let h = '<details class="ph-all"><summary>📋 本单元全部词组（共 ' + list.length + ' 个 · 分 3 组，点开对照）</summary><div class="ph-all-body">';
+    phSplit(list).forEach(function (part, i) {
+      h += '<div class="ph-all-group">第 ' + (i + 1) + ' 组　' + part.length + ' 个</div><ol class="ph-all-ol">';
+      part.forEach(function (x) {
+        h += '<li><span class="ph-zh">' + escapeHtml(x[0]) + '</span><span class="ph-en">' + escapeHtml(x[1]) + '</span></li>';
+      });
+      h += '</ol>';
+    });
+    h += '</div></details>';
+    return h;
   }
   function phraseBodyHTML(cfg) {
     const items = curGeneric.items || [];
@@ -3085,7 +3120,12 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     html += '<div class="grade-bar recite-bar units">'
       + '<button class="' + (phMode === 'zh-en' ? 'active' : '') + '" onclick="phSetMode(\'zh-en\')">中 → 英（写英文）</button>'
       + '<button class="' + (phMode === 'en-zh' ? 'active' : '') + '" onclick="phSetMode(\'en-zh\')">英 → 中（写中文）</button></div>';
-    html += '<p class="recite-count">本单元共 ' + ((ORAL_UNITS[phUnit] || []).length) + ' 个词组，本次抽 ' + items.length + ' 个　·　点「换一批」换一组</p>';
+    html += '<div class="grade-bar recite-bar groups">' + [1, 2, 3].map(function (g) {
+      return '<button class="' + (g === phGroup ? 'active' : '') + '" onclick="phSetGroup(' + g + ')">第 ' + g + ' 组</button>';
+    }).join('') + '</div>';
+    html += '<div class="grade-bar recite-bar"><button class="ph-grade-btn" onclick="gradeGeneric()">✔ 批改本组（第 ' + phGroup + ' 组）</button><span class="score" id="generic-score">— / 100</span></div>';
+    html += '<p class="recite-count">本单元共 ' + ((ORAL_UNITS[phUnit] || []).length) + ' 个词组，已按顺序分成 3 组；本组 ' + items.length + ' 个（第 ' + phGroup + ' 组），做完点「批改本组」。<br>每组 100 分制，分数按答对比例折算。</p>';
+    html += phUnitListHTML();
     html += '<div class="mod-body text onecol">';
     items.forEach(function (it, i) {
       html += '<div class="calc-item" data-gi="' + i + '"><div class="calc-main">'
@@ -3099,17 +3139,17 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   }
   // 按时间动态问候（夜里提醒睡觉）
   /* ===== 英语词组（按单元，中英互测）[中文, 英文] ===== */
-  var ORAL_UNITS = {
+    var ORAL_UNITS = {
     '1': [
       ['这是我！', 'This is me!'],
-      ['我的英文名/中文名', 'my English/Chinese name'],
+      ['我的英文名 / 我的中文名', 'my English name / my Chinese name'],
       ['和我打招呼', 'greet me'],
       ['介绍彼此', 'introduce each other'],
       ['叫我西蒙', 'call me Simon'],
       ['被称为', 'go by'],
       ['早上好/下午好/晚上好', 'good morning / good afternoon / good evening'],
       ['见到你很高兴！', 'Nice to meet you! / Glad to meet you!'],
-      ['你在哪个班级/年级？', 'Which class/grade are you in?'],
+      ['你在哪个班级？ / 你在哪个年级？', 'Which class are you in? / Which grade are you in?'],
       ['你呢？', 'And you?/What about you?'],
       ['在同一个班级', 'in the same class'],
       ['有一些爱好', 'have some hobbies'],
@@ -3129,7 +3169,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['留着长发', 'have long hair'],
       ['一个留着长发的女孩', 'a girl with long hair'],
       ['戴眼镜', 'wear glasses'],
-      ['戴着眼镜的那个男孩', 'the boy with/wearing glasses'],
+      ['戴眼镜的那个男孩', 'the boy with glasses / the boy wearing glasses'],
       ['聪明且有礼貌', 'smart and polite'],
       ['愿意帮助别人', 'be ready to help others'],
       ['对科学感兴趣', 'be interested in science'],
@@ -3139,22 +3179,22 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['说“请”和“谢谢”', 'say "please" and "thank you"'],
       ['他们两人都喜爱运动。', 'They both love sport./Both of them love sport.'],
       ['那儿的那个女孩', 'the girl over there'],
-      ['有可爱的眼睛', 'have lovely/cute eyes'],
+      ['有可爱的眼睛', 'have lovely eyes / have cute eyes'],
       ['腼腆又文静', 'shy and quiet'],
       ['小巧可爱', 'small and cute'],
       ['擅长游泳', 'be good at swimming'],
       ['看起来标志', 'look pretty'],
       ['上舞蹈课', 'have dance classes'],
-      ['帮助我保持健康', 'help me stay/keep healthy'],
+      ['帮助我保持健康', 'help me stay healthy / help me keep healthy'],
       ['有一场和二班的足球赛', 'have a football match with Class 2'],
       ['祝你好运！', 'Good luck!'],
       ['和我爸爸打乒乓球', 'play ping-pong with my father'],
-      ['喜爱下国际象棋', 'enjoy/love playing chess'],
+      ['喜爱下国际象棋', 'enjoy playing chess / love playing chess'],
       ['我最喜爱的科目', 'my favourite subject(s)'],
       ['帮助我的同学解决数学难题', 'help my classmates with Maths problems'],
       ['在周末', 'at the weekend'],
-      ['它们很有趣。', 'They are fun/interesting.'],
-      ['玩得开心', 'have fun/have a good time'],
+      ['它们很有趣。', 'They are fun. / They are interesting.'],
+      ['玩得开心', 'have fun / have a good time'],
       ['和他们交朋友', 'make friends with them'],
       ['成为我的朋友', 'be my friend(s)'],
       ['喜爱计算机科学', 'love Computer Science']
@@ -3188,9 +3228,9 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['他为何如此喜欢科学？', 'Why does he like science so much?'],
       ['用这种方式', 'in this way'],
       ['他想成为什么？', 'What does he want to be?'],
-      ['（经常）看我们游泳', 'see/watch us swim'],
-      ['看我们正在游泳', 'see/watch us swimming'],
-      ['音乐/画画/机器人/地理/排球俱乐部', 'the Music/Painting/Robot/Geography/Volleyball Club'],
+      ['（经常）看我们游泳', 'see us swim / watch us swim'],
+      ['看我们正在游泳', 'see us swimming / watch us swimming'],
+      ['音乐 / 画画 / 机器人 / 地理 / 排球俱乐部', 'the Music Club / the Painting Club / the Robot Club / the Geography Club / the Volleyball Club'],
       ['俱乐部成员', 'the club members'],
       ['打排球', 'play volleyball'],
       ['总计', 'in all'],
@@ -3223,7 +3263,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['一个学习的好地方', 'a great place for learning'],
       ['多少幢教学楼', 'how many classroom buildings'],
       ['一个实验室和一座体育馆', 'a lab and a gym'],
-      ['一个大的体育场', 'a big/large sports field'],
+      ['一个大的体育场', 'a big sports field / a large sports field'],
       ['也有一个食堂', 'have a dining hall as well'],
       ['见到你很高兴。', 'It’s good to see you.'],
       ['你的新学校怎么样？', 'How’s your new school? / What’s your new school like?'],
@@ -3232,7 +3272,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['这儿是我们现代化的图书馆和教学楼。', 'Here’s our modern library and our classroom buildings.'],
       ['供我们学习的一个绝佳场所', 'a perfect place for us to study'],
       ['明亮又干净的', 'bright and clean'],
-      ['很多绿地', 'a lot of/lots of green spaces'],
+      ['很多绿地', 'a lot of green spaces / lots of green spaces'],
       ['喜欢在这儿花时间', 'enjoy spending time here'],
       ['花时间做某事', 'spend time (in) doing sth'],
       ['与老师们闲聊我们的难题', 'chat with teachers about our problems'],
@@ -3241,7 +3281,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['发生', 'take place'],
       ['靠近学校大门', 'near the school gate'],
       ['读到学校新闻', 'read about school news'],
-      ['看一下学校的布告板。', 'Look at the school noticeboard/board.'],
+      ['看一下学校的布告板。', 'Look at the school noticeboard. / Look at the school board.'],
       ['明星学生和老师的故事', 'stories of star students and teachers'],
       ['展示学生的作品', 'show students’ works'],
       ['例如画作和照片', 'like paintings and photos'],
@@ -3302,12 +3342,12 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['研究很多生物', 'study many living things'],
       ['了解大自然', 'learn about nature'],
       ['练习足球', 'practise playing football'],
-      ['进行一次野外考察', 'have/go on a field trip'],
+      ['进行一次野外考察', 'have a field trip / go on a field trip'],
       ['动身去农场', 'leave for a farm'],
       ['摘苹果', 'pick apples'],
       ['你的校园生活是什么样的？', 'What is your school life like? / How is your school life?'],
       ['收到某人的信件（或电子邮件、电话等）', 'hear from sb'],
-      ['愿意/想要做某事', 'would like to do sth'],
+      ['愿意做某事 / 想要做某事', 'would like to do sth'],
       ['说一些中文', 'speak a little Chinese'],
       ['参观有趣的地方', 'visit fun places'],
       ['我迫不及待了。', 'I can’t wait.'],
@@ -3345,7 +3385,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['一种健康的生活方式', 'a healthy lifestyle'],
       ['一些糖果和巧克力', 'some sweets and chocolate'],
       ['各种点心', 'all kinds of snacks'],
-      ['对健康有益/害', 'be good/bad for health'],
+      ['对健康有益 / 对健康有害', 'be good for health / be bad for health'],
       ['买一些黄瓜、西瓜和柠檬', 'buy some cucumbers, watermelons and lemons'],
       ['像甜椒和胡萝卜那样健康的蔬菜', 'healthy vegetables like peppers and carrots'],
       ['经常吃牛奶和鸡蛋对我们来说是健康的。', 'It’s healthy for us to have milk and eggs often.'],
@@ -3370,7 +3410,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['需要做某事', 'need to do sth'],
       ['改变他的不健康的生活方式', 'change his unhealthy lifestyle'],
       ['确保', 'make sure'],
-      ['得到充足的睡眠/锻炼', 'get enough sleep/exercise'],
+      ['得到充足的睡眠 / 得到充足的锻炼', 'get enough sleep / get enough exercise'],
       ['一块奶酪', 'a piece of cheese'],
       ['一碗汤', 'a bowl of soup'],
       ['一小袋盐', 'a packet of salt'],
@@ -3378,7 +3418,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['四千克肉', 'four kilos of meat'],
       ['五盒牛奶', 'five cartons of milk'],
       ['六瓶果汁', 'six bottles of juice'],
-      ['多于/少于三次', 'more/less than 3 times'],
+      ['多于三次 / 少于三次', 'more than 3 times / less than 3 times'],
       ['爱吃甜食的人', 'people with a sweet tooth'],
       ['几乎每天', 'almost every day'],
       ['像炸薯条那样不健康的食物', 'unhealthy food like chips'],
@@ -3401,8 +3441,8 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     ],
     '6': [
       ['着装是一种生活方式。', 'Dressing is a way of life.'],
-      ['不同种类的衣服', 'different types/kinds of clothes'],
-      ['戴着一条围巾/领带', 'wear a scarf/tie'],
+      ['不同种类的衣服', 'different types of clothes / different kinds of clothes'],
+      ['戴着一条围巾 / 戴着一条领带', 'wear a scarf / wear a tie'],
       ['一条牛仔裤', 'a pair of jeans'],
       ['一件紫色的夹克衫', 'a purple jacket'],
       ['像红色那样的暖色', 'warm colours like red'],
@@ -3414,7 +3454,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['取决于', 'depend on'],
       ['我们的肤色', 'the colour of our skin'],
       ['例如,诸如', 'such as/for example'],
-      ['穿暖/冷色好看', 'look good in warm/cool colours'],
+      ['穿暖色 / 冷色好看', 'look good in warm colours / look good in cool colours'],
       ['搭配得好', 'go well together'],
       ['选相似的颜色', 'pick similar colours'],
       ['穿深蓝色牛仔裤配淡蓝色的女士衬衫', 'wear dark blue jeans with a light blue blouse'],
@@ -3422,7 +3462,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['使彼此突出', 'make each other stand out'],
       ['匹配所有', 'match all'],
       ['穿超过三种颜色', 'wear more than three colours'],
-      ['与任何颜色都很相配', 'go well with/match any colour'],
+      ['与任何颜色都很相配', 'go well with any colour / match any colour'],
       ['既适合正装,也适合休闲装', 'be suitable for both formal suits and casual clothes'],
       ['穿衣打扮', 'get dressed'],
       ['穿舒适的衣服', 'wear comfortable clothes'],
@@ -3436,21 +3476,21 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['一位小学同学', 'a primary school classmate'],
       ['穿牛仔裤看起来精神', 'look smart in the jeans'],
       ['你穿这件橙色的更好看。', 'You look better in the orange one.'],
-      ['许多不同种类的传统服饰', 'many different types/kinds of traditional clothes'],
-      ['一些流行的种类', 'some popular types/kinds'],
+      ['许多不同种类的传统服饰', 'many different types of traditional clothes / many different kinds of traditional clothes'],
+      ['一些流行的种类', 'some popular types / some popular kinds'],
       ['在生活中的重要日子', 'on important days in life'],
       ['节日和结婚日', 'festivals and wedding days'],
       ['流行的一部分', 'a part of fashion'],
       ['有一种不一样的样式和设计', 'have a different style and design'],
       ['展示我国的传统文化', 'show the traditional culture of our country'],
       ['有两千年的历史', 'have a history of two thousand years'],
-      ['由丝绸/棉花/皮革制成', 'be made of silk/cotton/leather'],
+      ['由丝绸 / 棉花 / 皮革制成', 'be made of silk / be made of cotton / be made of leather'],
       ['传统中国服饰', 'traditional Chinese clothes'],
       ['有一根腰带', 'have a belt'],
       ['受年轻人欢迎', 'be popular with young people'],
       ['摸起来丝滑柔软', 'feel smooth and soft'],
       ['它们穿起来宽松又舒适。', 'They are loose and comfortable to wear.'],
-      ['衣服的特点/材料', 'the features/materials of clothes'],
+      ['衣服的特点 / 衣服的材料', 'the features of clothes / the materials of clothes'],
       ['我赞同。', 'I agree.'],
       ['有清爽的外观', 'have a clean look'],
       ['一双运动鞋', 'a pair of sports shoes'],
@@ -3517,65 +3557,6 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['每年年初', 'at the beginning of each year'],
       ['有好的消费习惯', 'have good spending habits'],
       ['怎么处理零花钱', 'what to do with the pocket money']
-    ],
-    '6': [
-      ['着装是一种生活方式。', 'Dressing is a way of life.'],
-      ['不同种类的衣服', 'different types/kinds of clothes'],
-      ['戴着一条围巾/领带', 'wear a scarf/tie'],
-      ['一条牛仔裤', 'a pair of jeans'],
-      ['一件紫色的夹克衫', 'a purple jacket'],
-      ['像红色那样的暖色', 'warm colours like red'],
-      ['像蓝色那样的冷色', 'cool colours like blue'],
-      ['感到平静', 'feel calm'],
-      ['流行色', 'colours in fashion'],
-      ['选正确的颜色穿', 'choose the right colours to wear'],
-      ['你能给我一些建议吗？', 'Could you give me some advice?'],
-      ['取决于', 'depend on'],
-      ['我们的肤色', 'the colour of our skin'],
-      ['例如,诸如', 'such as/for example'],
-      ['穿暖/冷色好看', 'look good in warm/cool colours'],
-      ['搭配得好', 'go well together'],
-      ['选相似的颜色', 'pick similar colours'],
-      ['穿深蓝色牛仔裤配淡蓝色的女士衬衫', 'wear dark blue jeans with a light blue blouse'],
-      ['混合冷暖色', 'mix warm and cool colours'],
-      ['使彼此突出', 'make each other stand out'],
-      ['匹配所有', 'match all'],
-      ['穿超过三种颜色', 'wear more than three colours'],
-      ['与任何颜色都很相配', 'go well with/match any colour'],
-      ['既适合正装,也适合休闲装', 'be suitable for both formal suits and casual clothes'],
-      ['穿衣打扮', 'get dressed'],
-      ['穿舒适的衣服', 'wear comfortable clothes'],
-      ['一场正式的活动', 'a formal event'],
-      ['一名时装设计师', 'a fashion designer'],
-      ['顺便说一下', 'by the way'],
-      ['在网上查东西', 'look things up on the internet'],
-      ['对某事不清楚', 'have no idea about sth'],
-      ['好吧。', 'All right.'],
-      ['我明白了。', 'I see.'],
-      ['一位小学同学', 'a primary school classmate'],
-      ['穿牛仔裤看起来精神', 'look smart in the jeans'],
-      ['你穿这件橙色的更好看。', 'You look better in the orange one.'],
-      ['许多不同种类的传统服饰', 'many different types/kinds of traditional clothes'],
-      ['一些流行的种类', 'some popular types/kinds'],
-      ['在生活中的重要日子', 'on important days in life'],
-      ['节日和结婚日', 'festivals and wedding days'],
-      ['流行的一部分', 'a part of fashion'],
-      ['有一种不一样的样式和设计', 'have a different style and design'],
-      ['展示我国的传统文化', 'show the traditional culture of our country'],
-      ['有两千年的历史', 'have a history of two thousand years'],
-      ['由丝绸/棉花/皮革制成', 'be made of silk/cotton/leather'],
-      ['传统中国服饰', 'traditional Chinese clothes'],
-      ['有一根腰带', 'have a belt'],
-      ['受年轻人欢迎', 'be popular with young people'],
-      ['摸起来丝滑柔软', 'feel smooth and soft'],
-      ['它们穿起来宽松又舒适。', 'They are loose and comfortable to wear.'],
-      ['衣服的特点/材料', 'the features/materials of clothes'],
-      ['我赞同。', 'I agree.'],
-      ['有清爽的外观', 'have a clean look'],
-      ['一双运动鞋', 'a pair of sports shoes'],
-      ['既不太长也不太大', 'not too long or too large'],
-      ['又轻巧又适合运动', 'be light and good for sport'],
-      ['有不同的尺码', 'come in different sizes']
     ],
     '8': [
       ['让我们庆祝吧！', 'Let’s celebrate!'],
@@ -3640,126 +3621,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       ['祝他们好运', 'wish them good luck'],
       ['持续到元宵节', 'last till the Lantern Festival'],
       ['心中感到温暖', 'feel warm in the hearts']
-    ],
-    '7': [
-      ['明智地使用钱财', 'be wise with money'],
-      ['我们的购物习惯', 'our shopping habit'],
-      ['如何理财', 'how to manage money well'],
-      ['起重要作用', 'play an important role'],
-      ['一个储蓄罐', 'a money box'],
-      ['一只招财猫', 'a lucky cat'],
-      ['戴着棒球帽', 'wear a baseball cap'],
-      ['五颜六色的俄罗斯套娃', 'colourful Russian dolls'],
-      ['一个套一个', 'one inside another'],
-      ['一套不同尺寸的玩偶', 'a set of dolls in different sizes'],
-      ['充满了惊喜', 'be full of surprises'],
-      ['从最大到最小', 'from the biggest to the smallest'],
-      ['保护运动员的眼睛不受阳光伤害', 'protect the players’ eyes from the sun'],
-      ['一种时尚', 'a kind of fashion'],
-      ['为花钱制订计划', 'make plans for using money'],
-      ['花最多的钱购物', 'spend the most money (in) (going) shopping'],
-      ['一双新的运动鞋', 'a new pair of sports shoes'],
-      ['街对面的一家商场', 'a mall across the street'],
-      ['花费很多钱', 'cost a lot of money'],
-      ['别担心。', 'Don’t worry.'],
-      ['很会理财', 'manage money well'],
-      ['做一个预算', 'make a budget'],
-      ['够付你的教育费用', 'cover your education'],
-      ['支付日常所需', 'pay for daily needs'],
-      ['花费我们预算的大约 50%', 'cost about 50 per cent of our budget'],
-      ['花另外一半在我们的公寓上', 'spend the other half on our flat'],
-      ['比如什么', 'like what'],
-      ['例如度假', 'like taking holidays'],
-      ['可能会很贵', 'can be expensive'],
-      ['存一些钱', 'save some money'],
-      ['留下一些钱在银行账户', 'leave some money in the bank account'],
-      ['未雨绸缪', 'save for a rainy day'],
-      ['买一个钥匙扣作为礼物', 'buy a key ring as a present'],
-      ['在每个家庭中钱都很重要。', 'Money matters in every family.'],
-      ['遵守预算', 'keep to the budget'],
-      ['有一些零花钱', 'have some pocket money'],
-      ['你想用你的零花钱做什么？', 'What do you want to do with your pocket money?'],
-      ['为我们的朋友买一些礼物', 'buy some gifts for our friends'],
-      ['你剩下的钱足够了。', 'The rest of your money is enough.'],
-      ['有一本笔记本和一些橡皮。', 'There is a notebook and some erasers.'],
-      ['远离我的学校', 'far away from my school'],
-      ['给你。', 'Here you are.'],
-      ['成交！', 'That’s a deal!'],
-      ['这儿是购买大米的 45 枚硬币。', 'Here are 45 coins for the rice.'],
-      ['在线购买电脑', 'buy a computer online'],
-      ['世界上第一个使用纸币的国家', 'the first country to use paper money in the world'],
-      ['从祖父母和亲戚那里拿到压岁钱', 'get lucky money from grandparents and relatives'],
-      ['我也是。', 'Same here.'],
-      ['给我发送在线红包', 'send me online red packets'],
-      ['一次压岁钱调查', 'a lucky money survey'],
-      ['帮助有需要的儿童', 'help children in need'],
-      ['把大部分压岁钱花在学习用品上', 'spend most of the pocket money on school things'],
-      ['为你的压岁钱做预算', 'make a budget for your lucky money'],
-      ['把剩下的存在银行账户', 'save the rest in the bank account'],
-      ['正如妈妈总是告诉我的那样,存钱以备不时之需很重要。', 'As Mum always tells me, it is important to save for a rainy day.'],
-      ['每年年初', 'at the beginning of each year'],
-      ['有好的消费习惯', 'have good spending habits'],
-      ['怎么处理零花钱', 'what to do with the pocket money']
-    ],
-    '6': [
-      ['着装是一种生活方式。', 'Dressing is a way of life.'],
-      ['不同种类的衣服', 'different types/kinds of clothes'],
-      ['戴着一条围巾/领带', 'wear a scarf/tie'],
-      ['一条牛仔裤', 'a pair of jeans'],
-      ['一件紫色的夹克衫', 'a purple jacket'],
-      ['像红色那样的暖色', 'warm colours like red'],
-      ['像蓝色那样的冷色', 'cool colours like blue'],
-      ['感到平静', 'feel calm'],
-      ['流行色', 'colours in fashion'],
-      ['选正确的颜色穿', 'choose the right colours to wear'],
-      ['你能给我一些建议吗？', 'Could you give me some advice?'],
-      ['取决于', 'depend on'],
-      ['我们的肤色', 'the colour of our skin'],
-      ['例如,诸如', 'such as/for example'],
-      ['穿暖/冷色好看', 'look good in warm/cool colours'],
-      ['搭配得好', 'go well together'],
-      ['选相似的颜色', 'pick similar colours'],
-      ['穿深蓝色牛仔裤配淡蓝色的女士衬衫', 'wear dark blue jeans with a light blue blouse'],
-      ['混合冷暖色', 'mix warm and cool colours'],
-      ['使彼此突出', 'make each other stand out'],
-      ['匹配所有', 'match all'],
-      ['穿超过三种颜色', 'wear more than three colours'],
-      ['与任何颜色都很相配', 'go well with/match any colour'],
-      ['既适合正装,也适合休闲装', 'be suitable for both formal suits and casual clothes'],
-      ['穿衣打扮', 'get dressed'],
-      ['穿舒适的衣服', 'wear comfortable clothes'],
-      ['一场正式的活动', 'a formal event'],
-      ['一名时装设计师', 'a fashion designer'],
-      ['顺便说一下', 'by the way'],
-      ['在网上查东西', 'look things up on the internet'],
-      ['对某事不清楚', 'have no idea about sth'],
-      ['好吧。', 'All right.'],
-      ['我明白了。', 'I see.'],
-      ['一位小学同学', 'a primary school classmate'],
-      ['穿牛仔裤看起来精神', 'look smart in the jeans'],
-      ['你穿这件橙色的更好看。', 'You look better in the orange one.'],
-      ['许多不同种类的传统服饰', 'many different types/kinds of traditional clothes'],
-      ['一些流行的种类', 'some popular types/kinds'],
-      ['在生活中的重要日子', 'on important days in life'],
-      ['节日和结婚日', 'festivals and wedding days'],
-      ['流行的一部分', 'a part of fashion'],
-      ['有一种不一样的样式和设计', 'have a different style and design'],
-      ['展示我国的传统文化', 'show the traditional culture of our country'],
-      ['有两千年的历史', 'have a history of two thousand years'],
-      ['由丝绸/棉花/皮革制成', 'be made of silk/cotton/leather'],
-      ['传统中国服饰', 'traditional Chinese clothes'],
-      ['有一根腰带', 'have a belt'],
-      ['受年轻人欢迎', 'be popular with young people'],
-      ['摸起来丝滑柔软', 'feel smooth and soft'],
-      ['它们穿起来宽松又舒适。', 'They are loose and comfortable to wear.'],
-      ['衣服的特点/材料', 'the features/materials of clothes'],
-      ['我赞同。', 'I agree.'],
-      ['有清爽的外观', 'have a clean look'],
-      ['一双运动鞋', 'a pair of sports shoes'],
-      ['既不太长也不太大', 'not too long or too large'],
-      ['又轻巧又适合运动', 'be light and good for sport'],
-      ['有不同的尺码', 'come in different sizes']
-    ],
+    ]
   };
   function greetWord(h) {
     const t = (h === undefined || h === null) ? new Date().getHours() : h;
@@ -7903,10 +7765,19 @@ function reciteBodyHTML(cfg) {
     'sx-chin': { id: 'sx-chin', name: '语文', title: '📜 语文 · 知识点与古文词义', kind: 'flash', gen: genChinGraded, tip: '先自己回想答案，再点开对照（题干均取自课本原文）；背完点「完成背诵」。' }
   };
  let curGeneric = null;
+  // 一个答案可以用 / 或 or 列出多种可接受说法：整句一致算对，任一种说法一致也算对
   function gradeText(input, ans) {
-    const a = String(ans).toLowerCase().replace(/[\s'’\-.]/g, '');
-    const b = String(input).toLowerCase().replace(/[\s'’\-.]/g, '');
-    return a !== '' && a === b;
+    const norm = function (x) {
+      return String(x === null || x === undefined ? '' : x).toLowerCase()
+        .replace(/[\s'’‘\-–—.,!?;:，。！？；：·()（）\[\]【】"]/g, '');
+    };
+    const a = norm(ans), b = norm(input);
+    if (!b) return false;
+    if (a === b) return true;
+    return String(ans).split(/\s*\/\s*|\s+or\s+/i)
+      .map(norm)
+      .filter(function (v) { return v !== ''; })
+      .some(function (v) { return v === b; });
   }
   function gradeBarHTML(cur, fnName) {
     return '<div class="grade-bar">' + ['初一', '初二', '初三'].map(function (g) {
@@ -7979,7 +7850,8 @@ function reciteBodyHTML(cfg) {
     const cfg = curGeneric.cfg;
     let html = '';
     if (cfg.kind === 'practice' || cfg.kind === 'mcq' || cfg.kind === 'phrase') {
-      html += '<button class="primary" onclick="gradeGeneric()">✔ 批改本组</button> <span class="score" id="generic-score">— / 10</span> ';
+      const full = (cfg.kind === 'phrase') ? 100 : 10;
+      html += '<button class="primary" onclick="gradeGeneric()">✔ 批改本组</button> <span class="score" id="generic-score">— / ' + full + '</span> ';
     }
     if (cfg.kind === 'flash') {
       html += '<button class="primary" onclick="finishGeneric()">✔ 完成背诵</button> ';
@@ -8343,6 +8215,7 @@ function reciteBodyHTML(cfg) {
     };
     const b = norm(input);
     if (!b) return false;
+    if (norm(ans) === b) return true;   // 整句完全一致也算对（含用 / 或 or 列出的完整说法）
     const variants = String(ans).split(/[\/;ã€]|\bor\b/i).map(norm).filter(function (x) { return x !== ''; });
     if (!variants.length) return false;
     if (variants.length === 1) return variants[0] === b;
