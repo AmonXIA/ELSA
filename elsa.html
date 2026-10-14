@@ -1163,6 +1163,15 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   .listen-player .lp-seg { display: inline-flex; border: 1px solid #cfe0f2; border-radius: 999px; overflow: hidden; }
   .listen-player .lp-seg button { border: 0; border-radius: 0; padding: 6px 12px; }
   .listen-player .lp-seg button.on { background: #4a86d8; color: #fff; font-weight: 700; }
+  /* ===== 弹窗显示修复：内容可滚动，底部按钮常驻（iPad 上原来会被裁掉） ===== */
+  .modal-panel { max-height: min(90vh, 960px); }
+  .modal-panel > div:not(.modal-head) { flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+  .modal-panel .modal-foot { position: sticky; bottom: 0; background: #fff; padding: 10px 0 4px; margin-top: 8px; box-shadow: 0 -8px 14px rgba(255,255,255,.94); }
+  .modal-panel input, .modal-panel select, .modal-panel textarea { font-size: 16px; }
+  #ai-modal .modal-panel { width: min(760px, 100%); }
+  #ai-modal .intro { font-size: 13.5px; }
+  @media (max-height: 760px) { .modal-panel { max-height: 94vh; } }
+  @media (max-width: 640px) { .modal-backdrop { padding: 10px; } .modal-panel { max-height: 94vh; } }
 </style></head>
 <body>
 
@@ -1750,9 +1759,9 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     m = document.createElement('div');
     m.className = 'modal-backdrop';
     m.id = 'ai-modal';
-    m.innerHTML = '<div class="modal-panel"><div class="modal-head"><h2>🤖 草稿智能批改设置</h2><button class="modal-close" type="button">✕</button></div>'
+    m.innerHTML = '<div class="modal-panel"><div class="modal-head"><h2>🤖 AI 设置（批改草稿 · 在线音色）</h2><button class="modal-close" type="button">✕</button></div>'
       + '<div style="padding:14px 20px 18px;">'
-      + '<p class="intro">填一个「兼容 OpenAI 接口」的服务即可。点「AI 批改」时，才会把这一题的草稿图片发给该服务；接口地址和密钥只保存在这台设备的浏览器里。</p>'
+      + '<p class="intro">填一个「兼容 OpenAI 接口」的服务即可：<b>批改草稿</b>时会把这题的手写图片发给它；<b>磨耳朵的「在线音色」</b>也会用它合成语音（需要该服务支持 /v1/audio/speech）。地址和密钥只保存在这台设备里。</p>'
       + '<p class="intro" style="line-height:1.9;">常用地址（可直接复制）：<br>OpenAI：https://api.openai.com/v1/chat/completions<br>DeepSeek：https://api.deepseek.com/chat/completions<br>通义千问：https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions<br>智谱：https://open.bigmodel.cn/api/paas/v4/chat/completions<br>月之暗面：https://api.moonshot.cn/v1/chat/completions</p>'
       + '<label class="ai-field">接口地址<input id="ai-url" type="text" placeholder="https://api.openai.com/v1/chat/completions"></label>'
       + '<label class="ai-field">模型名称<input id="ai-model" type="text" placeholder="gpt-4o-mini"></label>'
@@ -9238,7 +9247,7 @@ function reciteBodyHTML(cfg) {
 
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-14 在线音色';
+  var BUILD_TAG = '2026-10-14 弹窗修复';
   window.__BUILD_TAG = BUILD_TAG;
 
 
