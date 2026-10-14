@@ -2945,21 +2945,47 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     if (/child|kid|junior|girl/.test(n)) s += 40;
     return s;
   }
-  function listenEnVoices() {
+  function listenAllVoices() {
     if (!('speechSynthesis' in window)) return [];
-    const vs = (window.speechSynthesis.getVoices() || []).filter(function (v) {
-      return (v.lang || '').toLowerCase().indexOf('en') === 0;
-    });
+    try { return window.speechSynthesis.getVoices() || []; } catch (e) { return []; }
+  }
+  function listenEnVoices() {
+    const vs = listenAllVoices().filter(function (v) { return (v.lang || '').toLowerCase().indexOf('en') === 0; });
     return vs.slice().sort(function (a, b) { return listenVoiceScore(b) - listenVoiceScore(a); });
   }
+  // 有的系统会把音色标成别的语言，所以下拉里连「其它语言」一起列
+  function listenVoiceGroups() {
+    const all = listenAllVoices();
+    const en = all.filter(function (v) { return (v.lang || '').toLowerCase().indexOf('en') === 0; })
+      .sort(function (a, b) { return listenVoiceScore(b) - listenVoiceScore(a); });
+    const other = all.filter(function (v) { return (v.lang || '').toLowerCase().indexOf('en') !== 0; })
+      .sort(function (a, b) { return String(a.lang + a.name).localeCompare(String(b.lang + b.name)); });
+    return { en: en, other: other, all: all };
+  }
+  function listenWarmupVoices() {
+    try { window.speechSynthesis.getVoices(); } catch (e) {}
+    setTimeout(listenRefreshVoiceUI, 60);
+    setTimeout(listenRefreshVoiceUI, 700);
+    setTimeout(listenRefreshVoiceUI, 2000);
+  }
+  function listenVoiceDump() {
+    const g = listenVoiceGroups();
+    const names = g.all.map(function (v) { return v.name + ' [' + v.lang + ']'; });
+    try { alert('检测到 ' + g.all.length + ' 个语音（英语 ' + g.en.length + ' 个）\n\n' + names.join('\n')); }
+    catch (e) { toast('共 ' + g.all.length + ' 个语音'); }
+    return names.length;
+  }
   function listenPickVoice() {
-    const vs = listenEnVoices();
-    if (!vs.length) return null;
+    const all = listenAllVoices();
+    if (!all.length) return null;
     if (listenVoiceName) {
-      const hit = vs.filter(function (v) { return v.name === listenVoiceName; })[0];
+      const hit = all.filter(function (v) { return v.name === listenVoiceName; })[0];
       if (hit) return hit;
     }
-    return vs[0];
+    const joelle = all.filter(function (v) { return (v.name || '').toLowerCase().indexOf('joelle') >= 0; })[0];
+    if (joelle) return joelle;
+    const vs = listenEnVoices();
+    return vs.length ? vs[0] : all[0];
   }
   function listenVoiceNote() {
     if (!('speechSynthesis' in window)) return '这台设备不支持朗读（请用 Safari / Chrome 打开）';
@@ -2984,6 +3010,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   }
   function listenPreview() {
     if (!('speechSynthesis' in window)) return;
+    listenWarmupVoices();
     try { window.speechSynthesis.cancel(); } catch (e) {}
     const u = new SpeechSynthesisUtterance('Hello! I am your English reading friend. Let us read together!');
     if (!listenVoice) listenVoice = listenPickVoice();
@@ -3083,7 +3110,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     h += '<div class="listen-card">';
     h += '<img class="listen-hero" src="' + a.img + '" alt="">';
     h += '<div class="listen-title">' + escapeHtml(a.title) + '</div>';
-    const voices = listenEnVoices();
+    const vg = listenVoiceGroups(), voices = vg.en;
     h += '<div class="listen-player">' +
       '<button class="pri" id="lp-play" onclick="listenToggle()">▶ 播放</button>' +
       '<button onclick="listenStop()">⏹ 停止</button>' +
@@ -3101,7 +3128,8 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
         voices.map(function (v) { return '<option value="' + escapeHtml(v.name) + '"' + ((listenVoice && v.name === listenVoice.name) ? ' selected' : '') + '>' + escapeHtml(v.name) + '</option>'; }).join('') +
         '</select>' : '<span class="lp-note">还没有可用音色，点「🔄 刷新音色」试试</span>') +
       '<button onclick="listenReloadVoices()">🔄 刷新音色</button>' +
-      '<span class="lp-note" id="lp-note">' + escapeHtml(listenVoiceNote()) + '　·　' + escapeHtml(listenJoelleHint()) + '</span></div>';
+      '<button onclick="listenVoiceDump()">🔍 全部音色</button>' +
+      '<span class="lp-note" id="lp-note">' + escapeHtml(listenVoiceNote()) + '　·　' + escapeHtml(listenJoelleHint()) + '　·　语音检测：共 ' + vg.all.length + ' 个（英语 ' + vg.en.length + '）</span></div>';
     h += '<div class="ls-text">' + sents.map(function (s, i) {
       return '<span class="ls-sent" data-i="' + i + '" onclick="listenSpeakFrom(' + i + ')">' + escapeHtml(s) + '</span> ';
     }).join('') + '</div>';
@@ -3124,22 +3152,29 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   function listenRefreshVoiceUI() {
     listenVoice = listenPickVoice();
     const sel = document.getElementById('lp-voice-sel');
+    const g = listenVoiceGroups();
     if (sel) {
-      const vs = listenEnVoices();
       const cur = (listenVoice && listenVoice.name) || '';
-      sel.innerHTML = vs.map(function (v) {
-        return '<option value="' + escapeHtml(v.name) + '"' + (v.name === cur ? ' selected' : '') + '>' + escapeHtml(v.name) + '</option>';
-      }).join('');
+      const opt = function (v) {
+        return '<option value="' + escapeHtml(v.name) + '"' + (v.name === cur ? ' selected' : '') + '>' + escapeHtml(v.name) + ' [' + escapeHtml(v.lang || '') + ']</option>';
+      };
+      let h = g.en.map(opt).join('');
+      if (g.other.length) h += '<option disabled>──── 其它语言 ────</option>' + g.other.map(opt).join('');
+      sel.innerHTML = h;
     }
     const note = document.getElementById('lp-note');
-    if (note) note.innerHTML = escapeHtml(listenVoiceNote()) + '　·　' + listenJoelleHint();
+    if (note) note.innerHTML = escapeHtml(listenVoiceNote()) + '　·　' + escapeHtml(listenJoelleHint()) +
+      '　·　语音检测：共 ' + g.all.length + ' 个（英语 ' + g.en.length + '）';
   }
   function listenJoelleHint() {
-    const has = listenEnVoices().some(function (v) { return (v.name || '').toLowerCase().indexOf('joelle') >= 0; });
-    if (has) return 'Joelle 已就绪 ✓';
-    return '没找到 Joelle：iPad「设置 → 辅助功能 → 朗读内容 → 声音 → 英语」里下载后再点「🔄 刷新音色」';
+    const all = listenAllVoices();
+    const hit = all.filter(function (v) { return (v.name || '').toLowerCase().indexOf('joelle') >= 0; })[0];
+    if (hit) return 'Joelle 已就绪 ✓（' + hit.lang + '）';
+    if (!all.length) return '这台设备还没给出语音列表：先点「🔊 试听音色」，再点「🔄 刷新音色」';
+    return '系统没把 Joelle 交给网页（已检测 ' + all.length + ' 个语音）：点「🔍 全部音色」把列表截图发我';
   }
   function listenReloadVoices() {
+    listenWarmupVoices();
     listenRefreshVoiceUI();
     const vs = listenEnVoices();
     toast('已刷新：共 ' + vs.length + ' 个英语音色' + (vs.length ? '（当前 ' + (listenVoice ? listenVoice.name : '-') + '）' : ''));
@@ -9078,7 +9113,7 @@ function reciteBodyHTML(cfg) {
 
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-14 Joelle音色';
+  var BUILD_TAG = '2026-10-14 音色适配';
   window.__BUILD_TAG = BUILD_TAG;
 
 
