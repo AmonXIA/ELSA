@@ -1172,6 +1172,23 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   #ai-modal .intro { font-size: 13.5px; }
   @media (max-height: 760px) { .modal-panel { max-height: 94vh; } }
   @media (max-width: 640px) { .modal-backdrop { padding: 10px; } .modal-panel { max-height: 94vh; } }
+  .lp-more { margin: 2px 0 10px; border: 1px dashed #dbe9f8; border-radius: 12px; padding: 6px 10px; background: #fbfdff; }
+  .lp-more summary { cursor: pointer; font-size: 13px; color: #2f6ba8; font-weight: 700; }
+  .ximalaya-card .xm-title { font-size: 15px; font-weight: 700; color: #2f6ba8; margin-bottom: 6px; }
+  .ximalaya-card .xm-note { font-size: 12.5px; color: #7b8ca0; margin-bottom: 8px; line-height: 1.7; }
+  .ximalaya-card a.xm-link { display: block; text-decoration: none; color: #33475f; font-size: 14px; border: 1px solid #e6eef8; border-radius: 12px; padding: 9px 12px; margin-bottom: 8px; background: #fff; }
+  .ximalaya-card a.xm-link b { color: #d9713c; font-weight: 700; }
+  .ximalaya-card a.xm-link span { color: #8aa0b5; font-size: 12px; display: block; margin-top: 2px; }
+  /* 大字版：短文与译文更大，读起来轻松 */
+  .ls-text { font-size: 21px !important; line-height: 2.05 !important; letter-spacing: .2px; }
+  .listen-title { font-size: 22px !important; }
+  .listen-zh { font-size: 17.5px !important; line-height: 2 !important; }
+  .listen-sec h3 { font-size: 16px !important; }
+  .listen-sec .ls-row { font-size: 16.5px !important; line-height: 2 !important; }
+  .listen-sec .ls-row b { font-size: 17px; }
+  .ximalaya-card a.xm-link { font-size: 15px !important; }
+  .ximalaya-card .xm-note { font-size: 13px !important; }
+  @media (min-width: 768px) { .ls-text { font-size: 23px !important; } .listen-zh { font-size: 19px !important; } }
 </style></head>
 <body>
 
@@ -2948,6 +2965,38 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     const day = Math.floor((now - start) / 86400000);
     return ((day - 1) % LISTEN_ARTICLES.length + LISTEN_ARTICLES.length) % LISTEN_ARTICLES.length;
   }
+  /* ===== 磨耳朵：优先播放页面自带的音频文件 listen/audio/NN.mp3 ===== */
+  var LISTEN_USE_FILE = true;
+  function listenFileUrl(n) { return 'listen/audio/' + ('0' + n).slice(-2) + '.mp3'; }
+  function listenPlayFile(a, onFail) {
+    const url = listenFileUrl(a.n);
+    const audio = new Audio(url);
+    let ok = false;
+    audio.onloadedmetadata = function () {
+      ok = true;
+      listenAudio = audio;
+      audio.playbackRate = listenRate;
+      const total = isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 0;
+      const sents = listenSents(a.en);
+      const lens = sents.map(function (s) { return Math.max(6, s.length); });
+      const sum = lens.reduce(function (x, y) { return x + y; }, 0) || 1;
+      const ends = []; let acc = 0;
+      lens.forEach(function (L) { acc += L; ends.push(acc / sum * total); });
+      const box = document.querySelector('#listen-body .ls-text');
+      if (box) box.setAttribute('data-file', '1');
+      audio.ontimeupdate = function () {
+        for (let i = 0; i < ends.length; i++) { if (audio.currentTime <= ends[i]) { if (listenIdx !== i) { listenIdx = i; listenPaint(true); } break; } }
+      };
+      audio.onended = function () { listenPlaying = false; listenIdx = -1; listenFinishAll(); };
+      audio.onerror = function () { listenPlaying = false; if (onFail) onFail(); };
+      audio.play().catch(function () { listenPlaying = false; if (onFail) onFail(); });
+      listenPlaying = true;
+      listenPaint(false);
+      toast('播放内置音频（' + a.title + '）');
+    };
+    audio.onerror = function () { if (!ok && onFail) onFail(); };
+    audio.load();
+  }
   function listenSents(en) {
     return (String(en).match(/[^.!?]+[.!?]*/g) || []).map(function (s) { return s.trim(); }).filter(function (s) { return s.length > 1; });
   }
@@ -3063,6 +3112,10 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   function listenToggle() {
     if (!listenCur) return;
     if (listenPlaying) { listenPause(); return; }
+    if (LISTEN_USE_FILE && listenEngine === 'sys' && !listenPlaying && listenIdx < 0) {
+      listenPlayFile(listenCur, function () { LISTEN_USE_FILE = false; listenResume(); });
+      return;
+    }
     listenResume();
   }
   function listenSpeakFrom(i) { listenSpeakAt(i); }
@@ -3122,9 +3175,25 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
         '<img src="' + a.img + '" loading="lazy" alt=""><div class="li-t"><span class="li-n">#' + a.n + '</span> ' + escapeHtml(a.title) + '</div></div>';
     });
     h += '</div></div>';
+    h += ximalayaHTML();
     box.setAttribute('data-mode', 'list');
     box.innerHTML = h;
     window.scrollTo(0, 0);
+  }
+  var LISTEN_XIMALAYA = [
+    { t: '每日英语听读小短文100篇', d: '和这本书同名的专辑（喜马拉雅）', u: 'https://www.ximalaya.com/album/86858599' },
+    { t: '英语小短文100篇（儿童频道）', d: '少儿主播朗读，语速偏慢', u: 'https://www.ximalaya.com/ertong/16217760/' },
+    { t: '英语小短文朗读（儿童）', d: '另一版儿童朗读', u: 'https://www.ximalaya.com/ertong/16532061/' },
+    { t: '100篇最美英语晨读美文', d: '晨读美文，适合磨耳朵', u: 'https://www.ximalaya.com/waiyu/9544843/' }
+  ];
+  function ximalayaHTML() {
+    let h = '<div class="listen-card ximalaya-card"><div class="xm-title">🎧 喜马拉雅 · 现成音频专辑（点开直接听）</div>' +
+      '<div class="xm-note">这些是别人已经录好的音频，点开会跳到喜马拉雅（App 或浏览器）播放。版权音频不能直接搬进本页，所以这里做成一键入口；本页自带的朗读照常可用。</div>';
+    LISTEN_XIMALAYA.forEach(function (a) {
+      h += '<a class="xm-link" href="' + a.u + '" target="_blank" rel="noopener">▶ <b>' + escapeHtml(a.t) + '</b><span>' + escapeHtml(a.d) + '</span></a>';
+    });
+    h += '</div>';
+    return h;
   }
   function openListenArticle(n) {
     const a = LISTEN_ARTICLES.filter(function (x) { return x.n === n; })[0];
@@ -3136,31 +3205,14 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     h += '<div class="listen-card">';
     h += '<img class="listen-hero" src="' + a.img + '" alt="">';
     h += '<div class="listen-title">' + escapeHtml(a.title) + '</div>';
-    const vg = listenVoiceGroups(), voices = vg.en;
     h += '<div class="listen-player">' +
       '<button class="pri" id="lp-play" onclick="listenToggle()">▶ 播放</button>' +
       '<button onclick="listenStop()">⏹ 停止</button>' +
-      '<button onclick="listenPreview()">🔊 试听音色</button>' +
       '<span class="lp-lab">语速</span>' +
       '<button class="lp-rate' + (Math.abs(listenRate - 0.7) < 0.01 ? ' on' : '') + '" data-r="0.7" onclick="listenSetRate(0.7)">慢</button>' +
       '<button class="lp-rate' + (Math.abs(listenRate - 0.85) < 0.01 ? ' on' : '') + '" data-r="0.85" onclick="listenSetRate(0.85)">中</button>' +
       '<button class="lp-rate' + (Math.abs(listenRate - 1) < 0.01 ? ' on' : '') + '" data-r="1" onclick="listenSetRate(1)">快</button>' +
-      '<span class="lp-lab">音调</span>' +
-      '<button class="lp-pitch' + (listenPitch <= 1.15 ? ' on' : '') + '" data-p="1.05" onclick="listenSetPitch(1.05)">低</button>' +
-      '<button class="lp-pitch' + (listenPitch > 1.15 && listenPitch < 1.55 ? ' on' : '') + '" data-p="1.35" onclick="listenSetPitch(1.35)">童声</button>' +
-      '<button class="lp-pitch' + (listenPitch >= 1.55 ? ' on' : '') + '" data-p="1.7" onclick="listenSetPitch(1.7)">更高</button>' +
-      '<span class="lp-lab">音源</span>' +
-      '<span class="lp-seg"><button class="' + (listenEngine === 'online' ? '' : 'on') + '" onclick="listenSetEngine(\'sys\')">设备语音</button>' +
-      '<button class="' + (listenEngine === 'online' ? 'on' : '') + '" onclick="listenSetEngine(\'online\')">在线音色</button></span>' +
-      (listenEngine === 'online' ? '<span class="lp-lab">在线嗓音</span><select class="lp-sel" onchange="listenSetTtsVoice(this.value)">' +
-        LISTEN_TTS_VOICES.map(function (v) { return '<option value="' + v + '"' + (v === listenTtsVoice ? ' selected' : '') + '>' + v + '</option>'; }).join('') + '</select>' : '') +
-      '<span class="lp-lab">音色</span>' +
-      (voices.length ? '<select class="lp-sel" id="lp-voice-sel" onchange="listenSetVoiceName(this.value)">' +
-        voices.map(function (v) { return '<option value="' + escapeHtml(v.name) + '"' + ((listenVoice && v.name === listenVoice.name) ? ' selected' : '') + '>' + escapeHtml(v.name) + '</option>'; }).join('') +
-        '</select>' : '<span class="lp-note">还没有可用音色，点「🔄 刷新音色」试试</span>') +
-      '<button onclick="listenReloadVoices()">🔄 刷新音色</button>' +
-      '<button onclick="listenVoiceDump()">🔍 全部音色</button>' +
-      '<span class="lp-note" id="lp-note">' + escapeHtml(listenVoiceNote()) + '　·　' + escapeHtml(listenJoelleHint()) + '　·　' + (listenEngine === 'online' ? '在线音色 ' + listenTtsVoice + '：用 AI 接口合成，音色更自然' : '语音检测：共 ' + vg.all.length + ' 个（英语 ' + vg.en.length + '）') + '</span></div>';
+      '</div>';
     h += '<div class="ls-text">' + sents.map(function (s, i) {
       return '<span class="ls-sent" data-i="' + i + '" onclick="listenSpeakFrom(' + i + ')">' + escapeHtml(s) + '</span> ';
     }).join('') + '</div>';
@@ -3175,6 +3227,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     }
     h += '<div class="listen-sec"><h3>📖 参考译文</h3><div class="listen-zh">' + escapeHtml(a.zh) + '</div></div>';
     h += '</div>';
+    h += ximalayaHTML();
     const box = document.getElementById('listen-body');
     box.setAttribute('data-mode', 'one');
     box.innerHTML = h;
@@ -9247,7 +9300,7 @@ function reciteBodyHTML(cfg) {
 
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-14 弹窗修复';
+  var BUILD_TAG = '2026-10-16 大字精简版'
   window.__BUILD_TAG = BUILD_TAG;
 
 
