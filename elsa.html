@@ -2949,9 +2949,9 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   /* ===== 磨耳朵 · 每日英语听读（100 篇，英音朗读） ===== */
   var LISTEN_DONE_KEY = 'listen_done_v1';
   var listenCur = null, listenPlaying = false, listenIdx = -1, listenVoice = null;
-  var listenRate = 0.85;
+  var listenRate = 1;
   var listenPitch = 1.35, listenVoiceName = '';
-  try { listenRate = parseFloat(localStorage.getItem(pk('listen_rate_v1')) || '') || 0.85; } catch (e) {}
+  try { listenRate = parseFloat(localStorage.getItem(pk('listen_rate_v1')) || '') || 1; } catch (e) {}
   try { listenPitch = parseFloat(localStorage.getItem(pk('listen_pitch_v1')) || '') || 1.35; } catch (e) {}
   try { listenVoiceName = localStorage.getItem(pk('listen_voice_v1')) || ''; } catch (e) {}
   function listenDoneMap() { try { return JSON.parse(lsGet(LISTEN_DONE_KEY) || '{}') || {}; } catch (e) { return {}; } }
@@ -2967,7 +2967,29 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   }
   /* ===== 磨耳朵：优先播放页面自带的音频文件 listen/audio/NN.mp3 ===== */
   var LISTEN_USE_FILE = true;
-  function listenFileUrl(n) { return 'listen/audio/' + ('0' + n).slice(-2) + '.mp3'; }
+  function listenFileUrl(n, i) {
+    if (i === undefined || i === null) return 'listen/audio/' + ('0' + n).slice(-2) + '.mp3';
+    return 'listen/audio/' + ('0' + n).slice(-2) + '/' + ('0' + i).slice(-2) + '.mp3';
+  }
+  // 逐句播放内置音频（每句一个 mp3），播完自动下一句并高亮
+  function listenPlaySentenceFile(i) {
+    if (!listenCur) return;
+    const sents = listenSents(listenCur.en);
+    if (i >= sents.length) { listenFinishAll(); return; }
+    listenIdx = i; listenPlaying = true; listenPaint(false);
+    try { if (listenAudio) listenAudio.pause(); } catch (e) {}
+    const au = new Audio(listenFileUrl(listenCur.n, i));
+    listenAudio = au;
+    au.playbackRate = listenRate;
+    au.onended = function () { if (listenPlaying) listenPlaySentenceFile(i + 1); };
+    au.onerror = function () {
+      const code = au.error && au.error.code;
+      if (code === 4 || code === 2) LISTEN_USE_FILE = false;   // 文件缺失/格式不支持才永久切回语音
+      listenSpeakAt(i);
+    };
+    const pr = au.play();
+    if (pr && pr.catch) pr.catch(function () { listenSpeakAt(i); });   // 只是这次播不动，下次仍用内置音频
+  }
   function listenPlayFile(a, onFail) {
     const url = listenFileUrl(a.n);
     const audio = new Audio(url);
@@ -3106,14 +3128,15 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   }
   function listenResume() {
     if (listenEngine === 'online') { listenPlaySentence(listenIdx < 0 ? 0 : listenIdx); return; }
+    if (LISTEN_USE_FILE) { listenPlaySentenceFile(listenIdx < 0 ? 0 : listenIdx); return; }
     if (window.speechSynthesis.paused) { window.speechSynthesis.resume(); listenPlaying = true; listenPaint(true); return; }
     listenSpeakAt(listenIdx < 0 ? 0 : listenIdx);
   }
   function listenToggle() {
     if (!listenCur) return;
     if (listenPlaying) { listenPause(); return; }
-    if (LISTEN_USE_FILE && listenEngine === 'sys' && !listenPlaying && listenIdx < 0) {
-      listenPlayFile(listenCur, function () { LISTEN_USE_FILE = false; listenResume(); });
+    if (LISTEN_USE_FILE && listenEngine === 'sys') {
+      listenPlaySentenceFile(listenIdx + 1);
       return;
     }
     listenResume();
@@ -3122,6 +3145,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   function listenSpeakAt(i) {
     if (!listenCur) return;
     if (listenEngine === 'online') { listenPlaySentence(i); return; }
+    if (LISTEN_USE_FILE) { listenPlaySentenceFile(i); return; }
     const list = listenSents(listenCur.en);
     if (i >= list.length) {
       listenPlaying = false; listenIdx = -1;
@@ -3209,9 +3233,9 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
       '<button class="pri" id="lp-play" onclick="listenToggle()">▶ 播放</button>' +
       '<button onclick="listenStop()">⏹ 停止</button>' +
       '<span class="lp-lab">语速</span>' +
-      '<button class="lp-rate' + (Math.abs(listenRate - 0.7) < 0.01 ? ' on' : '') + '" data-r="0.7" onclick="listenSetRate(0.7)">慢</button>' +
-      '<button class="lp-rate' + (Math.abs(listenRate - 0.85) < 0.01 ? ' on' : '') + '" data-r="0.85" onclick="listenSetRate(0.85)">中</button>' +
-      '<button class="lp-rate' + (Math.abs(listenRate - 1) < 0.01 ? ' on' : '') + '" data-r="1" onclick="listenSetRate(1)">快</button>' +
+      '<button class="lp-rate' + (Math.abs(listenRate - 0.8) < 0.01 ? ' on' : '') + '" data-r="0.8" onclick="listenSetRate(0.8)">慢</button>' +
+      '<button class="lp-rate' + (Math.abs(listenRate - 1) < 0.01 ? ' on' : '') + '" data-r="1" onclick="listenSetRate(1)">中</button>' +
+      '<button class="lp-rate' + (Math.abs(listenRate - 1.2) < 0.01 ? ' on' : '') + '" data-r="1.2" onclick="listenSetRate(1.2)">快</button>' +
       '</div>';
     h += '<div class="ls-text">' + sents.map(function (s, i) {
       return '<span class="ls-sent" data-i="' + i + '" onclick="listenSpeakFrom(' + i + ')">' + escapeHtml(s) + '</span> ';
