@@ -39,11 +39,17 @@ GitHub Pages 开启方式：仓库 Settings → Pages → Source 选 `main` 分�
 
 | 文件 | 说明 |
 | --- | --- |
-| `elsa.html` | 应用主体（单文件，图片已内嵌） |
+| `elsa.html` | 应用页面骨架（HTML） |
+| `css/app.css` | 全部样式 |
+| `js/data-listen.js` | 磨耳朵 100 篇听读数据（OCR 已勘误） |
+| `js/data.js` | 题库数据（背诵 / 英语 / 口语等） |
+| `js/app.js` | 应用逻辑 |
+| `listen/` | 磨耳朵封面图（NN.jpg）与内置朗读音频（audio/NN.mp3，Ana 童声） |
+| `tools/` | 音频再生成脚本：`node tools/export_en.js && python tools/gen_audio.py`（需 `pip install edge-tts`） |
 | `index.html` | 站点根目录自动跳转 |
 | `manifest.webmanifest` | PWA 清单 |
 | `sw.js` | Service Worker（离线缓存） |
 | `icon-192.png` / `icon-512.png` / `icon-maskable-512.png` | 应用图标 |
 | `apple-touch-icon.png` | iOS 主屏图标 |
 | `elsa-logo.svg` | Logo |
-| `assets/` | 图标精灵图源文件 |
+| `assets/` | 图标精灵图 |

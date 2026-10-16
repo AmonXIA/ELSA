@@ -1,7 +1,11 @@
 /* Elsa数学小练 · Service Worker（离线缓存） */
-const CACHE = 'elsa-math-v2';
+const CACHE = 'elsa-math-v3';
 const ASSETS = [
   './elsa.html',
+  './css/app.css',
+  './js/data-listen.js',
+  './js/data.js',
+  './js/app.js',
   './manifest.webmanifest',
   './icon-192.png',
   './icon-512.png',
