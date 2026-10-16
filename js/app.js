@@ -2492,10 +2492,10 @@
       function () { const m = ri(11, 60), k = ri(2, 9); return { q: '简便计算：' + (m + k) + ' × ' + (m - k) + ' − ' + m + '²', ans: String(-k * k), key: [-k * k] }; },
     ],
     numtheory: [
-      function () { const r1 = ri(3, 7), r2 = ri(2, 5); let n = 1; while (!(n % 7 === r1 && n % 5 === r2)) n++; return { q: '一个正整数除以 7 余 ' + r1 + '，除以 5 余 ' + r2 + '，这个数最小是多少？', ans: String(n), key: [n] }; },
+      function () { const r1 = ri(1, 6), r2 = ri(1, 4); let n = 1; while (!(n % 7 === r1 && n % 5 === r2)) n++; return { q: '一个正整数除以 7 余 ' + r1 + '，除以 5 余 ' + r2 + '，这个数最小是多少？', ans: String(n), key: [n] }; },
       function () { const b = ri(3, 6), c = ri(5, 9); const cnt = Math.floor(100 / b) - Math.floor(100 / (b * c)); return { q: '1 到 100 中，能被 ' + b + ' 整除但不能被 ' + (b * c) + ' 整除的数有多少个？', ans: String(cnt), key: [cnt] }; },
       function () { const g = pick([2, 3, 4]); const m = g * ri(2, 5); return { q: '两个数的最大公因数是 ' + g + '，最小公倍数是 ' + m + '，其中较大的一个数是多少？', ans: String(m), key: [m] }; },
-      function () { const d = ri(3, 5); const n = 9 * 100 + 10 * d + (14 - 9 - d); return { q: '一个三位数，百位是 9，各位数字都不为 0 且互不相同，三个数字之和是 15。这个三位数最大是多少？', ans: String(n), key: [n] }; },
+      function () { return { q: '一个三位数，百位是 9，各位数字都不为 0 且互不相同，三个数字之和是 15。这个三位数最大是多少？', ans: '951', key: [951] }; },
       function () { const k = ri(4, 12); return { q: '2 的 ' + k + ' 次方的个位数字是多少？', ans: String(Math.pow(2, k) % 10), key: [Math.pow(2, k) % 10] }; },
       function () { const a = ri(2, 5), b = ri(2, 6); let n = 0; while (!((n + a) % 5 === 0 && (n - b) % 6 === 0)) n++; return { q: '一个正整数加上 ' + a + ' 能被 5 整除，减去 ' + b + ' 能被 6 整除，这个数最小是多少？', ans: String(n), key: [n] }; },
       function () { return { q: '用 0、1、2、3 组成没有重复数字的三位数（百位不能为 0），共有多少个？', ans: '18', key: [18] }; },
@@ -3602,7 +3602,7 @@ function reciteBodyHTML(cfg) {
   }
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-16 童声音频+模块化'
+  var BUILD_TAG = '2026-10-16 童声音频+修复数学思维卡死'
   window.__BUILD_TAG = BUILD_TAG;
 
   // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====
