@@ -3200,9 +3200,25 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     });
     h += '</div></div>';
     h += ximalayaHTML();
+    h += peppaHTML();
     box.setAttribute('data-mode', 'list');
     box.innerHTML = h;
     window.scrollTo(0, 0);
+  }
+  var LISTEN_PEPPA = [
+    { t: '小猪佩奇 1-4 季 · 英文版（免费）', d: '儿童每日听力，一集几分钟', u: 'https://www.ximalaya.com/album/81454758' },
+    { t: '小猪佩奇（英文版）全集', d: '英文原声，适合磨耳朵', u: 'https://www.ximalaya.com/album/56538347' },
+    { t: '小猪佩奇 第一季（英文版）', d: '从第一季开始听', u: 'https://www.ximalaya.com/ertong/35258643/' },
+    { t: '小猪佩奇 中英双语动画音频', d: '英文 + 中文对照', u: 'https://www.ximalaya.com/ertong/33829026/' }
+  ];
+  function peppaHTML() {
+    let h = '<div class="listen-card ximalaya-card"><div class="xm-title">🐷 小猪佩奇 · 英文音频（喜马拉雅）</div>' +
+      '<div class="xm-note">佩奇是版权内容，页面里不能直接放它的音频，但喜马拉雅上有很多免费专辑，点开就能听原声。</div>';
+    LISTEN_PEPPA.forEach(function (a) {
+      h += '<a class="xm-link" href="' + a.u + '" target="_blank" rel="noopener">▶ <b>' + escapeHtml(a.t) + '</b><span>' + escapeHtml(a.d) + '</span></a>';
+    });
+    h += '</div>';
+    return h;
   }
   var LISTEN_XIMALAYA = [
     { t: '每日英语听读小短文100篇', d: '和这本书同名的专辑（喜马拉雅）', u: 'https://www.ximalaya.com/album/86858599' },
@@ -3252,6 +3268,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     h += '<div class="listen-sec"><h3>📖 参考译文</h3><div class="listen-zh">' + escapeHtml(a.zh) + '</div></div>';
     h += '</div>';
     h += ximalayaHTML();
+    h += peppaHTML();
     const box = document.getElementById('listen-body');
     box.setAttribute('data-mode', 'one');
     box.innerHTML = h;
