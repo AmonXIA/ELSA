@@ -3602,7 +3602,7 @@ function reciteBodyHTML(cfg) {
   }
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-16 童声音频+修复数学思维卡死'
+  var BUILD_TAG = '2026-10-19 新版适配音频'
   window.__BUILD_TAG = BUILD_TAG;
 
   // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====
