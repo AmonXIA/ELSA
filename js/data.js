@@ -3,16 +3,17 @@
       id: 'elsa', name: 'Elsa', emoji: '❄️', grade: '小学',
       brand: 'Elsa 的每日数学小练',
       sub: '今天也和我们一起收集星星吧！',
-      foot: 'Elsa 的每日数学小练 · 阅读 / 运动 / 家务 / 计算 / 思维 · 加油！',
+      foot: 'Elsa 的每日数学小练 · 阅读 / 运动 / 家务 / 计算 / 思维 / 口算 · 加油！',
       modules: [
         { id: 'read', icon: '📖', title: '阅读', sub: '15 分钟', act: "showPage('read')", goal: true },
         { id: 'sport', icon: '🏃', title: '运动', sub: '30 分钟', act: "showPage('sport')", goal: true },
         { id: 'chore', icon: '🧹', title: '做家务', sub: '整理房间', act: "showPage('chore')", goal: true },
         { id: 'calc', icon: '➗', title: '计算小练', sub: '30 题', act: "showPage('calc')", goal: true },        
-        { id: 'think', icon: '🧠', title: '思维小练', sub: '12 类', act: "showPage('think')", goal: true }
-        ,{ id: 'listen', icon: '🎧', title: '磨耳朵', sub: '每日听读', act: "showPage('listen')", goal: true }
+        { id: 'think', icon: '🧠', title: '思维小练', sub: '12 类', act: "showPage('think')", goal: true },
+        { id: 'listen', icon: '🎧', title: '磨耳朵', sub: '每日听读', act: "showPage('listen')", goal: true },
+        { id: 'paper', icon: '📄', title: '口算练习', sub: '20题·Excel', act: "showPage('paper')", goal: false }
       ],
-      colors: { read: '#4f9cf7', sport: '#43b96a', chore: '#f0a13a', calc: '#f39bbd', think: '#9b7ede', listen: '#7c6cf0' }
+      colors: { read: '#4f9cf7', sport: '#43b96a', chore: '#f0a13a', calc: '#f39bbd', think: '#9b7ede', listen: '#7c6cf0', paper: '#d9a441' }
     },
     shawn: {
       id: 'shawn', name: 'Shawn', emoji: '🚀', grade: '初中',

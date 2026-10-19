@@ -148,6 +148,23 @@
     <div id="calc-modules"></div>
   </div>
 
+  <!-- 100以内口算练习纸 -->
+  <div class="page" id="page-paper" style="display:none">
+    <h2 class="page-title">📄 100以内口算练习</h2>
+    <div class="controls">
+      <button class="primary" onclick="paperGradeAll()">✔ 一键批改</button>
+      <button onclick="paperReset()">🔄 重新作答</button>
+      <button onclick="paperShowAnswers(true)">显示全部答案</button>
+      <button onclick="paperShowAnswers(false)">隐藏全部答案</button>
+      <button onclick="paperRefreshAll()">🎲 全部换一批</button>
+      <button onclick="paperDownloadExcel()">⬇ 下载 Excel</button>
+      <button onclick="openWrongBook()">📓 错题本 <span class="wb-badge">0</span></button>
+      <span class="score" id="paper-score">— / 20</span>
+    </div>
+    <p class="hint">每次 20 题，分 4 组：不进退位、进位退位、连加连减、填缺数。可以直接在 iPad 上作答并按组批改，也可以下载 Excel 和答案页打印。</p>
+    <div id="paper-modules"></div>
+  </div>
+
   <!-- 思维 -->
   <div class="page" id="page-think" style="display:none">
     <h2 class="page-title">🧠 思维小练</h2>

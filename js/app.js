@@ -943,7 +943,7 @@
   }
 
   /* ============ 日历 ============ */
-  const MODULE_COLORS = { read: '#4f9cf7', sport: '#43b96a', chore: '#f0a13a', calc: '#f39bbd', think: '#9b7ede' };
+  const MODULE_COLORS = { read: '#4f9cf7', sport: '#43b96a', chore: '#f0a13a', calc: '#f39bbd', think: '#9b7ede', listen: '#7c6cf0', paper: '#d9a441' };
   function renderCalendar() {
     const el = document.getElementById('calendar');
     if (!el) return;
@@ -1545,8 +1545,313 @@
     if (name === 'read') { initReadDate(); renderReadLog(); }
     if (name === 'chore') renderChores();
     if (name === 'listen') renderListen();
+    if (name === 'paper') paperInit();
     if (name === 'dashboard') renderCalendar();
   }
+
+  /* ===== 100以内口算练习：在线作答 + 按组批改 + Excel 生成 ===== */
+  var PAPER = null;
+  var PAPER_DEFS = [
+    {
+      id: 'p1', title: '一、不进退位加减', desc: '个位、十位都不进位、不退位。',
+      gen: (function () { var n = 0; return function () { n++; return n % 2 ? paperNoCarryAdd() : paperNoCarrySub(); }; })()
+    },
+    {
+      id: 'p2', title: '二、进位退位加减', desc: '注意个位进位和退位。',
+      gen: (function () { var n = 0; return function () { n++; return n % 2 ? paperCarryAdd() : paperBorrowSub(); }; })()
+    },
+    {
+      id: 'p3', title: '三、连加连减', desc: '两步计算，按从左到右的顺序算。',
+      gen: function () { return pick([paperThreeAddAdd, paperThreeSubSub, paperThreeAddSub, paperThreeSubAdd])(); }
+    },
+    {
+      id: 'p4', title: '四、连加连减填缺数', desc: '根据得数，把括号里缺的数填出来。',
+      gen: function () { return pick([paperFillMidAdd, paperFillMidSub, paperFillEndSub, paperFillEndAdd, paperFillFirst])(); }
+    }
+  ];
+  function paperNoCarryAdd() {
+    var A = ri(1, 8), B = ri(0, 8), C = ri(0, 9 - A), D = C === 0 ? ri(1, 9 - B) : ri(0, 9 - B);
+    var a = A * 10 + B, b = C * 10 + D, r = a + b;
+    return { q: a + ' ＋ ' + b + ' ＝ ', a: String(r), ansText: a + ' ＋ ' + b + ' ＝ ' + r };
+  }
+  function paperNoCarrySub() {
+    var A = ri(1, 9), B = ri(1, 9), C = ri(0, A - 1), D = C === 0 ? ri(1, B) : ri(0, B);
+    var a = A * 10 + B, b = C * 10 + D, r = a - b;
+    return { q: a + ' － ' + b + ' ＝ ', a: String(r), ansText: a + ' － ' + b + ' ＝ ' + r };
+  }
+  function paperCarryAdd() {
+    var A = ri(1, 8), B = ri(1, 9), C = ri(0, 8 - A), D = ri(10 - B, 9);
+    var a = A * 10 + B, b = C * 10 + D, r = a + b;
+    return { q: a + ' ＋ ' + b + ' ＝ ', a: String(r), ansText: a + ' ＋ ' + b + ' ＝ ' + r };
+  }
+  function paperBorrowSub() {
+    var A = ri(2, 9), B = ri(0, 8), C = ri(0, A - 2), D = ri(B + 1, 9);
+    var a = A * 10 + B, b = C * 10 + D, r = a - b;
+    return { q: a + ' － ' + b + ' ＝ ', a: String(r), ansText: a + ' － ' + b + ' ＝ ' + r };
+  }
+  function paperThreeAddAdd() {
+    var a = ri(10, 50), b = ri(10, 90 - a), c = ri(10, 100 - a - b), r = a + b + c;
+    return { q: a + ' ＋ ' + b + ' ＋ ' + c + ' ＝ ', a: String(r), ansText: a + ' ＋ ' + b + ' ＋ ' + c + ' ＝ ' + r };
+  }
+  function paperThreeSubSub() {
+    var a = ri(40, 99), b = ri(10, a - 20), c = ri(10, a - b - 10), r = a - b - c;
+    return { q: a + ' － ' + b + ' － ' + c + ' ＝ ', a: String(r), ansText: a + ' － ' + b + ' － ' + c + ' ＝ ' + r };
+  }
+  function paperThreeAddSub() {
+    var a = ri(10, 60), b = ri(10, 90 - a), c = ri(10, a + b - 10), r = a + b - c;
+    return { q: a + ' ＋ ' + b + ' － ' + c + ' ＝ ', a: String(r), ansText: a + ' ＋ ' + b + ' － ' + c + ' ＝ ' + r };
+  }
+  function paperThreeSubAdd() {
+    var a = ri(40, 90), b = ri(10, a - 10), c = ri(10, 100 - (a - b)), r = a - b + c;
+    return { q: a + ' － ' + b + ' ＋ ' + c + ' ＝ ', a: String(r), ansText: a + ' － ' + b + ' ＋ ' + c + ' ＝ ' + r };
+  }
+  function paperFillMidAdd() {
+    var a = ri(10, 45), b = ri(10, 45), c = ri(10, 100 - a - b), t = a + b + c;
+    return { q: a + ' ＋ （　　） ＋ ' + c + ' ＝ ' + t, a: String(b), ansText: a + ' ＋ （' + b + '） ＋ ' + c + ' ＝ ' + t };
+  }
+  function paperFillMidSub() {
+    var a = ri(60, 99), b = ri(10, a - 30), c = ri(10, a - b - 10), t = a - b - c;
+    return { q: a + ' － （　　） － ' + c + ' ＝ ' + t, a: String(b), ansText: a + ' － （' + b + '） － ' + c + ' ＝ ' + t };
+  }
+  function paperFillEndSub() {
+    var a = ri(10, 50), b = ri(10, 90 - a), c = a + b - ri(10, a + b - 10), t = a + b - c;
+    return { q: a + ' ＋ ' + b + ' － （　　） ＝ ' + t, a: String(c), ansText: a + ' ＋ ' + b + ' － （' + c + '） ＝ ' + t };
+  }
+  function paperFillEndAdd() {
+    var a = ri(50, 90), b = ri(10, a - 20), base = a - b, c = ri(base + 10, 100) - base, t = base + c;
+    return { q: a + ' － ' + b + ' ＋ （　　） ＝ ' + t, a: String(c), ansText: a + ' － ' + b + ' ＋ （' + c + '） ＝ ' + t };
+  }
+  function paperFillFirst() {
+    var a = ri(30, 80), b = ri(10, 100 - a), c = ri(10, a - 20), t = a + b - c;
+    return { q: '（　　） ＋ ' + b + ' － ' + c + ' ＝ ' + t, a: String(a), ansText: '（' + a + '） ＋ ' + b + ' － ' + c + ' ＝ ' + t };
+  }
+  function paperBuildSection(def) {
+    var items = [], seen = {}, guard = 0;
+    while (items.length < 5 && guard++ < 300) {
+      var it = def.gen();
+      if (!it || seen[it.q]) continue;
+      seen[it.q] = 1; items.push(it);
+    }
+    while (items.length < 5) items.push(def.gen());
+    return { id: def.id, title: def.title, desc: def.desc, items: items };
+  }
+  function paperBuildAll() { return PAPER_DEFS.map(paperBuildSection); }
+  function paperInit() {
+    if (!PAPER) { PAPER = paperBuildAll(); paperRender(); }
+  }
+  function paperSectionHTML(sec, idx) {
+    regGeneric(sec.id, sec.title, sec.items.map(function (it) { return { q: it.q, a: it.a }; }));
+    var cls = sec.id === 'p4' ? 'mod-body text onecol' : 'mod-body text';
+    var secCls = sec.id === 'p4' ? 'mod paper-module paper-fill' : 'mod paper-module';
+    var h = '<section class="' + secCls + '" id="paper-sec-' + sec.id + '">' +
+      '<h2><span class="num">' + (idx + 1) + '</span>' + escapeHtml(sec.title) + ' <span class="badge">5题</span></h2>' +
+      '<p class="intro">' + escapeHtml(sec.desc) + '</p>' +
+      '<div class="mod-toolbar">' +
+        '<button class="primary-btn" onclick="paperGradeSection(\'' + sec.id + '\')">✔ 批改本组</button>' +
+        '<button onclick="paperRefreshSection(\'' + sec.id + '\')">🎲 换一批</button>' +
+        '<button onclick="paperShowSectionAnswers(\'' + sec.id + '\',true)">显示答案</button>' +
+        '<span class="sec-score" id="' + sec.id + '-score"></span>' +
+      '</div><div class="' + cls + '" id="' + sec.id + '-body">';
+    sec.items.forEach(function (it, i) {
+      h += '<div class="calc-item paper-item" data-gi="' + sec.id + '-' + i + '">' +
+        '<div class="calc-main"><div class="q"><span class="paper-no">' + (i + 1) + '.</span> ' + escapeHtml(it.q) + '</div>' +
+        '<div class="a-row"><input class="ans-input g-input" data-g="' + sec.id + '" data-i="' + i + '" type="text" inputmode="numeric" placeholder="答案" autocomplete="off"><span class="mark"></span></div>' +
+        '<button class="add-wrong" data-type="' + sec.id + '" data-i="' + i + '">＋错题本</button>' +
+        '<div class="reveal">答案：' + escapeHtml(it.a) + '</div></div></div>';
+    });
+    return h + '</div></section>';
+  }
+  function paperRender() {
+    var host = document.getElementById('paper-modules');
+    if (!host) return;
+    host.innerHTML = PAPER.map(paperSectionHTML).join('');
+    updateAddedMarks();
+  }
+  function paperRenderSection(id) {
+    var idx = -1;
+    PAPER.forEach(function (s, i) { if (s.id === id) idx = i; });
+    if (idx < 0) return;
+    var old = document.getElementById('paper-sec-' + id);
+    if (old) old.outerHTML = paperSectionHTML(PAPER[idx], idx);
+    updateAddedMarks();
+  }
+  function paperGradeSection(id) {
+    var sec = null;
+    (PAPER || []).forEach(function (s) { if (s.id === id) sec = s; });
+    if (!sec) return { correct: 0, total: 0 };
+    var correct = 0;
+    sec.items.forEach(function (it, i) {
+      var inp = document.querySelector('#paper-sec-' + id + ' .g-input[data-i="' + i + '"]');
+      var ok = inp ? gradeOne(inp.value, [it.a]) : false;
+      if (ok) correct++;
+      var card = document.querySelector('.paper-item[data-gi="' + id + '-' + i + '"]');
+      if (card) {
+        card.classList.remove('right', 'wrong');
+        card.classList.add(ok ? 'right' : 'wrong');
+        var mk = card.querySelector('.mark'); if (mk) mk.textContent = ok ? '✓' : '✗';
+      }
+    });
+    setText(id + '-score', correct + ' / ' + sec.items.length);
+    calLog(id, correct, sec.items.length);
+    return { correct: correct, total: sec.items.length };
+  }
+  function recordPaperPractice(correct, total, seconds) {
+    var acc = total ? correct / total : 0;
+    var rec = dayRecord();
+    rec.correct = correct; rec.total = total; rec.seconds = Math.round(seconds);
+    rec.avg = total ? Math.round(seconds / total) : null; rec.acc = Math.round(acc * 100);
+    completeModule('paper', '口算练习', accBonus(acc), '正确率+' + accBonus(acc));
+    saveStats();
+  }
+  function paperGradeAll() {
+    if (!PAPER) paperInit();
+    var t0 = Date.now(), correct = 0, total = 0;
+    PAPER.forEach(function (sec) { var r = paperGradeSection(sec.id); correct += r.correct; total += r.total; });
+    setText('paper-score', correct + ' / ' + total);
+    recordPaperPractice(correct, total, (Date.now() - t0) / 1000);
+    toast('本页得分 ' + correct + ' / ' + total + '，已记录');
+  }
+  function paperReset() {
+    document.querySelectorAll('#page-paper .g-input').forEach(function (inp) { inp.value = ''; });
+    document.querySelectorAll('#page-paper .paper-item').forEach(function (card) {
+      card.classList.remove('right', 'wrong');
+      var mk = card.querySelector('.mark'); if (mk) mk.textContent = '';
+    });
+    document.querySelectorAll('#page-paper .mod-body').forEach(function (b) { b.classList.remove('show-ans'); });
+    document.querySelectorAll('#page-paper .sec-score').forEach(function (s) { s.textContent = ''; });
+    setText('paper-score', '— / 20');
+  }
+  function paperRefreshAll() {
+    PAPER = paperBuildAll(); paperRender(); paperReset(); toast('已换一批 20 题');
+  }
+  function paperRefreshSection(id) {
+    var idx = -1;
+    (PAPER || []).forEach(function (s, i) { if (s.id === id) idx = i; });
+    if (idx < 0) return;
+    PAPER[idx] = paperBuildSection(PAPER_DEFS[idx]);
+    paperRenderSection(id);
+    setText(id + '-score', '');
+    setText('paper-score', '— / 20');
+    toast('这一组已换新题');
+  }
+  function paperShowAnswers(open) {
+    document.querySelectorAll('#page-paper .mod-body').forEach(function (b) { b.classList.toggle('show-ans', !!open); });
+  }
+  function paperShowSectionAnswers(id, open) {
+    var b = document.getElementById(id + '-body');
+    if (b) b.classList.toggle('show-ans', !!open);
+  }
+  var paperExcelLoading = false;
+  function ensureExcelJS(cb, fail) {
+    if (window.ExcelJS) return cb();
+    if (paperExcelLoading) { setTimeout(function () { ensureExcelJS(cb, fail); }, 60); return; }
+    paperExcelLoading = true;
+    var s = document.createElement('script');
+    s.src = 'js/exceljs.min.js';
+    s.onload = function () { paperExcelLoading = false; cb(); };
+    s.onerror = function () { paperExcelLoading = false; if (fail) fail(new Error('Excel 组件加载失败')); };
+    document.head.appendChild(s);
+  }
+  function paperExcelSheet(wb, name, isAnswer) {
+    var ws = wb.addWorksheet(name);
+    ws.views = [{ showGridLines: false }];
+    [5, 25, 4, 5, 25, 4, 5, 31].forEach(function (w, i) { ws.getColumn(i + 1).width = w; });
+    function font(cell, size, bold, color) { cell.font = { name: '微软雅黑', size: size, bold: !!bold, color: { argb: color } }; }
+    function border(cell) { cell.border = { top: { style: 'thin', color: { argb: 'FFB7C4D4' } }, left: { style: 'thin', color: { argb: 'FFB7C4D4' } }, bottom: { style: 'thin', color: { argb: 'FFB7C4D4' } }, right: { style: 'thin', color: { argb: 'FFB7C4D4' } } }; }
+    function fill(cell, argb) { cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: argb } }; }
+    function center(cell, h, v, wrap) { cell.alignment = { horizontal: h || 'center', vertical: v || 'middle', wrapText: !!wrap }; }
+    function box(r1, c1, r2, c2, fn) {
+      for (var r = r1; r <= r2; r++) for (var c = c1; c <= c2; c++) { var cell = ws.getCell(r, c); border(cell); if (fn) fn(cell); }
+    }
+    ws.mergeCells(1, 1, 1, 8);
+    var title = ws.getCell(1, 1);
+    title.value = isAnswer ? '100以内加减法口算练习 · 答案' : '100以内加减法口算练习';
+    font(title, 20, true, 'FF1F3864'); center(title); ws.getRow(1).height = 38;
+    ws.mergeCells(2, 1, 2, 8);
+    var meta = ws.getCell(2, 1);
+    meta.value = isAnswer ? '批改日期：____________　　正确：______ / 20' : '姓名：____________　　日期：____________　　用时：______分　　正确：______ 题';
+    font(meta, 11, false, 'FF404040'); meta.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 }; ws.getRow(2).height = 22;
+    ws.mergeCells(3, 1, 3, 8);
+    var hint = ws.getCell(3, 1);
+    hint.value = isAnswer ? '答案页：与题目页题号一一对应，可直接对照批改。' : '需要新题时，回到 Elsa 页面点「换一批」再下载；本文件为本次练习。';
+    font(hint, 11, true, 'FF9C5700'); center(hint); fill(hint, 'FFFFF3CC'); ws.getRow(3).height = 22;
+    ws.getRow(4).height = 8;
+    var heads = [['一、不进退位加减（5题）', 1, 2], ['二、进位退位加减（5题）', 4, 5], ['三、连加连减（5题）', 7, 8]];
+    heads.forEach(function (h) {
+      ws.mergeCells(5, h[1], 5, h[2]);
+      var c = ws.getCell(5, h[1]);
+      c.value = h[0]; font(c, 12, true, 'FF1F3864'); center(c); fill(c, 'FFDCE9F7');
+      box(5, h[1], 5, h[2], function (x) { fill(x, 'FFDCE9F7'); });
+    });
+    ws.getRow(5).height = 26;
+    var anchors = [[1, 2], [4, 5], [7, 8]];
+    for (var s = 0; s < 3; s++) {
+      for (var k = 0; k < 5; k++) {
+        var row = 6 + k, noC = anchors[s][0], prC = anchors[s][1];
+        ws.getRow(row).height = 32;
+        var no = ws.getCell(row, noC); no.value = k + 1; font(no, 12, true, 'FF808080'); center(no); border(no);
+        var pr = ws.getCell(row, prC);
+        pr.value = isAnswer ? PAPER[s].items[k].ansText : PAPER[s].items[k].q;
+        font(pr, 16, false, isAnswer ? 'FFC00000' : 'FF000000');
+        pr.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 }; border(pr);
+      }
+    }
+    ws.getRow(11).height = 8;
+    ws.mergeCells(12, 1, 12, 8);
+    var h4 = ws.getCell(12, 1);
+    h4.value = '四、连加连减填缺数（已给出得数，把缺的数填进括号）（5题）';
+    font(h4, 12, true, 'FF1F3864'); center(h4);
+    box(12, 1, 12, 8, function (x) { fill(x, 'FFDCE9F7'); });
+    ws.getRow(12).height = 26;
+    for (var j = 0; j < 5; j++) {
+      var r4 = 13 + j;
+      ws.getRow(r4).height = 32;
+      var n4 = ws.getCell(r4, 1); n4.value = j + 1; font(n4, 12, true, 'FF808080'); center(n4); border(n4);
+      ws.mergeCells(r4, 2, r4, 8);
+      var p4 = ws.getCell(r4, 2);
+      p4.value = isAnswer ? PAPER[3].items[j].ansText : PAPER[3].items[j].q;
+      font(p4, 16, false, isAnswer ? 'FFC00000' : 'FF000000');
+      p4.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 };
+      box(r4, 2, r4, 8);
+    }
+    ws.getRow(18).height = 8;
+    ws.mergeCells(19, 1, 19, 8);
+    var note = ws.getCell(19, 1);
+    note.value = isAnswer ? '答案页：括号里就是所填的数，对照批改即可。' : '答案见「答案」工作表。';
+    font(note, 9, false, 'FF808080'); center(note);
+    ws.pageSetup = { paperSize: 9, orientation: 'portrait', fitToPage: true, fitToWidth: 1, fitToHeight: 1, horizontalCentered: true };
+    ws.pageSetup.printArea = 'A1:H19';
+    ws.pageSetup.margins = { left: 0.5, right: 0.5, top: 0.6, bottom: 0.6, header: 0.3, footer: 0.3 };
+    return ws;
+  }
+  function paperExcelBuffer() {
+    var wb = new ExcelJS.Workbook();
+    wb.creator = 'Elsa 每日数学小练';
+    wb.created = new Date();
+    paperExcelSheet(wb, '口算题', false);
+    paperExcelSheet(wb, '答案', true);
+    return wb.xlsx.writeBuffer();
+  }
+  function paperStamp() {
+    var d = new Date(), p = function (n) { return String(n).padStart(2, '0'); };
+    return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '_' + p(d.getHours()) + p(d.getMinutes());
+  }
+  function paperDownloadExcel() {
+    if (!PAPER) paperInit();
+    toast('正在生成 Excel…');
+    ensureExcelJS(function () {
+      paperExcelBuffer().then(function (buf) {
+        var blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = '100以内加减法练习_' + paperStamp() + '.xlsx';
+        document.body.appendChild(a); a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+        toast('Excel 已生成');
+      }).catch(function (e) { toast('生成 Excel 失败：' + e.message); });
+    }, function (e) { toast('Excel 组件加载失败：' + e.message); });
+  }
+
   /* ===== 磨耳朵 · 每日英语听读（100 篇，内置童声朗读音频 listen/audio/NN.mp3） ===== */
   var LISTEN_DONE_KEY = 'listen_done_v1';
   var listenCur = null, listenPlaying = false, listenIdx = -1, listenVoice = null;
@@ -3679,7 +3984,7 @@ function reciteBodyHTML(cfg) {
   }
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-19 错题本菜单修复'
+  var BUILD_TAG = '2026-10-19 口算练习页'
   window.__BUILD_TAG = BUILD_TAG;
 
   // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====
@@ -3766,7 +4071,7 @@ function reciteBodyHTML(cfg) {
 
 // Presentational icons only; question and answer content retains its original symbols.
 (() => {
-  const icons = { '🏠':['task',0], '📖':['task',1], '🏃':['task',2], '🧹':['task',3], '✏️':['task',4], '🧠':['task',5], '🌱':['task',6], '🌸':['task',6], '🎯':['task',7], '📅':['task',8], '🎧':['listen',0], '♟️':['shawnmod',0], '➗':['shawnmod',1], '🔠':['shawnmod',2], '🛡️':['shawnmod',3], '🕰️':['shawnmod',4], '📍':['shawnmod',5], '🧪':['shawnmod',6], '💬':['shawnmod',7], '🖌️':['shawnmod',8], '🧮':['task',7], '🔤':['task',1], '📕':['utility',5], '📗':['task',1], '📘':['utility',5], '🧬':['task',6], '🗣️':['task',5], '📜':['utility',5], '⭐':['utility',0], '💎':['utility',1], '🔥':['utility',2], '✔':['utility',3], '✅':['utility',3], '🔄':['utility',4], '🎲':['utility',4], '📓':['utility',5], '🏅':['utility',6], '📏':['utility',7], '✨':['utility',8], '👋':['utility',8], '💡':['task',5], '➕':['task',4] };
+  const icons = { '🏠':['task',0], '📖':['task',1], '🏃':['task',2], '🧹':['task',3], '✏️':['task',4], '📄':['task',4], '🧠':['task',5], '🌱':['task',6], '🌸':['task',6], '🎯':['task',7], '📅':['task',8], '🎧':['listen',0], '♟️':['shawnmod',0], '➗':['shawnmod',1], '🔠':['shawnmod',2], '🛡️':['shawnmod',3], '🕰️':['shawnmod',4], '📍':['shawnmod',5], '🧪':['shawnmod',6], '💬':['shawnmod',7], '🖌️':['shawnmod',8], '🧮':['task',7], '🔤':['task',1], '📕':['utility',5], '📗':['task',1], '📘':['utility',5], '🧬':['task',6], '🗣️':['task',5], '📜':['utility',5], '⭐':['utility',0], '💎':['utility',1], '🔥':['utility',2], '✔':['utility',3], '✅':['utility',3], '🔄':['utility',4], '🎲':['utility',4], '📓':['utility',5], '🏅':['utility',6], '📏':['utility',7], '✨':['utility',8], '👋':['utility',8], '💡':['task',5], '➕':['task',4] };
   const pattern = new RegExp(Object.keys(icons).join('|'), 'gu');
   function decorate(root) {
     if (root.nodeType !== 1 && root.nodeType !== 3) return;
