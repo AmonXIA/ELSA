@@ -2356,6 +2356,7 @@
     let html = '<div class="grade-bar">' + ['初一上', '初一下', '初二上'].map(function (g) {
       return '<button class="' + (g === engSem ? 'active' : '') + '" onclick="engSetSem(\'' + g + '\')">' + g + '</button>';
     }).join('') + '</div>';
+    html += '<div class="eng-board" id="eng-board"></div>';
     ENG_TYPES.forEach(function (t, ti) {
       const seenQ = {};
       const pool = ENG_ITEMS.filter(function (it) {
@@ -2415,6 +2416,47 @@
     });
     return html;
   }
+  function engBoardRender() {
+    const box = document.getElementById('eng-board');
+    if (!box) return;
+    const keys = {};
+    Object.keys(engSecItems).forEach(function (k) { if (document.getElementById(k)) keys[k] = 1; });
+    const best = {};
+    calHist().forEach(function (x) {
+      if (!keys[x.k]) return;
+      const cur = best[x.k];
+      if (!cur || x.s > cur.s || (x.s === cur.s && x.t < cur.t)) best[x.k] = x;
+    });
+    const top = Object.keys(best).map(function (k) { return best[k]; })
+      .sort(function (a, b) { return b.s - a.s || a.t - b.t; }).slice(0, 3);
+    let h = '<div class="eng-board-head"><b>🏆 英语语法积分榜</b><span>按最高分 · 前三名</span></div>';
+    if (!top.length) {
+      h += '<div class="eng-board-empty">还没有成绩，完成任意一组批改后就会出现在这里。</div>';
+      box.innerHTML = h;
+      return;
+    }
+    const cls = ['gold', 'silver', 'bronze'], medal = ['🥇', '🥈', '🥉'];
+    h += '<div class="ph-podium eng-podium">';
+    top.forEach(function (x, i) {
+      const sec = document.getElementById(x.k);
+      let name = x.k;
+      if (sec) {
+        const title = sec.querySelector('h2');
+        if (title) {
+          const c = title.cloneNode(true);
+          c.querySelectorAll('.num,.badge').forEach(function (n) { n.remove(); });
+          name = c.textContent.replace(/\s+/g, ' ').trim() || name;
+        }
+      }
+      const d = new Date(x.t);
+      const time = (d.getMonth() + 1) + '月' + d.getDate() + '日<br>' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+      h += '<div class="ph-pod-col ' + cls[i] + '"><div class="ph-pod-medal">' + medal[i] + '</div>' +
+        '<div class="ph-pod-score">' + x.s + '</div><div class="ph-pod-name">' + escapeHtml(name) + '</div>' +
+        '<div class="ph-pod-time">' + time + '</div></div>';
+    });
+    h += '</div>';
+    box.innerHTML = h;
+  }
   function gradeEng(gid) {
     const items = engSecItems[gid] || [];
     let total = 0, correct = 0;
@@ -2447,7 +2489,7 @@
     });
     setText(gid + '-score', correct + ' / ' + total);
     const cr = calLog(gid, correct, total);
-    calRenderPodium(gid);
+    engBoardRender();
     if (cr.prevLast !== null && cr.score > cr.prevLast) {
       completeModule(curGeneric.cfg.id, curGeneric.cfg.name, 5, 'æœ¬ç»„æ¯”ä¸Šæ¬¡æé«˜ ' + (cr.score - cr.prevLast) + ' åˆ†');
       toast('ðŸ‘ è¿™ç»„æ¯”ä¸Šæ¬¡æé«˜ ' + (cr.score - cr.prevLast) + ' åˆ†ï¼Œå¥–åŠ± +5â­');
@@ -3120,6 +3162,7 @@ function reciteBodyHTML(cfg) {
       setTimeout(calRenderAllPodiums, 0);
     } else if (cfg.kind === 'engsec') {
       html += buildEngSections();
+      setTimeout(engBoardRender, 0);
     } else if (cfg.kind === 'practice') {
       regGeneric(mid, cfg.name, items.map(function (it) { return { q: it.q, a: it.ans }; }));
       html += '<div class="mod-body text">';
@@ -3255,16 +3298,36 @@ function reciteBodyHTML(cfg) {
     const kind = curGeneric.cfg.kind;
     if (kind === 'shawncalc') return { prefix: 'sc', arr: SHAWN_CALC };
     if (kind === 'shawnmath') return { prefix: 'sm', arr: SHAWN_TYPES };
+    if (kind === 'engsec') return { prefix: 'eng', eng: true };
     return null;
   }
   function ggGroups() {
     const ctx = ggCtx();
     if (!ctx) return [];
     const out = [];
+    if (ctx.eng) {
+      Object.keys(engSecItems).forEach(function (gid) {
+        const sec = document.getElementById(gid);
+        if (!sec) return;
+        const body = sec.querySelector('.mod-body');
+        if (!body) return;
+        const h = sec.querySelector('h2');
+        let name = gid;
+        if (h) {
+          const c = h.cloneNode(true);
+          const num = c.querySelector('.num'), bd = c.querySelector('.badge');
+          if (num) num.remove();
+          if (bd) bd.remove();
+          name = c.textContent.replace(/\s+/g, ' ').trim() || gid;
+        }
+        out.push({ gid: gid, prefix: 'eng', tid: gid, name: name, sec: sec });
+      });
+      return out;
+    }
     ctx.arr.forEach(function (t) {
       const gid = ctx.prefix + '-' + t.id;
       const sec = document.getElementById(gid);
-      const body = document.getElementById(gid + '-body');
+      const body = document.getElementById(gid + '-body') || (sec && sec.querySelector('.mod-body'));
       if (!sec || !body) return;
       const h = sec.querySelector('h2');
       let name = t.title;
@@ -3313,17 +3376,17 @@ function reciteBodyHTML(cfg) {
       html += '<div class="gg-row' + (isCur ? ' cur' : '') + '">' +
         '<span class="gg-name">' + (isCur ? '<em>当前</em> ' : '') + escapeHtml(g.name) +
         (sc ? ' <span class="gg-score">' + escapeHtml(sc) + '</span>' : '') + '</span>' +
-        '<button type="button" class="' + (isCur ? 'pri' : '') + '" onclick="ggGrade(\'' + g.prefix + '\',\'' + g.tid + '\')">&#10004; 批改</button>' +
-        '<button type="button" onclick="ggDraft(\'' + g.prefix + '\',\'' + g.tid + '\')">&#128269; 草稿</button>' +
-        '</div>';
+        '<button type="button" class="' + (isCur ? 'pri' : '') + '" onclick="ggGrade(\'' + g.prefix + '\',\'' + g.tid + '\')">&#10004; 批改</button>';
+      if (g.prefix !== 'eng') html += '<button type="button" onclick="ggDraft(\'' + g.prefix + '\',\'' + g.tid + '\')">&#128269; 草稿</button>';
+      html += '</div>';
     });
     p.innerHTML = html;
     p.classList.add('open');
     btn.classList.add('on');
   }
   function ggGrade(prefix, tid) {
-    const gid = prefix + '-' + tid;
-    gradeShawn(prefix, tid);
+    const gid = prefix === 'eng' ? tid : prefix + '-' + tid;
+    if (prefix === 'eng') gradeEng(tid); else gradeShawn(prefix, tid);
     const sc = (document.getElementById(gid + '-score') || {}).textContent || '';
     toggleGradeMenu(false);
     const sec = document.getElementById(gid);
@@ -3616,7 +3679,7 @@ function reciteBodyHTML(cfg) {
   }
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-19 清爽设置菜单'
+  var BUILD_TAG = '2026-10-19 英语积分榜+分组批改'
   window.__BUILD_TAG = BUILD_TAG;
 
   // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====

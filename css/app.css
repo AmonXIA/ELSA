@@ -1252,3 +1252,19 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   @media (min-width: 768px) {
     .module-grid { grid-template-columns: repeat(6, 1fr); }
   }
+  .eng-board {
+    margin: 10px 0 16px;
+    padding: 10px 12px 12px;
+    border: 1px solid #e3edf7;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(58,110,165,.06);
+  }
+  .eng-board-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .eng-board-head b { color: #3a6ea5; font-size: 14px; }
+  .eng-board-head span { color: #8aa0b5; font-size: 11px; }
+  .eng-board-empty { color: #8aa0b5; font-size: 12.5px; padding: 8px 2px; }
+  .eng-podium { justify-content: center; }
+  .eng-podium .ph-pod-col { width: 78px; }
+  .eng-board .ph-pod-col.gold, .eng-board .ph-pod-col.silver, .eng-board .ph-pod-col.bronze { min-height: 0; }
+  .ph-pod-name { margin-top: 2px; font-size: 10px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
