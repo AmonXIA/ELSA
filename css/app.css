@@ -632,7 +632,7 @@
   .goal-note { font-size:11px; color:#9a8490; } .goal-note a { color:#a176a9; }
   .module-grid { gap:12px; margin-top:0; }
   .module-card { font:inherit; width:100%; color:var(--ink); border:1px solid #efe4e9; border-radius:22px; padding:20px 12px; box-shadow:0 6px 15px #a47b9708; }
-  .module-card:nth-child(1) { background:#f1ebfc; } .module-card:nth-child(2) { background:#edf6ee; } .module-card:nth-child(3) { background:#fff3df; } .module-card:nth-child(4) { background:#ffeaf0; } .module-card:nth-child(5) { background:#edf2ff; }
+  .module-card:nth-child(1) { background:#f1ebfc; } .module-card:nth-child(2) { background:#edf6ee; } .module-card:nth-child(3) { background:#fff3df; } .module-card:nth-child(4) { background:#ffeaf0; } .module-card:nth-child(5) { background:#edf2ff; } .module-card:nth-child(6) { background:#f3e9fb; }
   .module-card .mi { display:grid; place-items:center; width:52px; height:52px; margin:0 auto 10px; font-size:28px; border-radius:18px; background:#ffffffa3; }
   .module-card .mt { font-size:14px; } .module-card .ms { margin-top:3px; font-size:11px; color:#927f8d; }
   .calendar-card { margin-top:24px; padding:22px 24px; }
@@ -1173,6 +1173,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     background-position: center;
     background-repeat: no-repeat;
   }
+  .art-icon.shawnmod { background-image: url(../assets/shawn-module-icons.png); }
   .bottom-nav button .art-icon { display: block; margin: 0 auto; }
   .bottom-nav button > span:last-child { line-height: 1.25; }
 
@@ -1198,9 +1199,48 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     font-size: 18px;
   }
   .top-actions .fs-btn .art-icon { width: 20px; height: 20px; }
+  .ai-btn.on { background: #f5e9f2; border-color: #e7c7d8; color: #b36389; }
+  .settings-panel {
+    position: fixed;
+    top: 72px;
+    right: 18px;
+    z-index: 62;
+    width: min(300px, calc(100vw - 24px));
+    padding: 10px;
+    border: 1px solid #efe3ea;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 14px 34px #805c8a2e;
+    display: none;
+  }
+  .settings-panel.open { display: block; }
+  .sp-head { padding: 4px 8px 6px; font-size: 14px; font-weight: 800; color: #5f4b52; }
+  .sp-version { padding: 0 8px 8px; font-size: 11px; color: #a98f96; }
+  .sp-version b { color: #8b6b7d; font-weight: 700; }
+  .sp-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 10px 9px;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    text-align: left;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .sp-item:hover { background: #fdf3f7; }
+  .sp-item b { font-size: 14px; color: #5f4b52; }
+  .sp-item small { margin-top: 2px; font-size: 11px; color: #a98f96; }
+  body.theme-shawn .settings-panel { border-color: #dbe7f3; box-shadow: 0 14px 34px #3a6ea526; }
+  body.theme-shawn .sp-head, body.theme-shawn .sp-item b { color: #2f5b86; }
+  body.theme-shawn .sp-item:hover { background: #eef6ff; }
+  body.theme-shawn .ai-btn.on { background: #e8f1fb; border-color: #cfe0f5; color: #2f6bb8; }
   .gg-panel { top: 72px; }
   @media (max-width: 680px) {
     .top-actions { top: 10px; right: 10px; gap: 8px; }
+    .settings-panel { top: 48px; right: 10px; }
   }
   /* Shawn 模块较多：iPad 上铺开显示，避免底部菜单被挤出并出现滚动条 */
   body.theme-shawn .bottom-nav { width: min(1120px, calc(100% - 40px)); }

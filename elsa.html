@@ -19,8 +19,14 @@
 <div class="top-actions">
   <button class="fs-btn" id="fs-btn" onclick="toggleFullscreen()" title="切换全屏">⛶</button>
   <button class="fs-btn wb-btn" id="wb-quick-btn" onclick="openWrongBook()" title="错题本" aria-label="错题本">📓<span class="wb-badge" id="wb-badge-quick">0</span></button>
-  <button class="fs-btn ai-btn" id="ai-quick-btn" onclick="openAiSettings()" title="AI " aria-label="AI">&#9881;</button>
   <button class="fs-btn gg-btn" id="gg-btn" onclick="toggleGradeMenu()" title="按组批改" aria-label="按组批改" style="display:none">&#10004;</button>
+  <button class="fs-btn ai-btn" id="ai-quick-btn" onclick="toggleSettingsMenu()" title="设置" aria-label="设置">&#9881;</button>
+</div>
+<div class="settings-panel" id="settings-panel">
+  <div class="sp-head">⚙️ 设置</div>
+  <div class="sp-version">当前版本 <b id="sp-build"></b></div>
+  <button type="button" class="sp-item" onclick="closeSettingsMenu();openAiSettings()"><b>🤖 AI 批改设置</b><small>接口、模型与草稿批改</small></button>
+  <button type="button" class="sp-item" onclick="forceReload()"><b>⟳ 刷新到最新版本</b><small>清理缓存并重新加载</small></button>
 </div>
 <div class="gg-panel" id="gg-panel"></div>
 
@@ -33,7 +39,6 @@
       <button type="button" data-p="shawn" onclick="switchProfile('shawn')"><img class="p-ico" alt="Shawn" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNiAzNiI+PHBhdGggZmlsbD0iI0ZGQUMzMyIgZD0iTTExLjk4MyAzLjU2MmM0LjU0My0uMjYyIDcuODI0IDEuNTk3IDguMDg5IDYuODI2LjIxNSA0LjE5LTUuMTg0IDYuNzktOC4wNDYgNi44NzktMi40NjIuMDc3LTEuMzUzLTEuODUyLjYxLTIuMzM0IDEuNTc2LS4zODcgNC4xMjQtMi40MTMgMy42MDItNC40NC0uNTk3LTIuMzItNC4zMTUtMi42ODQtNi4zNTEuMjkyLS43OTggMS4xNjctMy41NTQuODczLTQuMDk2LS40MzQtLjk1OC0yLjMwOSAxLjIxMS02LjUwMiA2LjE5Mi02Ljc4OXoiLz48cGF0aCBmaWxsPSIjRTFFOEVEIiBkPSJNMzUuNzUgMjEuMzg0YzAtNy43ODMtNC40OTUtMTEuNDA3LTE0LjUxOS0xMS40MDctMS4wODcgMC0yLjA4My4wNTEtMy4wMTguMTM3LTEuMzYtMi40MjMtNC44NDUtMi44MjgtOC4yMTMtMi44MjgtNC4zMDQgMC0xMCA2LjE0NS0xMCAxMC44MzkgMCA0LjYwOCAzLjYwNiA0Ljg2NiA3LjgxMSA0Ljg3NC4yMzMgMy4yNDUgMS4yMjYgNS42NDcgMy4yNDkgNy4yNkMxMS4zMzcgMzEuNDA5IDEyLjU5NCAzNiAxNSAzNmMxLjM1MyAwIDIuMDk5LTEuNjk1IDIuNTEtMy40MTcgMS4xMjguMTM2IDIuMzU5LjIwOSAzLjcyMi4yMDkgMS43MzMgMCAzLjI4OC0uMTE2IDQuNjk1LS4zMzVDMjYuMDE3IDM0LjExNCAyNi40NTggMzYgMjggMzZjMi4zMTcgMCA0LjI3My00Ljk1NiA0LjgzNC02LjUyMSAxLjk2OS0xLjg3IDIuOTE2LTQuNTQ1IDIuOTE2LTguMDk1eiIvPjxjaXJjbGUgZmlsbD0iIzI5MkYzMyIgY3g9IjQuNSIgY3k9IjE1Ljc4NiIgcj0iMS41Ii8+PHBhdGggZmlsbD0iI0ZGQ0M0RCIgZD0iTTE3LjU2MiA0LjMzOWM0LjMxMiAxLjQ1NSA1Ljc0IDQuMTQ4IDQuMDM0IDkuMDk5LTEuMzY3IDMuOTY3LTcuMzQ1IDQuMzYxLTEwLjAzNCAzLjM3NUM5LjI1IDE1Ljk2NCAxMSAxNC41ODkgMTMgMTQuODc1YzEuNjA2LjIzIDQuNzI3LS42OTggNS0yLjc3M0MxOC4zMTIgOS43MjcgMTUgOCAxMiAxMGMtMS4xNzcuNzg1LTUuNzc0LjQzLTUuNS0uOTU4LjYzOC0zLjIyNiA2LjMzNS02LjI5OCAxMS4wNjItNC43MDN6Ii8+PC9zdmc+"> Shawn</button>
     </span>
   </div>
-  <button type="button" class="hero-ai-btn" onclick="openAiSettings()">⚙️ AI 批改设置</button>
   <div class="hero-top">
     <div class="greet">
       <h1><span id="greet-hi">下午好</span>，<span id="child-name" onclick="setName()">小朋友</span> 👋</h1>
@@ -129,7 +134,7 @@
 
   <!-- 计算 -->
   <div class="page" id="page-calc" style="display:none">
-    <h2 class="page-title">✏️ 计算小练</h2>
+    <h2 class="page-title">➗ 计算小练</h2>
     <div class="controls">
       <button class="primary" onclick="gradeAll()">✔ 一键批改</button>
       <button onclick="resetCalc()">🔄 重新作答</button>

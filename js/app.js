@@ -2048,11 +2048,7 @@
 
   /* ============ 多孩子工作区 ============ */
 
-  /* ===== 版本号角标：显示当前版本，一键强制刷新到最新 ===== */
-  function buildBadgeHTML() {
-    return '<span id="build-badge">🛠 版本 <b>' + escapeHtml(BUILD_TAG) + '</b>' +
-      '<button type="button" onclick="forceReload()">⟳ 强制刷新</button></span>';
-  }
+  /* ===== 版本与设置：统一收进右上角齿轮菜单 ===== */
   function forceReload() {
     try { if ('caches' in window) { caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); }); } } catch (e) {}
     try { if (navigator.serviceWorker) { navigator.serviceWorker.getRegistrations().then(function (rs) { rs.forEach(function (r) { r.update(); }); }); } } catch (e) {}
@@ -2060,19 +2056,26 @@
     location.href = base + (base.indexOf('?') >= 0 ? '&' : '?') + 'v=' + Date.now();
   }
   function renderBuildBadge() {
-    const host = document.querySelector('header.hero .brand') || document.querySelector('header.hero');
-    if (!host) return;
-    if (document.getElementById('build-badge')) {
-      document.getElementById('build-badge').outerHTML = buildBadgeHTML();
-      return;
-    }
-    const d = document.createElement('div');
-    d.innerHTML = buildBadgeHTML();
-    const el = d.firstChild;
-    const box = document.createElement('div');
-    box.appendChild(el);
-    host.parentNode.insertBefore(box, host.nextSibling);
+    const el = document.getElementById('sp-build');
+    if (el) el.textContent = BUILD_TAG;
   }
+  function toggleSettingsMenu(force) {
+    const p = document.getElementById('settings-panel');
+    const btn = document.getElementById('ai-quick-btn');
+    if (!p) return;
+    const open = (typeof force === 'boolean') ? force : !p.classList.contains('open');
+    p.classList.toggle('open', open);
+    if (btn) btn.classList.toggle('on', open);
+    renderBuildBadge();
+  }
+  function closeSettingsMenu() { toggleSettingsMenu(false); }
+  document.addEventListener('click', function (e) {
+    const p = document.getElementById('settings-panel');
+    const btn = document.getElementById('ai-quick-btn');
+    if (!p || !p.classList.contains('open')) return;
+    if (!p.contains(e.target) && btn && !btn.contains(e.target)) closeSettingsMenu();
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSettingsMenu(); });
 
   function curProfile() { return PROFILES[PROFILE_ID] || PROFILES.elsa; }
   function switchProfile(id) {
@@ -3613,7 +3616,7 @@ function reciteBodyHTML(cfg) {
   }
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-19 统一图标与悬浮菜单'
+  var BUILD_TAG = '2026-10-19 清爽设置菜单'
   window.__BUILD_TAG = BUILD_TAG;
 
   // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====
@@ -3700,7 +3703,7 @@ function reciteBodyHTML(cfg) {
 
 // Presentational icons only; question and answer content retains its original symbols.
 (() => {
-  const icons = { '🏠':['task',0], '📖':['task',1], '🏃':['task',2], '🧹':['task',3], '✏️':['task',4], '🧠':['task',5], '🌱':['task',6], '🌸':['task',6], '🎯':['task',7], '📅':['task',8], '🎧':['listen',0], '🧮':['task',7], '🔤':['task',1], '📕':['utility',5], '📗':['task',1], '📘':['utility',5], '🧬':['task',6], '🗣️':['task',5], '📜':['utility',5], '⭐':['utility',0], '💎':['utility',1], '🔥':['utility',2], '✔':['utility',3], '✅':['utility',3], '🔄':['utility',4], '🎲':['utility',4], '📓':['utility',5], '🏅':['utility',6], '📏':['utility',7], '✨':['utility',8], '👋':['utility',8], '💡':['task',5], '➕':['task',4] };
+  const icons = { '🏠':['task',0], '📖':['task',1], '🏃':['task',2], '🧹':['task',3], '✏️':['task',4], '🧠':['task',5], '🌱':['task',6], '🌸':['task',6], '🎯':['task',7], '📅':['task',8], '🎧':['listen',0], '♟️':['shawnmod',0], '➗':['shawnmod',1], '🔠':['shawnmod',2], '🛡️':['shawnmod',3], '🕰️':['shawnmod',4], '📍':['shawnmod',5], '🧪':['shawnmod',6], '💬':['shawnmod',7], '🖌️':['shawnmod',8], '🧮':['task',7], '🔤':['task',1], '📕':['utility',5], '📗':['task',1], '📘':['utility',5], '🧬':['task',6], '🗣️':['task',5], '📜':['utility',5], '⭐':['utility',0], '💎':['utility',1], '🔥':['utility',2], '✔':['utility',3], '✅':['utility',3], '🔄':['utility',4], '🎲':['utility',4], '📓':['utility',5], '🏅':['utility',6], '📏':['utility',7], '✨':['utility',8], '👋':['utility',8], '💡':['task',5], '➕':['task',4] };
   const pattern = new RegExp(Object.keys(icons).join('|'), 'gu');
   function decorate(root) {
     if (root.nodeType !== 1 && root.nodeType !== 3) return;
@@ -3709,7 +3712,7 @@ function reciteBodyHTML(cfg) {
     const nodes = root.nodeType === 3 ? [root] : [];
     while (walker.nextNode()) nodes.push(walker.currentNode);
     nodes.forEach(node => {
-      if (!node.parentElement || node.parentElement.closest('script,style,.art-icon,ol.problems,.calc-item,.vcol,.answer-list,.reveal,.wb-q,.wb-a,.log-body')) return;
+      if (!node.parentElement || node.parentElement.closest('script,style,.art-icon,ol.problems,.calc-item,.vcol,.answer-list,.reveal,.wb-q,.wb-a,.log-body,.scratch-tools,.st-mini,.st-mode')) return;
       const value = node.nodeValue;
       pattern.lastIndex = 0;
       if (!pattern.test(value)) return;

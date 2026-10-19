@@ -8,7 +8,7 @@
         { id: 'read', icon: '📖', title: '阅读', sub: '15 分钟', act: "showPage('read')", goal: true },
         { id: 'sport', icon: '🏃', title: '运动', sub: '30 分钟', act: "showPage('sport')", goal: true },
         { id: 'chore', icon: '🧹', title: '做家务', sub: '整理房间', act: "showPage('chore')", goal: true },
-        { id: 'calc', icon: '✏️', title: '计算小练', sub: '30 题', act: "showPage('calc')", goal: true },
+        { id: 'calc', icon: '➗', title: '计算小练', sub: '30 题', act: "showPage('calc')", goal: true },        
         { id: 'think', icon: '🧠', title: '思维小练', sub: '12 类', act: "showPage('think')", goal: true }
         ,{ id: 'listen', icon: '🎧', title: '磨耳朵', sub: '每日听读', act: "showPage('listen')", goal: true }
       ],
@@ -22,15 +22,15 @@
       modules: [
         { id: 'read', icon: '📖', title: '阅读', sub: '30 分钟', act: "showPage('read')", goal: true, tint: '#e8f1fd' },
         { id: 'sport', icon: '🏃', title: '运动', sub: '30 分钟', act: "showPage('sport')", goal: true, tint: '#e9f7ee' },
-        { id: 'sx-math', icon: '🧮', title: '数学思维', sub: '13 类', act: "openModule('sx-math')", goal: true, tint: '#eeeafd' },
-        { id: 'sx-calc', icon: '✏️', title: '数学计算', sub: '3 组', act: "openModule('sx-calc')", goal: true, tint: '#e8f4fb' },
-        { id: 'sx-eng', icon: '🔤', title: '英语语法', sub: '易错题', act: "openModule('sx-eng')", goal: true, tint: '#fdecef' },
-        { id: 'sx-df', icon: '📕', title: '道法背诵', sub: '学期·单元', act: "openModule('sx-df')", goal: true, tint: '#fdeef6' },
-        { id: 'sx-ls', icon: '📗', title: '历史背诵', sub: '学期·单元', act: "openModule('sx-ls')", goal: true, tint: '#fdf3e3' },
-        { id: 'sx-dl', icon: '📘', title: '地理背诵', sub: '学期·章节', act: "openModule('sx-dl')", goal: true, tint: '#e6f6f4' },
-        { id: 'sx-sw', icon: '🧬', title: '生物背诵', sub: '学期·单元', act: "openModule('sx-sw')", goal: true, tint: '#eaf7ec' },
-        { id: 'sx-oral', icon: '🗣️', title: '英语词组', sub: '中英互测', act: "openModule('sx-oral')", goal: true, tint: '#eaf0fd' },
-        { id: 'sx-chin', icon: '📜', title: '语文', sub: '知识点·古文', act: "openModule('sx-chin')", goal: true, tint: '#eef7ea' }
+        { id: 'sx-math', icon: '♟️', title: '数学思维', sub: '13 类', act: "openModule('sx-math')", goal: true, tint: '#eeeafd' },
+        { id: 'sx-calc', icon: '➗', title: '数学计算', sub: '3 组', act: "openModule('sx-calc')", goal: true, tint: '#e8f4fb' },
+        { id: 'sx-eng', icon: '🔠', title: '英语语法', sub: '易错题', act: "openModule('sx-eng')", goal: true, tint: '#fdecef' },
+        { id: 'sx-df', icon: '🛡️', title: '道法背诵', sub: '学期·单元', act: "openModule('sx-df')", goal: true, tint: '#fdeef6' },
+        { id: 'sx-ls', icon: '🕰️', title: '历史背诵', sub: '学期·单元', act: "openModule('sx-ls')", goal: true, tint: '#fdf3e3' },
+        { id: 'sx-dl', icon: '📍', title: '地理背诵', sub: '学期·章节', act: "openModule('sx-dl')", goal: true, tint: '#e6f6f4' },
+        { id: 'sx-sw', icon: '🧪', title: '生物背诵', sub: '学期·单元', act: "openModule('sx-sw')", goal: true, tint: '#eaf7ec' },
+        { id: 'sx-oral', icon: '💬', title: '英语词组', sub: '中英互测', act: "openModule('sx-oral')", goal: true, tint: '#eaf0fd' },
+        { id: 'sx-chin', icon: '🖌️', title: '语文', sub: '知识点·古文', act: "openModule('sx-chin')", goal: true, tint: '#eef7ea' }
       ],
       colors: { read: '#4f9cf7', sport: '#43b96a', 'sx-math': '#7c6cf0', 'sx-calc': '#3d7fd0', 'sx-eng': '#f0736c', 'sx-df': '#e0679a', 'sx-ls': '#cf9a2e', 'sx-dl': '#2fa3a0', 'sx-sw': '#5aa86b', 'sx-oral': '#4aa3c9', 'sx-chin': '#7ba05b' }
     }
