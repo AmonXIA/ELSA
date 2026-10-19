@@ -1326,3 +1326,189 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   @media (min-width: 900px) {
     #page-paper .paper-module:not(.paper-fill) .mod-body.text { grid-template-columns: repeat(3, 1fr); }
   }
+  /* ===== 20×20 乘法口诀小游戏 ===== */
+  .mult-game {
+    background: linear-gradient(145deg, #f8f2ff 0%, #eef7ff 58%, #fff8ee 100%);
+    border: 1px solid #eadcf4;
+  }
+  .mult-tabs { display: flex; gap: 8px; margin: 6px 0 14px; flex-wrap: wrap; }
+  .mult-tab {
+    border: 1px solid #e5d8ef;
+    background: #fff;
+    color: #8b6b9b;
+    border-radius: 999px;
+    padding: 8px 18px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .mult-tab.active {
+    background: linear-gradient(135deg, #b58be0, #7ea9e8);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 4px 12px #9d7ec72e;
+  }
+  .mult-learn-bar, .mult-play-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    color: #7b6887;
+    font-size: 13px;
+  }
+  .mult-learn-bar button, .mult-play-bar button {
+    border: 1px solid #e5d8ef;
+    background: #fff;
+    color: #7b5a96;
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .mult-learn-bar button:hover, .mult-play-bar button:hover { border-color: #bf9bd6; background: #fff9fe; }
+  .mult-learn-bar #mult-tip { flex: 1 1 200px; color: #8b6b9b; }
+  .mult-learn-bar #mult-tip b { color: #b05d8b; font-size: 17px; }
+  .mult-play-bar label { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+  .mult-play-bar select {
+    border: 1px solid #e5d8ef;
+    border-radius: 9px;
+    background: #fff;
+    color: #6f557e;
+    padding: 5px 8px;
+    font-family: inherit;
+    font-size: 13px;
+  }
+  .mult-play-bar span { margin-left: auto; }
+  .mult-play-bar span b { color: #b05d8b; font-size: 16px; }
+  .mult-table-wrap {
+    margin-top: 10px;
+    max-height: 68vh;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    border: 1px solid #e8ddf2;
+    border-radius: 16px;
+    background: #fff;
+  }
+  .mult-table { border-collapse: separate; border-spacing: 3px; min-width: 920px; width: 100%; }
+  .mult-table th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    min-width: 38px;
+    padding: 5px 2px;
+    border-radius: 7px;
+    background: #f0e9fb;
+    color: #7b5a96;
+    font-size: 12px;
+    font-weight: 800;
+    text-align: center;
+  }
+  .mult-table .corner { left: 0; z-index: 4; }
+  .mult-table .rowhead { position: sticky; left: 0; top: auto; z-index: 3; min-width: 38px; }
+  .mult-table td {
+    min-width: 38px;
+    height: 34px;
+    text-align: center;
+    border: 1px solid #edf1f8;
+    border-radius: 7px;
+    background: #fbfcff;
+    color: #4f6075;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .16s, transform .16s;
+  }
+  .mult-table td:hover { background: #fff5d9; transform: scale(1.05); }
+  .mult-table .hl { background: #fff1b8 !important; }
+  .mult-table.hide-ans td:not(.revealed) { position: relative; color: transparent; background: #f7f3fc; }
+  .mult-table.hide-ans td:not(.revealed)::after {
+    content: '?';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c9b6d8;
+    font-size: 15px;
+  }
+  .mult-table td.revealed { background: #e6f8ec; color: #2f7a4d; }
+  .mult-progress { height: 12px; margin: 14px 0 10px; border-radius: 999px; background: #eee6f7; overflow: hidden; }
+  .mult-progress > div { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, #f2b36b, #e58bb5, #a98be0); transition: width .3s; }
+  .mult-hud {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 12px;
+    border: 1px solid #efe4f5;
+    border-radius: 12px;
+    background: #fff9fe;
+    color: #7b6887;
+    font-size: 13px;
+  }
+  .mult-hud b { color: #b05d8b; font-size: 17px; }
+  .mult-question {
+    margin: 18px 0 14px;
+    padding: 26px 16px;
+    border: 1px solid #ecdff5;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #fff3fb, #eef6ff);
+    color: #5a3d70;
+    text-align: center;
+    font-size: 44px;
+    font-weight: 900;
+    letter-spacing: 2px;
+  }
+  .mult-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .mult-options button {
+    min-height: 60px;
+    border: 1px solid #e6d8ef;
+    border-radius: 16px;
+    background: #fff;
+    color: #5f4b6d;
+    font-family: inherit;
+    font-size: 24px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 12px #9d7ec714;
+  }
+  .mult-options button:hover { border-color: #c69ad9; background: #fff8fd; }
+  .mult-options button.right { background: #e4f8ea; border-color: #79c98f; color: #2f8a4c; }
+  .mult-options button.wrong { background: #fdeaea; border-color: #ee9a9a; color: #b94444; }
+  .mult-options button:disabled { cursor: default; opacity: 1; }
+  .mult-feedback { min-height: 28px; margin-top: 10px; text-align: center; font-weight: 700; color: #8b6b9b; }
+  .mult-result {
+    margin-top: 12px;
+    padding: 18px;
+    border: 1px solid #eadcf4;
+    border-radius: 18px;
+    background: #fff;
+    text-align: center;
+  }
+  .mult-stars { margin-bottom: 8px; font-size: 38px; letter-spacing: 6px; }
+  .mult-result-line { color: #6f557e; font-size: 14px; line-height: 1.8; }
+  .mult-result-line b { color: #b05d8b; font-size: 20px; }
+  .mult-new { margin: 8px 0; color: #d0822f; font-weight: 800; }
+  .mult-result-btns { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+  .mult-result-btns button {
+    border: 1px solid #e5d8ef;
+    background: #fff;
+    color: #7b5a96;
+    border-radius: 12px;
+    padding: 9px 18px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .mult-result-btns button.primary { background: linear-gradient(135deg, #b58be0, #7ea9e8); border-color: transparent; color: #fff; }
+  @media (max-width: 640px) {
+    .mult-question { font-size: 32px; padding: 18px 10px; }
+    .mult-options button { min-height: 52px; font-size: 20px; }
+    .mult-table { min-width: 780px; }
+    .mult-table td { min-width: 34px; height: 32px; font-size: 12px; }
+    .mult-hud { gap: 6px; font-size: 12px; }
+  }
