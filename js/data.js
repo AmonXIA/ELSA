@@ -9,7 +9,7 @@
         { id: 'sport', icon: '🏃', title: '运动', sub: '30 分钟', act: "showPage('sport')", goal: true },
         { id: 'chore', icon: '🧹', title: '做家务', sub: '整理房间', act: "showPage('chore')", goal: true },
         { id: 'calc', icon: '➗', title: '计算小练', sub: '30 题', act: "showPage('calc')", goal: true },        
-        { id: 'think', icon: '🧠', title: '思维小练', sub: '12 类', act: "showPage('think')", goal: true },
+        { id: 'think', icon: '🧠', title: '思维小练', sub: '12类+口诀', act: "showPage('think')", goal: true },
         { id: 'listen', icon: '🎧', title: '磨耳朵', sub: '每日听读', act: "showPage('listen')", goal: true },
         { id: 'paper', icon: '📄', title: '口算练习', sub: '20题·Excel', act: "showPage('paper')", goal: false }
       ],
