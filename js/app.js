@@ -2340,8 +2340,32 @@
     initScratchCanvases();
   }
   /* ===== 20×20 乘法口诀：背诵表 + 乘法星球挑战 ===== */
-  var MULT_STATE = { hide: false, qno: 1, score: 0, combo: 0, maxCombo: 0, correct: 0, locked: false, current: null, started: false, last: null };
-  function multBest() { return +(lsGet('mult_best_v1') || 0) || 0; }
+  var MULT_STATE = { version: 'basic', stepKey: '2', showTable: false, hide: false, qno: 1, score: 0, combo: 0, maxCombo: 0, correct: 0, locked: false, current: null, started: false, last: null, playTimer: null };
+  function multBest() { return +(lsGet(MULT_STATE.version === 'basic' ? 'mult_best_basic_v1' : 'mult_best_adv_v1') || 0) || 0; }
+  function multStepDefs(ver) {
+    if (ver === 'basic') {
+      var b = [];
+      for (var n = 2; n <= 9; n++) b.push({ key: String(n), label: n + '的口诀', a: [n], bMax: 9 });
+      b.push({ key: 'all', label: '综合挑战', a: [2,3,4,5,6,7,8,9], bMax: 9 });
+      return b;
+    }
+    return [
+      { key: '10', label: '10的口诀', a: [10], bMax: 20 },
+      { key: '11', label: '11的口诀', a: [11], bMax: 20 },
+      { key: '12', label: '12的口诀', a: [12], bMax: 20 },
+      { key: '13-15', label: '13-15', a: [13,14,15], bMax: 20 },
+      { key: '16-20', label: '16-20', a: [16,17,18,19,20], bMax: 20 },
+      { key: 'all', label: '全表挑战', a: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], bMax: 20 }
+    ];
+  }
+  function multCurrentStep() {
+    var defs = multStepDefs(MULT_STATE.version);
+    return defs.filter(function (d) { return d.key === MULT_STATE.stepKey; })[0] || defs[0];
+  }
+  function multLearned() { try { return JSON.parse(lsGet('mult_learned_v1') || '[]') || []; } catch (e) { return []; } }
+  function multLearnKey(k) { return MULT_STATE.version + ':' + k; }
+  function multIsLearned(k) { return multLearned().indexOf(multLearnKey(k)) >= 0; }
+  function multSaveLearned(arr) { try { localStorage.setItem(pk('mult_learned_v1'), JSON.stringify(arr)); } catch (e) {} }
   function multCn(n) {
     var d = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
     if (n < 10) return d[n];
@@ -2363,22 +2387,32 @@
     } catch (e) {}
   }
   function multHTML() {
-    return '<h2><span class="num">🎮</span> 20×20 乘法口诀 <span class="badge">背 + 挑战</span></h2>' +
-      '<p class="intro">先点格子背口诀，再去乘法星球挑战。答对连击会加分，最高分会记在这台设备上。</p>' +
+    return '<h2><span class="num">🎮</span> 乘法口诀 <span class="badge">基础 9×9 · 高级 20×20</span></h2>' +
+      '<p class="intro">基础版按教材顺序 2→9 一行一行背；高级版扩展到 20×20。建议每天背一行，再去挑战。</p>' +
+      '<div class="mult-version-tabs">' +
+        '<button class="mult-ver active" data-ver="basic" onclick="multSetVersion(\'basic\')">😊 基础版 9×9</button>' +
+        '<button class="mult-ver" data-ver="adv" onclick="multSetVersion(\'adv\')">🚀 高级版 20×20</button>' +
+      '</div>' +
+      '<div class="mult-steps" id="mult-steps"></div>' +
       '<div class="mult-tabs">' +
         '<button class="mult-tab active" data-mt="learn" onclick="multTab(\'learn\')">📖 背口诀</button>' +
         '<button class="mult-tab" data-mt="play" onclick="multTab(\'play\')">🚀 挑战</button>' +
       '</div>' +
       '<div id="mult-learn" class="mult-pane">' +
         '<div class="mult-learn-bar">' +
+          '<button id="mult-play-row-btn" onclick="multPlayRow()">🔊 播放这一行</button>' +
           '<button id="mult-hide-btn" onclick="multToggleHide()">🙈 遮住答案</button>' +
-          '<button onclick="multSayCurrent()">🔊 读一遍</button>' +
-          '<span id="mult-tip">点任意格子看算式、听口诀。</span>' +
-        '</div><div class="mult-table-wrap" id="mult-table-wrap"></div>' +
+          '<button onclick="multMarkLearned()">✅ 这行会背了</button>' +
+          '<button onclick="multNextUnlearned()">📅 今日背一行</button>' +
+          '<button id="mult-table-btn" onclick="multToggleTable()">📋 看完整表</button>' +
+          '<span id="mult-tip">点卡片看算式、听口诀。</span>' +
+        '</div>' +
+        '<div class="mult-learn-progress" id="mult-learn-progress"></div>' +
+        '<div id="mult-learn-body"></div>' +
       '</div>' +
       '<div id="mult-play" class="mult-pane" style="display:none">' +
         '<div class="mult-play-bar">' +
-          '<label>范围 <select id="mult-level" onchange="multStart()"><option value="10">1-10 入门</option><option value="12">1-12 进阶</option><option value="20" selected>1-20 全表</option></select></label>' +
+          '<span class="mult-step-label" id="mult-step-label">当前：2的口诀</span>' +
           '<button onclick="multStart()">🔄 重新开始</button><span>最高分 <b id="mult-best">0</b></span>' +
         '</div>' +
         '<div class="mult-progress"><div id="mult-pfill"></div></div>' +
@@ -2390,24 +2424,168 @@
       '</div>';
   }
   function multInit() {
-    multRenderTable();
+    multRenderSteps();
+    multRenderLearn();
+    multUpdateBest();
+  }
+  function multTableHTML(max) {
+    var h = '<table class="mult-table' + (max <= 9 ? ' small' : '') + '" id="mult-table"><thead><tr><th class="corner">×</th>';
+    for (var b = 1; b <= max; b++) h += '<th>' + b + '</th>';
+    h += '</tr></thead><tbody>';
+    for (var a = 1; a <= max; a++) {
+      h += '<tr><th class="rowhead">' + a + '</th>';
+      for (var c = 1; c <= max; c++) h += '<td data-a="' + a + '" data-b="' + c + '" onclick="multCell(' + a + ',' + c + ')">' + (a * c) + '</td>';
+      h += '</tr>';
+    }
+    return h + '</tbody></table>';
+  }
+  function multRenderSteps() {
+    var box = document.getElementById('mult-steps');
+    if (!box) return;
+    box.innerHTML = multStepDefs(MULT_STATE.version).map(function (d) {
+      return '<button class="mult-step' + (d.key === MULT_STATE.stepKey ? ' active' : '') + '" onclick="multSetStep(\'' + d.key + '\')">' +
+        d.label + (multIsLearned(d.key) ? ' ✓' : '') + '</button>';
+    }).join('');
+  }
+  function multRenderLearn() {
+    var body = document.getElementById('mult-learn-body');
+    if (!body) return;
+    var step = multCurrentStep();
+    var h = '';
+    if (step.key === 'all') {
+      h += '<div class="mult-row-note">' + (MULT_STATE.version === 'basic' ? '选一行背口诀，或直接看完整 9×9 表。' : '选一组背口诀，或直接看完整 20×20 表。') + '</div>';
+    } else {
+      step.a.forEach(function (a) { h += multRowHTML(a, step.bMax); });
+    }
+    if (MULT_STATE.showTable || step.key === 'all') {
+      h += '<div class="mult-table-wrap">' + multTableHTML(MULT_STATE.version === 'basic' ? 9 : 20) + '</div>';
+    }
+    body.innerHTML = h;
+    if (MULT_STATE.hide) {
+      body.querySelectorAll('.mult-facts,.mult-table').forEach(function (x) { x.classList.add('hide-ans'); });
+    }
+    var btn = document.getElementById('mult-table-btn');
+    if (btn) btn.textContent = MULT_STATE.showTable ? '📋 收起完整表' : '📋 看完整表';
+    multLearnProgress();
+    multUpdateStepLabel();
+  }
+  function multRowHTML(a, bMax) {
+    var adv = MULT_STATE.version === 'adv';
+    var cards = '';
+    for (var b = 1; b <= bMax; b++) {
+      var kou = adv ? '' : '<span class="mf-kou">' + multKou(a, b) + '</span>';
+      cards += '<button class="mult-fact" data-a="' + a + '" data-b="' + b + '" onclick="multFact(this,' + a + ',' + b + ')">' +
+        '<span class="mf-eq">' + a + ' × ' + b + ' = <b class="mf-prod">' + (a * b) + '</b></span>' + kou + '</button>';
+    }
+    return '<div class="mult-row-block"><div class="mult-row-title">' + a + ' 的乘法口诀 <span>' + (adv ? '拓展' : '教材顺序') + '</span>' +
+      '<button type="button" class="mult-row-play" onclick="multPlayRowN(' + a + ')" title="播放这一行">🔊</button></div>' +
+      '<div class="mult-facts' + (adv ? ' adv' : '') + '">' + cards + '</div></div>';
+  }
+  function multKou(a, b) {
+    var x = Math.min(a, b), y = Math.max(a, b), p = a * b;
+    if (x === 1) return '一' + multCn(y) + '得' + multCn(p);
+    if (p === 10) return multCn(x) + multCn(y) + '一十';
+    return multCn(x) + multCn(y) + (p < 10 ? '得' : '') + multCn(p);
+  }
+  function multFact(btn, a, b) {
+    if (MULT_STATE.playTimer) multStopPlayback();
+    if (MULT_STATE.hide) btn.classList.add('revealed');
+    MULT_STATE.last = { a: a, b: b };
+    var tip = document.getElementById('mult-tip');
+    if (tip) tip.innerHTML = a + ' × ' + b + ' = <b>' + (a * b) + '</b>' + (MULT_STATE.version === 'basic' ? '　' + multKou(a, b) : '');
+    multSpeak(multCn(a) + '乘' + multCn(b) + '等于' + multCn(a * b));
+  }
+  function multSetVersion(v) {
+    if (v !== 'basic' && v !== 'adv') return;
+    multStopPlayback();
+    MULT_STATE.version = v;
+    MULT_STATE.stepKey = multStepDefs(v)[0].key;
+    MULT_STATE.showTable = false;
+    MULT_STATE.started = false;
+    MULT_STATE.current = null;
+    document.querySelectorAll('.mult-ver').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-ver') === v); });
+    multRenderSteps();
+    multRenderLearn();
+    multUpdateBest();
+    if (document.getElementById('mult-play').style.display !== 'none') multStart();
+  }
+  function multSetStep(key) {
+    multStopPlayback();
+    MULT_STATE.stepKey = key;
+    MULT_STATE.started = false;
+    MULT_STATE.current = null;
+    multRenderSteps();
+    multRenderLearn();
+    multUpdateBest();
+    if (document.getElementById('mult-play').style.display !== 'none') multStart();
+  }
+  function multToggleTable() {
+    MULT_STATE.showTable = !MULT_STATE.showTable;
+    multRenderLearn();
+  }
+  function multMarkLearned() {
+    var step = multCurrentStep();
+    if (step.key === 'all') { toast('先选一行口诀再标记'); return; }
+    var arr = multLearned(), key = multLearnKey(step.key);
+    if (arr.indexOf(key) < 0) { arr.push(key); multSaveLearned(arr); }
+    multRenderSteps();
+    multLearnProgress();
+    toast('已记下：' + step.label + ' 会背了');
+  }
+  function multNextUnlearned() {
+    var defs = multStepDefs(MULT_STATE.version).filter(function (d) { return d.key !== 'all' && !multIsLearned(d.key); });
+    if (!defs.length) { toast('这一版都背过了，去挑战试试'); return; }
+    multSetStep(defs[0].key);
+    toast('今天先背：' + defs[0].label);
+  }
+  function multLearnProgress() {
+    var box = document.getElementById('mult-learn-progress');
+    if (!box) return;
+    var defs = multStepDefs(MULT_STATE.version).filter(function (d) { return d.key !== 'all'; });
+    var done = defs.filter(function (d) { return multIsLearned(d.key); }).length;
+    box.textContent = (MULT_STATE.version === 'basic' ? '基础版' : '高级版') + '：已背 ' + done + ' / ' + defs.length + (MULT_STATE.version === 'basic' ? ' 行' : ' 组');
+  }
+  function multUpdateBest() {
     var b = document.getElementById('mult-best');
     if (b) b.textContent = multBest();
   }
-  function multRenderTable() {
-    var wrap = document.getElementById('mult-table-wrap');
-    if (!wrap) return;
-    var h = '<table class="mult-table" id="mult-table"><thead><tr><th class="corner">×</th>';
-    for (var b = 1; b <= 20; b++) h += '<th>' + b + '</th>';
-    h += '</tr></thead><tbody>';
-    for (var a = 1; a <= 20; a++) {
-      h += '<tr><th class="rowhead">' + a + '</th>';
-      for (var c = 1; c <= 20; c++) h += '<td data-a="' + a + '" data-b="' + c + '" onclick="multCell(' + a + ',' + c + ')">' + (a * c) + '</td>';
-      h += '</tr>';
+  function multUpdateStepLabel() {
+    var el = document.getElementById('mult-step-label');
+    if (el) el.textContent = '当前：' + multCurrentStep().label;
+  }
+  function multStopPlayback() {
+    if (MULT_STATE.playTimer) { clearTimeout(MULT_STATE.playTimer); MULT_STATE.playTimer = null; }
+    document.querySelectorAll('.mult-fact.on').forEach(function (x) { x.classList.remove('on'); });
+    var b = document.getElementById('mult-play-row-btn');
+    if (b) b.textContent = '🔊 播放这一行';
+  }
+  function multPlayRow() {
+    var step = multCurrentStep();
+    if (step.key === 'all') { toast('先选一行口诀，或点行标题旁的喇叭'); return; }
+    multPlayRowN(step.a[0]);
+  }
+  function multPlayRowN(a) {
+    if (MULT_STATE.playTimer) { multStopPlayback(); return; }
+    if (MULT_STATE.hide) multToggleHide();
+    var cards = Array.prototype.slice.call(document.querySelectorAll('#mult-learn-body .mult-fact[data-a="' + a + '"]'));
+    if (!cards.length) { toast('先选一行口诀再播放'); return; }
+    var btn = document.getElementById('mult-play-row-btn');
+    if (btn) btn.textContent = '⏹ 停止';
+    var i = 0;
+    function next() {
+      document.querySelectorAll('.mult-fact.on').forEach(function (x) { x.classList.remove('on'); });
+      if (i >= cards.length) { MULT_STATE.playTimer = null; if (btn) btn.textContent = '🔊 播放这一行'; return; }
+      var c = cards[i++];
+      c.classList.add('on');
+      var ca = +c.getAttribute('data-a'), cb = +c.getAttribute('data-b');
+      MULT_STATE.last = { a: ca, b: cb };
+      multSpeak(multCn(ca) + '乘' + multCn(cb) + '等于' + multCn(ca * cb));
+      MULT_STATE.playTimer = setTimeout(next, 1150);
     }
-    wrap.innerHTML = h + '</tbody></table>';
+    next();
   }
   function multCell(a, b) {
+    if (MULT_STATE.playTimer) multStopPlayback();
     var table = document.getElementById('mult-table');
     if (!table) return;
     table.querySelectorAll('.hl').forEach(function (x) { x.classList.remove('hl'); });
@@ -2421,11 +2599,10 @@
   }
   function multToggleHide() {
     MULT_STATE.hide = !MULT_STATE.hide;
-    var table = document.getElementById('mult-table');
-    if (table) {
-      table.classList.toggle('hide-ans', MULT_STATE.hide);
-      table.querySelectorAll('td.revealed').forEach(function (td) { td.classList.remove('revealed'); });
-    }
+    document.querySelectorAll('#mult-learn-body .mult-facts,#mult-learn-body .mult-table').forEach(function (x) {
+      x.classList.toggle('hide-ans', MULT_STATE.hide);
+      x.querySelectorAll('.revealed').forEach(function (y) { y.classList.remove('revealed'); });
+    });
     var btn = document.getElementById('mult-hide-btn');
     if (btn) btn.textContent = MULT_STATE.hide ? '👀 全部显示' : '🙈 遮住答案';
   }
@@ -2438,7 +2615,11 @@
     var learn = document.getElementById('mult-learn'), play = document.getElementById('mult-play');
     if (learn) learn.style.display = tab === 'learn' ? 'block' : 'none';
     if (play) play.style.display = tab === 'play' ? 'block' : 'none';
-    if (tab === 'play' && !MULT_STATE.started) multStart();
+    if (tab === 'play') {
+      multStopPlayback();
+      multUpdateStepLabel();
+      if (!MULT_STATE.started) multStart();
+    }
   }
   function multStart() {
     MULT_STATE.qno = 1; MULT_STATE.score = 0; MULT_STATE.combo = 0; MULT_STATE.maxCombo = 0;
@@ -2447,20 +2628,22 @@
     var f = document.getElementById('mult-feedback'); if (f) f.textContent = '';
     var q = document.getElementById('mult-question'); if (q) q.textContent = '准备好了吗？';
     var o = document.getElementById('mult-options'); if (o) o.innerHTML = '';
-    var b = document.getElementById('mult-best'); if (b) b.textContent = multBest();
+    multUpdateStepLabel();
+    multUpdateBest();
     multNext();
   }
   function multNext() {
     if (MULT_STATE.qno > 10) { multFinish(); return; }
-    var max = +(document.getElementById('mult-level') || {}).value || 20;
-    var a = ri(1, max), b = ri(1, max), product = a * b;
+    var fact = multPickFact();
+    var a = fact.a, b = fact.b, product = fact.product;
+    var maxProd = MULT_STATE.version === 'basic' ? 81 : 400;
     var opts = new Set([product]), guard = 0;
     while (opts.size < 4 && guard++ < 80) {
       var delta = pick([1, 2, 3, 4, -1, -2, -3, -4, a, b, -a, -b, 10, -10]);
       var v = product + delta;
-      if (v > 0 && v <= max * max) opts.add(v);
+      if (v > 0 && v <= maxProd) opts.add(v);
     }
-    while (opts.size < 4) opts.add(ri(1, max * max));
+    while (opts.size < 4) opts.add(ri(1, maxProd));
     var arr = shuffle(Array.from(opts));
     MULT_STATE.current = { a: a, b: b, product: product, options: arr };
     MULT_STATE.locked = false;
@@ -2473,6 +2656,18 @@
     }).join('');
     document.getElementById('mult-feedback').textContent = '';
     var fill = document.getElementById('mult-pfill'); if (fill) fill.style.width = ((MULT_STATE.qno - 1) / 10 * 100) + '%';
+  }
+  function multPickFact() {
+    var step = multCurrentStep();
+    var a, b;
+    if (step.key === 'all') {
+      if (MULT_STATE.version === 'basic') { a = ri(2, 9); b = ri(2, 9); }
+      else { a = ri(1, 20); b = ri(1, 20); }
+    } else {
+      a = pick(step.a);
+      b = ri(1, step.bMax);
+    }
+    return { a: a, b: b, product: a * b };
   }
   function multAnswer(btn, value) {
     if (MULT_STATE.locked || !MULT_STATE.current) return;
@@ -2508,9 +2703,10 @@
     var acc = Math.round(MULT_STATE.correct / 10 * 100);
     var stars = MULT_STATE.correct >= 9 ? '⭐⭐⭐' : MULT_STATE.correct >= 7 ? '⭐⭐' : MULT_STATE.correct >= 5 ? '⭐' : '💪';
     var old = multBest(), isNew = MULT_STATE.score > old;
-    if (isNew) { try { localStorage.setItem(pk('mult_best_v1'), String(MULT_STATE.score)); } catch (e) {} }
+    var bestKey = MULT_STATE.version === 'basic' ? 'mult_best_basic_v1' : 'mult_best_adv_v1';
+    if (isNew) { try { localStorage.setItem(pk(bestKey), String(MULT_STATE.score)); } catch (e) {} }
     var best = Math.max(old, MULT_STATE.score);
-    setText('mult-best', best);
+    multUpdateBest();
     var q = document.getElementById('mult-question'); if (q) q.textContent = '本轮完成！';
     var o = document.getElementById('mult-options'); if (o) o.innerHTML = '';
     var fill = document.getElementById('mult-pfill'); if (fill) fill.style.width = '100%';
@@ -2518,7 +2714,7 @@
     if (r) {
       r.style.display = 'block';
       r.innerHTML = '<div class="mult-stars">' + stars + '</div>' +
-        '<div class="mult-result-line">得分 <b>' + MULT_STATE.score + '</b> · 答对 ' + MULT_STATE.correct + '/10 · 最高连击 ' + MULT_STATE.maxCombo + ' · 正确率 ' + acc + '%</div>' +
+        '<div class="mult-result-line">' + multCurrentStep().label + ' · 得分 <b>' + MULT_STATE.score + '</b> · 答对 ' + MULT_STATE.correct + '/10 · 最高连击 ' + MULT_STATE.maxCombo + ' · 正确率 ' + acc + '%</div>' +
         (isNew ? '<div class="mult-new">🎉 新纪录！</div>' : '') +
         '<div class="mult-result-btns"><button class="primary" onclick="multStart()">再来一局</button><button onclick="multTab(\'learn\')">去背口诀</button></div>';
     }
@@ -2535,7 +2731,7 @@
     multInit();
     const ga = document.createElement('a');
     ga.href = '#mult-game';
-    ga.textContent = '🎮 20×20 乘法口诀';
+    ga.textContent = '🎮 乘法口诀（基础/高级）';
     toc.appendChild(ga);
     TYPES.forEach((t, i) => {
       const a = document.createElement('a'); a.href = '#' + t.id; a.textContent = (i + 1) + ' ' + t.title; toc.appendChild(a);
@@ -4196,7 +4392,7 @@ function reciteBodyHTML(cfg) {
   }
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-19 乘法口诀小游戏'
+  var BUILD_TAG = '2026-10-19 口诀基础/高级'
   window.__BUILD_TAG = BUILD_TAG;
 
   // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====
