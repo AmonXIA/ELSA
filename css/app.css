@@ -1268,3 +1268,24 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   .eng-podium .ph-pod-col { width: 78px; }
   .eng-board .ph-pod-col.gold, .eng-board .ph-pod-col.silver, .eng-board .ph-pod-col.bronze { min-height: 0; }
   .ph-pod-name { margin-top: 2px; font-size: 10px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* 错题本：头部/操作栏/底部固定，中间列表独立滚动，内容再多也不会挤掉菜单 */
+  #wb-modal .modal-panel { max-height: min(90vh, 920px); }
+  #wb-modal .modal-head { flex: 0 0 auto; }
+  #wb-modal .modal-actions { flex: 0 0 auto; overflow: visible; }
+  #wb-modal .wb-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  #wb-modal .modal-foot { flex: 0 0 auto; overflow: visible; }
+  @media (max-height: 760px) {
+    #wb-modal .modal-panel { max-height: 94vh; }
+  }
+  @media (max-width: 640px) {
+    #wb-modal .modal-panel { max-height: calc(100vh - 20px); }
+    #wb-modal .modal-actions { padding: 8px 12px; }
+    #wb-modal .wb-list { padding: 10px 12px; }
+  }

@@ -3679,7 +3679,7 @@ function reciteBodyHTML(cfg) {
   }
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-19 英语积分榜+分组批改'
+  var BUILD_TAG = '2026-10-19 错题本菜单修复'
   window.__BUILD_TAG = BUILD_TAG;
 
   // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====
