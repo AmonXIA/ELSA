@@ -16,10 +16,12 @@
 </head>
 <body>
 
-<button class="fs-btn" id="fs-btn" onclick="toggleFullscreen()" title="切换全屏">⛶</button>
-<button class="fs-btn wb-btn" id="wb-quick-btn" onclick="openWrongBook()" title="错题本" aria-label="错题本">📓<span class="wb-badge" id="wb-badge-quick">0</span></button>
+<div class="top-actions">
+  <button class="fs-btn" id="fs-btn" onclick="toggleFullscreen()" title="切换全屏">⛶</button>
+  <button class="fs-btn wb-btn" id="wb-quick-btn" onclick="openWrongBook()" title="错题本" aria-label="错题本">📓<span class="wb-badge" id="wb-badge-quick">0</span></button>
   <button class="fs-btn ai-btn" id="ai-quick-btn" onclick="openAiSettings()" title="AI " aria-label="AI">&#9881;</button>
-<button class="fs-btn gg-btn" id="gg-btn" onclick="toggleGradeMenu()" title="按组批改" aria-label="按组批改" style="display:none">&#10004;</button>
+  <button class="fs-btn gg-btn" id="gg-btn" onclick="toggleGradeMenu()" title="按组批改" aria-label="按组批改" style="display:none">&#10004;</button>
+</div>
 <div class="gg-panel" id="gg-panel"></div>
 
 
@@ -68,7 +70,7 @@
         <div class="goal-note"><a onclick="openPoints()">查看星星规则 →</a></div>
       </div>
     </div>
-    <div class="section-label"><h2>今天，进步一点点</h2><span>五件小事 · 满满成长</span></div>
+    <div class="section-label"><h2>今天，进步一点点</h2><span>每日小事 · 满满成长</span></div>
     <div class="module-grid" id="module-grid"></div>
     <div class="card calendar-card">
       <div class="card-head">📅 我的坚持日历</div>

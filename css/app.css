@@ -1165,3 +1165,50 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   .ximalaya-card a.xm-link { font-size: 15px !important; }
   .ximalaya-card .xm-note { font-size: 13px !important; }
   @media (min-width: 768px) { .ls-text { font-size: 23px !important; } .listen-zh { font-size: 19px !important; } }
+
+  /* 统一模块图标：耳机沿用同一套 3D 奶油质感 */
+  .art-icon.listen {
+    background-image: url(../assets/listen-icon.png);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .bottom-nav button .art-icon { display: block; margin: 0 auto; }
+  .bottom-nav button > span:last-child { line-height: 1.25; }
+
+  /* 右上角悬浮菜单：一排等距对齐，避免与错题本徽标重叠 */
+  .top-actions {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .top-actions .fs-btn {
+    position: relative;
+    top: auto;
+    right: auto;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    font-size: 18px;
+  }
+  .top-actions .fs-btn .art-icon { width: 20px; height: 20px; }
+  .gg-panel { top: 72px; }
+  @media (max-width: 680px) {
+    .top-actions { top: 10px; right: 10px; gap: 8px; }
+  }
+  /* Shawn 模块较多：iPad 上铺开显示，避免底部菜单被挤出并出现滚动条 */
+  body.theme-shawn .bottom-nav { width: min(1120px, calc(100% - 40px)); }
+  .bottom-nav { scrollbar-width: none; }
+  .bottom-nav::-webkit-scrollbar { display: none; }
+  @media (max-width: 680px) {
+    body.theme-shawn .bottom-nav { width: calc(100% - 24px); }
+  }
+  @media (min-width: 768px) {
+    .module-grid { grid-template-columns: repeat(6, 1fr); }
+  }

@@ -3613,7 +3613,7 @@ function reciteBodyHTML(cfg) {
   }
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-19 逐句音频对齐'
+  var BUILD_TAG = '2026-10-19 统一图标与悬浮菜单'
   window.__BUILD_TAG = BUILD_TAG;
 
   // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====
@@ -3700,7 +3700,7 @@ function reciteBodyHTML(cfg) {
 
 // Presentational icons only; question and answer content retains its original symbols.
 (() => {
-  const icons = { '🏠':['task',0], '📖':['task',1], '🏃':['task',2], '🧹':['task',3], '✏️':['task',4], '🧠':['task',5], '🌱':['task',6], '🌸':['task',6], '🎯':['task',7], '📅':['task',8], '⭐':['utility',0], '💎':['utility',1], '🔥':['utility',2], '✔':['utility',3], '✅':['utility',3], '🔄':['utility',4], '🎲':['utility',4], '📓':['utility',5], '🏅':['utility',6], '📏':['utility',7], '✨':['utility',8], '👋':['utility',8], '💡':['task',5], '➕':['task',4] };
+  const icons = { '🏠':['task',0], '📖':['task',1], '🏃':['task',2], '🧹':['task',3], '✏️':['task',4], '🧠':['task',5], '🌱':['task',6], '🌸':['task',6], '🎯':['task',7], '📅':['task',8], '🎧':['listen',0], '🧮':['task',7], '🔤':['task',1], '📕':['utility',5], '📗':['task',1], '📘':['utility',5], '🧬':['task',6], '🗣️':['task',5], '📜':['utility',5], '⭐':['utility',0], '💎':['utility',1], '🔥':['utility',2], '✔':['utility',3], '✅':['utility',3], '🔄':['utility',4], '🎲':['utility',4], '📓':['utility',5], '🏅':['utility',6], '📏':['utility',7], '✨':['utility',8], '👋':['utility',8], '💡':['task',5], '➕':['task',4] };
   const pattern = new RegExp(Object.keys(icons).join('|'), 'gu');
   function decorate(root) {
     if (root.nodeType !== 1 && root.nodeType !== 3) return;
