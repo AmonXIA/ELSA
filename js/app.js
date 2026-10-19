@@ -1808,7 +1808,7 @@
         ws.getRow(row).height = 32;
         var no = ws.getCell(row, noC); no.value = k + 1; font(no, 12, true, 'FF808080'); center(no); border(no);
         var pr = ws.getCell(row, prC);
-        pr.value = isAnswer ? PAPER[s].items[k].ansText : PAPER[s].items[k].q;
+        pr.value = isAnswer ? PAPER[s].items[k].ansText : PAPER[s].items[k].q + '（　　）';
         font(pr, 16, false, isAnswer ? 'FFC00000' : 'FF000000');
         pr.alignment = { horizontal: 'left', vertical: 'middle', indent: 1 }; border(pr);
       }
