@@ -1295,10 +1295,34 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   /* 100以内口算练习页 */
   #page-paper .paper-item .q { font-size: 18px; line-height: 1.6; }
   #page-paper .paper-no { color: #b08f9f; font-weight: 700; margin-right: 3px; }
-  #page-paper .paper-item .a-row { margin-top: 8px; }
-  #page-paper .paper-item .ans-input { width: 7em; text-align: center; }
+  #page-paper .paper-ans { display: inline-flex; align-items: center; font-weight: 700; color: #8b6b7d; white-space: nowrap; }
+  #page-paper .paper-inline {
+    width: 3.2ch;
+    min-width: 2.4em;
+    height: 1.6em;
+    margin: 0 1px;
+    padding: 0 1px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    font: inherit;
+    font-weight: 800;
+    color: #5f4b52;
+    text-align: center;
+    vertical-align: baseline;
+  }
+  #page-paper .paper-inline:focus { outline: none; background: #fff3f8; border-radius: 6px; }
+  #page-paper .paper-item .q .mark { margin-left: 6px; font-size: 18px; }
   #page-paper .paper-item.wrong .reveal { display: block; }
   #page-paper .paper-module .mod-toolbar .sec-score { margin-left: auto; }
+  #page-paper .paper-draft .scratch-box { margin-top: 10px; }
+  #page-paper .paper-draft .scratch-box .scratch { height: 140px; }
+  #page-paper .paper-fill .scratch-box .scratch { height: 190px; }
+  @media (min-width: 768px) {
+    #page-paper .paper-draft .scratch-box .scratch { height: 170px; }
+    #page-paper .paper-fill .scratch-box .scratch { height: 220px; }
+  }
   @media (min-width: 900px) {
     #page-paper .paper-module:not(.paper-fill) .mod-body.text { grid-template-columns: repeat(3, 1fr); }
   }
