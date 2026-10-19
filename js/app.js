@@ -1602,17 +1602,28 @@
       audio.playbackRate = listenRate;
       const total = isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 0;
       const sents = listenSents(a.en);
-      const lens = sents.map(function (s) { return Math.max(6, s.length); });
-      const sum = lens.reduce(function (x, y) { return x + y; }, 0) || 1;
-      const ends = []; let acc = 0;
-      lens.forEach(function (L) { acc += L; ends.push(acc / sum * total); });
+      const tm = (typeof LISTEN_TIMING !== 'undefined' && LISTEN_TIMING[a.n]) || null;
+      let starts = [], ends = [];
+      if (tm && tm.length === sents.length) {
+        starts = tm.map(function (x) { return x[0]; });
+        ends = tm.map(function (x) { return x[1]; });
+      } else {
+        const lens = sents.map(function (s) { return Math.max(6, s.length); });
+        const sum = lens.reduce(function (x, y) { return x + y; }, 0) || 1;
+        let acc = 0;
+        lens.forEach(function (L) { starts.push(acc / sum * total); acc += L; ends.push(acc / sum * total); });
+      }
       const box = document.querySelector('#listen-body .ls-text');
       if (box) box.setAttribute('data-file', '1');
       listenProgressShow(true);
       listenProgressPaint(0, total);
       audio.ontimeupdate = function () {
         listenProgressPaint(audio.currentTime, total);
-        for (let i = 0; i < ends.length; i++) { if (audio.currentTime <= ends[i]) { if (listenIdx !== i) { listenIdx = i; listenPaint(true); } break; } }
+        let hit = -1;
+        for (let i = 0; i < ends.length; i++) {
+          if (audio.currentTime >= starts[i] && audio.currentTime < ends[i]) { hit = i; break; }
+        }
+        if (listenIdx !== hit) { listenIdx = hit; listenPaint(true); }
       };
       audio.onended = function () { listenPlaying = false; listenIdx = -1; listenProgressPaint(total, total); listenFinishAll(); };
       audio.onerror = function () { listenPlaying = false; listenProgressShow(false); if (onFail) onFail(); };
@@ -3602,7 +3613,7 @@ function reciteBodyHTML(cfg) {
   }
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-19 新版适配音频'
+  var BUILD_TAG = '2026-10-19 逐句音频对齐'
   window.__BUILD_TAG = BUILD_TAG;
 
   // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====
