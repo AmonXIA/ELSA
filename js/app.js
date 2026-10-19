@@ -2402,7 +2402,7 @@
         '<div class="mult-learn-bar">' +
           '<button id="mult-play-row-btn" onclick="multPlayRow()">🔊 播放这一行</button>' +
           '<button id="mult-hide-btn" onclick="multToggleHide()">🙈 遮住答案</button>' +
-          '<button onclick="multMarkLearned()">✅ 这行会背了</button>' +
+          '<button id="mult-learned-btn" onclick="multMarkLearned()">✅ 这行会背了</button>' +
           '<button onclick="multNextUnlearned()">📅 今日背一行</button>' +
           '<button id="mult-table-btn" onclick="multToggleTable()">📋 看完整表</button>' +
           '<span id="mult-tip">点卡片看算式、听口诀。</span>' +
@@ -2466,6 +2466,8 @@
     }
     var btn = document.getElementById('mult-table-btn');
     if (btn) btn.textContent = MULT_STATE.showTable ? '📋 收起完整表' : '📋 看完整表';
+    var mb = document.getElementById('mult-learned-btn');
+    if (mb) mb.textContent = step.a.length > 1 ? '✅ 这组会背了' : '✅ 这行会背了';
     multLearnProgress();
     multUpdateStepLabel();
   }
