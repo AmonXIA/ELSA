@@ -632,7 +632,7 @@
   .goal-note { font-size:11px; color:#9a8490; } .goal-note a { color:#a176a9; }
   .module-grid { gap:12px; margin-top:0; }
   .module-card { font:inherit; width:100%; color:var(--ink); border:1px solid #efe4e9; border-radius:22px; padding:20px 12px; box-shadow:0 6px 15px #a47b9708; }
-  .module-card:nth-child(1) { background:#f1ebfc; } .module-card:nth-child(2) { background:#edf6ee; } .module-card:nth-child(3) { background:#fff3df; } .module-card:nth-child(4) { background:#ffeaf0; } .module-card:nth-child(5) { background:#edf2ff; } .module-card:nth-child(6) { background:#f3e9fb; }
+  .module-card:nth-child(1) { background:#f1ebfc; } .module-card:nth-child(2) { background:#edf6ee; } .module-card:nth-child(3) { background:#fff3df; } .module-card:nth-child(4) { background:#ffeaf0; } .module-card:nth-child(5) { background:#edf2ff; } .module-card:nth-child(6) { background:#f0e2fb; }
   .module-card .mi { display:grid; place-items:center; width:52px; height:52px; margin:0 auto 10px; font-size:28px; border-radius:18px; background:#ffffffa3; }
   .module-card .mt { font-size:14px; } .module-card .ms { margin-top:3px; font-size:11px; color:#927f8d; }
   .calendar-card { margin-top:24px; padding:22px 24px; }
