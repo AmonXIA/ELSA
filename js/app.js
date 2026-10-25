@@ -1584,10 +1584,10 @@
         var batch = [];
         var fns = [paperPatternSeq, paperPatternShape, paperPatternSubst, paperPatternTri3, paperPatternTri2];
         function fill() {
-          do {
-            batch = [];
-            for (var i = 0; i < 5; i++) batch.push(pick(fns));
-          } while (new Set(batch).size < 3);
+          var types = shuffle(fns.slice());
+          var picks = types.slice(0, Math.random() < 0.5 ? 4 : 5);
+          if (picks.length === 4) picks.push(pick(picks));
+          batch = shuffle(picks);
         }
         return function () { if (!batch.length) fill(); return batch.shift()(); };
       })()
@@ -4499,7 +4499,7 @@ function reciteBodyHTML(cfg) {
   }
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-25 规律题随机刷新'
+  var BUILD_TAG = '2026-10-25 规律题型去重'
   window.__BUILD_TAG = BUILD_TAG;
 
   // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====
