@@ -150,7 +150,7 @@
 
   <!-- 100以内口算练习纸 -->
   <div class="page" id="page-paper" style="display:none">
-    <h2 class="page-title">📄 100以内口算练习</h2>
+    <h2 class="page-title">📄 100以内加减法练习</h2>
     <div class="controls">
       <button class="primary" onclick="paperGradeAll()">✔ 一键批改</button>
       <button onclick="paperReset()">🔄 重新作答</button>
@@ -158,11 +158,11 @@
       <button onclick="paperShowAnswers(false)">隐藏全部答案</button>
       <button onclick="paperRefreshAll()">🎲 全部换一批</button>
       <button onclick="paperClearScratch()">🧹 清空草稿</button>
-      <button onclick="paperDownloadExcel()">⬇ 下载 Excel</button>
+      <button onclick="paperDownloadExcel()">⬇ 下载新版 Excel</button>
       <button onclick="openWrongBook()">📓 错题本 <span class="wb-badge">0</span></button>
-      <span class="score" id="paper-score">— / 20</span>
+      <span class="score" id="paper-score">— / 30</span>
     </div>
-    <p class="hint">每次 20 题，分 4 组：不进退位、进位退位、连加连减、填缺数。可以直接在 iPad 上作答并按组批改，也可以下载 Excel 和答案页打印。</p>
+    <p class="hint">每次 30 题：20 道口算（4 组）+ 5 道竖式计算 + 5 道规律与等量代换。可以直接在 iPad 上作答并按组批改；新版 Excel 内按 F9 可换题。</p>
     <div id="paper-modules"></div>
   </div>
 

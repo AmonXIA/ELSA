@@ -1562,11 +1562,28 @@
     },
     {
       id: 'p3', title: '三、连加连减', desc: '两步计算；可以在草稿区写分步过程。',
-      gen: function () { return pick([paperThreeAddAdd, paperThreeSubSub, paperThreeAddSub, paperThreeSubAdd])(); }
+      gen: (function () {
+        var n = 0, fns = [paperThreeAddAdd, paperThreeSubSub, paperThreeAddSub, paperThreeSubAdd, function () { return pick([paperThreeAddSub, paperThreeSubAdd])(); }];
+        return function () { return fns[(n++) % fns.length](); };
+      })()
     },
     {
       id: 'p4', title: '四、连加连减填缺数', desc: '根据得数倒推括号里的数；可以在草稿区写过程。',
-      gen: function () { return pick([paperFillMidAdd, paperFillMidSub, paperFillEndSub, paperFillEndAdd, paperFillFirst])(); }
+      gen: (function () {
+        var n = 0, fns = [paperFillMidAdd, paperFillMidSub, paperFillEndSub, paperFillEndAdd, paperFillFirst];
+        return function () { return fns[(n++) % fns.length](); };
+      })()
+    },
+    {
+      id: 'p5', title: '五、竖式计算', desc: '两个两位数相加减，注意进位和退位，答案写在横线下面。',
+      gen: (function () { var n = 0; return function () { n++; return n % 2 ? paperVerticalSub() : paperVerticalAdd(); }; })()
+    },
+    {
+      id: 'p6', title: '六、规律与等量代换', desc: '先观察规律或等量关系，再把括号里的数或图形填出来。',
+      gen: (function () {
+        var n = 0, fns = [paperPatternSeq, paperPatternShape, paperPatternSubst, paperPatternTri3, paperPatternTri2];
+        return function () { return fns[(n++) % fns.length](); };
+      })()
     }
   ];
   function paperNoCarryAdd() {
@@ -1625,6 +1642,52 @@
     var a = ri(30, 80), b = ri(10, 100 - a), c = ri(10, a - 20), t = a + b - c;
     return { q: '（　　） ＋ ' + b + ' － ' + c + ' ＝ ' + t, a: String(a), ansText: '（' + a + '） ＋ ' + b + ' － ' + c + ' ＝ ' + t };
   }
+  function paperVerticalAdd() {
+    var A = ri(1, 7), B = ri(1, 9), C = ri(1, 8 - A), D = ri(10 - B, 9);
+    var a = A * 10 + B, b = C * 10 + D, r = a + b;
+    return { x: a, y: b, op: '＋', q: a + ' ＋ ' + b + ' ＝ ?', a: String(r), ansText: a + ' ＋ ' + b + ' ＝ ' + r };
+  }
+  function paperVerticalSub() {
+    var A = ri(3, 9), B = ri(0, 8), C = ri(1, A - 2), D = ri(B + 1, 9);
+    var a = A * 10 + B, b = C * 10 + D, r = a - b;
+    return { x: a, y: b, op: '－', q: a + ' － ' + b + ' ＝ ?', a: String(r), ansText: a + ' － ' + b + ' ＝ ' + r };
+  }
+  function paperPatternSeq() {
+    var d = ri(5, 15), up = Math.random() < 0.5;
+    var first = up ? ri(1, 20) : ri(60, 99);
+    if (up && first + 4 * d > 100) first = Math.max(1, 100 - 4 * d);
+    if (!up && first - 4 * d < 0) first = Math.min(99, 4 * d);
+    var terms = [];
+    for (var i = 0; i < 5; i++) terms.push(first + (up ? i * d : -i * d));
+    var missing = terms[3];
+    var q = '按规律填数：' + terms[0] + '、' + terms[1] + '、' + terms[2] + '、（　）、' + terms[4];
+    return { q: q, a: String(missing), ansText: q.replace('（　）', '（' + missing + '）') };
+  }
+  function paperPatternShape() {
+    var p = pick([
+      { q: '● ○ ● ○ ● （　）', a: '○' },
+      { q: '○ ● ○ ● ○ （　）', a: '●' },
+      { q: '▲ ■ ▲ ■ ▲ （　）', a: '■' },
+      { q: '● ● ○ ● ● ○ ● （　）', a: '●' }
+    ]);
+    var q = '找规律，接着画：' + p.q;
+    return { q: q, a: p.a, ansText: q.replace('（　）', '（' + p.a + '）'), options: ['●', '○', '▲', '■'] };
+  }
+  function paperPatternSubst() {
+    var x = ri(2, 5), y = ri(2, 5), ans = x * y;
+    var q = '1个西瓜 ＝ ' + x + '个苹果，1个苹果 ＝ ' + y + '个桃子，1个西瓜 ＝（　）个桃子';
+    return { q: q, a: String(ans), ansText: q.replace('（　）', '（' + ans + '）') };
+  }
+  function paperPatternTri3() {
+    var v = ri(3, 9), total = v * 3;
+    var q = '△ ＋ △ ＋ △ ＝ ' + total + '，△ ＝（　）';
+    return { q: q, a: String(v), ansText: q.replace('（　）', '（' + v + '）') };
+  }
+  function paperPatternTri2() {
+    var total = ri(10, 25), v = ri(3, 7), ans = total - v;
+    var q = '△ ＋ ○ ＝ ' + total + '，△ ＝ ' + v + '，○ ＝（　）';
+    return { q: q, a: String(ans), ansText: q.replace('（　）', '（' + ans + '）') };
+  }
   function paperBuildSection(def) {
     var items = [], seen = {}, guard = 0;
     while (items.length < 5 && guard++ < 300) {
@@ -1641,9 +1704,9 @@
   }
   function paperSectionHTML(sec, idx) {
     regGeneric(sec.id, sec.title, sec.items.map(function (it) { return { q: it.q, a: it.a }; }));
-    var cls = sec.id === 'p4' ? 'mod-body text onecol' : 'mod-body text';
+    var cls = sec.id === 'p5' ? 'mod-body paper-vgrid' : (sec.id === 'p4' || sec.id === 'p6') ? 'mod-body text onecol' : 'mod-body text';
     var hasDraft = sec.id === 'p3' || sec.id === 'p4';
-    var secCls = 'mod paper-module' + (sec.id === 'p4' ? ' paper-fill' : '') + (hasDraft ? ' paper-draft' : '');
+    var secCls = 'mod paper-module' + ((sec.id === 'p4' || sec.id === 'p6') ? ' paper-fill' : '') + (hasDraft ? ' paper-draft' : '');
     var h = '<section class="' + secCls + '" id="paper-sec-' + sec.id + '">' +
       '<h2><span class="num">' + (idx + 1) + '</span>' + escapeHtml(sec.title) + ' <span class="badge">5题</span></h2>' +
       '<p class="intro">' + escapeHtml(sec.desc) + '</p>' +
@@ -1654,22 +1717,60 @@
         '<span class="sec-score" id="' + sec.id + '-score"></span>' +
       '</div><div class="' + cls + '" id="' + sec.id + '-body">';
     sec.items.forEach(function (it, i) {
-      var draft = hasDraft ? '<canvas class="scratch" width="2" height="2" aria-label="草稿区"></canvas>' : '';
-      var input = '<input class="paper-inline g-input" data-g="' + sec.id + '" data-i="' + i + '" type="text" inputmode="numeric" autocomplete="off">';
-      var qHtml;
-      if (sec.id === 'p4') {
-        var fillQ = escapeHtml(it.q).replace(/（[\s　]*）/, '（' + input + '）');
-        qHtml = '<div class="q"><span class="paper-no">' + (i + 1) + '.</span> ' + fillQ + ' <span class="mark"></span></div>';
-      } else {
-        var plainQ = escapeHtml(it.q).replace(/\s*＝\s*$/, '');
-        qHtml = '<div class="q"><span class="paper-no">' + (i + 1) + '.</span> ' + plainQ + ' ＝ <span class="paper-ans">（' + input + '）</span><span class="mark"></span></div>';
-      }
-      h += '<div class="calc-item paper-item" data-gi="' + sec.id + '-' + i + '">' +
-        '<div class="calc-main">' + qHtml +
-        '<button class="add-wrong" data-type="' + sec.id + '" data-i="' + i + '">＋错题本</button>' +
-        '<div class="reveal">答案：' + escapeHtml(it.a) + '</div></div>' + draft + '</div>';
+      if (sec.id === 'p5') h += paperVerticalItemHTML(sec, it, i);
+      else if (sec.id === 'p6') h += paperReasonItemHTML(sec, it, i);
+      else h += paperGenericItemHTML(sec, it, i, hasDraft);
     });
     return h + '</div></section>';
+  }
+  function paperGenericItemHTML(sec, it, i, hasDraft) {
+    var draft = hasDraft ? '<canvas class="scratch" width="2" height="2" aria-label="草稿区"></canvas>' : '';
+    var input = '<input class="paper-inline g-input" data-g="' + sec.id + '" data-i="' + i + '" type="text" inputmode="numeric" autocomplete="off">';
+    var qHtml;
+    if (sec.id === 'p4') {
+      var fillQ = escapeHtml(it.q).replace(/（[\s　]*）/, '（' + input + '）');
+      qHtml = '<div class="q"><span class="paper-no">' + (i + 1) + '.</span> ' + fillQ + ' <span class="mark"></span></div>';
+    } else {
+      var plainQ = escapeHtml(it.q).replace(/\s*＝\s*$/, '');
+      qHtml = '<div class="q"><span class="paper-no">' + (i + 1) + '.</span> ' + plainQ + ' ＝ <span class="paper-ans">（' + input + '）</span><span class="mark"></span></div>';
+    }
+    return '<div class="calc-item paper-item" data-gi="' + sec.id + '-' + i + '"><div class="calc-main">' + qHtml +
+      '<button class="add-wrong" data-type="' + sec.id + '" data-i="' + i + '">＋错题本</button>' +
+      '<div class="reveal">答案：' + escapeHtml(it.a) + '</div></div>' + draft + '</div>';
+  }
+  function paperVerticalItemHTML(sec, it, i) {
+    var input = '<input class="paper-inline pv-input g-input" data-g="' + sec.id + '" data-i="' + i + '" type="text" inputmode="numeric" placeholder="?" autocomplete="off">';
+    return '<div class="paper-item paper-vitem" data-gi="' + sec.id + '-' + i + '">' +
+      '<div class="pv-calc"><div class="pv-row">' + it.x + '</div><div class="pv-row">' + it.op + ' ' + it.y + '</div>' +
+      '<div class="pv-line"></div><div class="pv-answer">' + input + '<span class="mark"></span></div></div>' +
+      '<button class="add-wrong" data-type="' + sec.id + '" data-i="' + i + '">＋错题本</button>' +
+      '<div class="reveal">答案：' + escapeHtml(it.a) + '</div></div>';
+  }
+  function paperReasonItemHTML(sec, it, i) {
+    var input = '<input class="paper-inline g-input" data-g="' + sec.id + '" data-i="' + i + '" type="text" inputmode="numeric" autocomplete="off">';
+    var q = escapeHtml(it.q), extra = '';
+    if (it.options && it.options.length) {
+      q = q.replace(/（[\s　]*）/, '（<span class="paper-choice-sel">?</span>）');
+      extra = '<div class="paper-choice-row">' + it.options.map(function (v) {
+        return '<button type="button" class="paper-choice" data-v="' + escapeHtml(v) + '" onclick="paperPickChoice(this,\'' + sec.id + '\',' + i + ',\'' + escapeHtml(v) + '\')">' + escapeHtml(v) + '</button>';
+      }).join('') + '</div><input type="hidden" class="g-input paper-choice-input" data-g="' + sec.id + '" data-i="' + i + '" value="">';
+    } else {
+      q = q.replace(/（[\s　]*）/, '（' + input + '）');
+    }
+    return '<div class="calc-item paper-item" data-gi="' + sec.id + '-' + i + '"><div class="calc-main">' +
+      '<div class="q"><span class="paper-no">' + (i + 1) + '.</span> ' + q + ' <span class="mark"></span></div>' + extra +
+      '<button class="add-wrong" data-type="' + sec.id + '" data-i="' + i + '">＋错题本</button>' +
+      '<div class="reveal">答案：' + escapeHtml(it.a) + '</div></div></div>';
+  }
+  function paperPickChoice(btn, gid, i, v) {
+    var card = btn.closest('.paper-item');
+    if (!card) return;
+    card.querySelectorAll('.paper-choice').forEach(function (b) { b.classList.remove('sel'); });
+    btn.classList.add('sel');
+    var input = card.querySelector('.paper-choice-input');
+    if (input) input.value = v;
+    var shown = card.querySelector('.paper-choice-sel');
+    if (shown) shown.textContent = v;
   }
   function paperRender() {
     var host = document.getElementById('paper-modules');
@@ -1694,7 +1795,8 @@
     var correct = 0;
     sec.items.forEach(function (it, i) {
       var inp = document.querySelector('#paper-sec-' + id + ' .g-input[data-i="' + i + '"]');
-      var ok = inp ? gradeOne(inp.value, [it.a]) : false;
+      var ok = false;
+      if (inp) ok = it.options ? (String(inp.value) === String(it.a)) : gradeOne(inp.value, [it.a]);
       if (ok) correct++;
       var card = document.querySelector('.paper-item[data-gi="' + id + '-' + i + '"]');
       if (card) {
@@ -1712,7 +1814,7 @@
     var rec = dayRecord();
     rec.correct = correct; rec.total = total; rec.seconds = Math.round(seconds);
     rec.avg = total ? Math.round(seconds / total) : null; rec.acc = Math.round(acc * 100);
-    completeModule('paper', '口算练习', accBonus(acc), '正确率+' + accBonus(acc));
+    completeModule('paper', '100以内加减法', accBonus(acc), '正确率+' + accBonus(acc));
     saveStats();
   }
   function paperGradeAll() {
@@ -1730,12 +1832,14 @@
       card.classList.remove('right', 'wrong');
       var mk = card.querySelector('.mark'); if (mk) mk.textContent = '';
     });
+    document.querySelectorAll('#page-paper .paper-choice').forEach(function (b) { b.classList.remove('sel'); });
+    document.querySelectorAll('#page-paper .paper-choice-sel').forEach(function (x) { x.textContent = '?'; });
     document.querySelectorAll('#page-paper .mod-body').forEach(function (b) { b.classList.remove('show-ans'); });
     document.querySelectorAll('#page-paper .sec-score').forEach(function (s) { s.textContent = ''; });
-    setText('paper-score', '— / 20');
+    setText('paper-score', '— / 30');
   }
   function paperRefreshAll() {
-    PAPER = paperBuildAll(); paperRender(); paperReset(); toast('已换一批 20 题');
+    PAPER = paperBuildAll(); paperRender(); paperReset(); toast('已换一批 30 题');
   }
   function paperRefreshSection(id) {
     var idx = -1;
@@ -1744,7 +1848,7 @@
     PAPER[idx] = paperBuildSection(PAPER_DEFS[idx]);
     paperRenderSection(id);
     setText(id + '-score', '');
-    setText('paper-score', '— / 20');
+    setText('paper-score', '— / 30');
     toast('这一组已换新题');
   }
   function paperShowAnswers(open) {
@@ -1854,19 +1958,13 @@
     return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '_' + p(d.getHours()) + p(d.getMinutes());
   }
   function paperDownloadExcel() {
-    if (!PAPER) paperInit();
-    toast('正在生成 Excel…');
-    ensureExcelJS(function () {
-      paperExcelBuffer().then(function (buf) {
-        var blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        var a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = '100以内加减法练习_' + paperStamp() + '.xlsx';
-        document.body.appendChild(a); a.click();
-        setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
-        toast('Excel 已生成');
-      }).catch(function (e) { toast('生成 Excel 失败：' + e.message); });
-    }, function (e) { toast('Excel 组件加载失败：' + e.message); });
+    var a = document.createElement('a');
+    a.href = 'assets/100-math-practice-30.xlsx';
+    a.download = '100以内加减法练习_30题.xlsx';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { a.remove(); }, 800);
+    toast('新版 Excel 已开始下载，文件内按 F9 可换题');
   }
 
   /* ===== 磨耳朵 · 每日英语听读（100 篇，内置童声朗读音频 listen/audio/NN.mp3） ===== */
@@ -4394,7 +4492,7 @@ function reciteBodyHTML(cfg) {
   }
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-19 口诀基础/高级'
+  var BUILD_TAG = '2026-10-25 30题加减练习'
   window.__BUILD_TAG = BUILD_TAG;
 
   // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====

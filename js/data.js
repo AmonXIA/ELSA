@@ -11,7 +11,7 @@
         { id: 'calc', icon: '➗', title: '计算小练', sub: '30 题', act: "showPage('calc')", goal: true },        
         { id: 'think', icon: '🧠', title: '思维小练', sub: '12类+口诀', act: "showPage('think')", goal: true },
         { id: 'listen', icon: '🎧', title: '磨耳朵', sub: '每日听读', act: "showPage('listen')", goal: true },
-        { id: 'paper', icon: '📄', title: '口算练习', sub: '20题·Excel', act: "showPage('paper')", goal: false }
+        { id: 'paper', icon: '📄', title: '加减练习', sub: '30题·Excel', act: "showPage('paper')", goal: false }
       ],
       colors: { read: '#4f9cf7', sport: '#43b96a', chore: '#f0a13a', calc: '#f39bbd', think: '#9b7ede', listen: '#7c6cf0', paper: '#d9a441' }
     },
