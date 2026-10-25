@@ -1581,8 +1581,15 @@
     {
       id: 'p6', title: '六、规律与等量代换', desc: '先观察规律或等量关系，再把括号里的数或图形填出来。',
       gen: (function () {
-        var n = 0, fns = [paperPatternSeq, paperPatternShape, paperPatternSubst, paperPatternTri3, paperPatternTri2];
-        return function () { return fns[(n++) % fns.length](); };
+        var batch = [];
+        var fns = [paperPatternSeq, paperPatternShape, paperPatternSubst, paperPatternTri3, paperPatternTri2];
+        function fill() {
+          do {
+            batch = [];
+            for (var i = 0; i < 5; i++) batch.push(pick(fns));
+          } while (new Set(batch).size < 3);
+        }
+        return function () { if (!batch.length) fill(); return batch.shift()(); };
       })()
     }
   ];
@@ -4492,7 +4499,7 @@ function reciteBodyHTML(cfg) {
   }
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-25 30题加减练习'
+  var BUILD_TAG = '2026-10-25 规律题随机刷新'
   window.__BUILD_TAG = BUILD_TAG;
 
   // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====
