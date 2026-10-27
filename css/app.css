@@ -1743,6 +1743,10 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     .mult-fact .mf-eq { font-size: 16px; }
     .mult-hud { gap: 6px; font-size: 12px; }
     .mult-table-title { font-size: 22px; letter-spacing: 2px; }
-    .mult-tri-table .mcell { padding: 4px 1px; font-size: 11px; }
-    .mult-tri-table .mh { padding: 4px 1px; font-size: 12px; }
+    .mult-tri-wrap { padding: 3px; border-radius: 12px; }
+    .mult-tri-table { border-spacing: 2px; }
+    .mult-tri-table.max20 { min-width: 900px; }
+    .mult-tri-table .mcell { padding: 2px 0; font-size: 9px; letter-spacing: -.4px; }
+    .mult-tri-table .mcell .m-ans { font-size: 9px; }
+    .mult-tri-table .mh { padding: 3px 0; font-size: 10px; }
   }
