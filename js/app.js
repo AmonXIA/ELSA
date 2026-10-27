@@ -2532,10 +2532,11 @@
     var play = document.getElementById('mult-play-table');
     var basic = MULT_STATE.version === 'basic';
     document.querySelectorAll('.mult-cute-header').forEach(function (h) { h.style.display = basic ? 'none' : 'block'; });
-    [learn, play].forEach(function (w) { if (w) w.classList.toggle('mult-image-wrap', basic); });
+    if (learn) learn.classList.toggle('mult-image-wrap', basic);
+    if (play) play.classList.remove('mult-image-wrap');
     if (basic) {
       if (learn) learn.innerHTML = multWallpaperScene('learn');
-      if (play) play.innerHTML = multWallpaperScene('play');
+      if (play) play.innerHTML = multGridHTML(9, 'play');
     } else {
       if (learn) learn.innerHTML = multGridHTML(max, 'learn');
       if (play) play.innerHTML = multGridHTML(max, 'play');
@@ -4607,7 +4608,7 @@ function reciteBodyHTML(cfg) {
   }
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-27 原图口诀表'
+  var BUILD_TAG = '2026-10-27 9x9闯关统一'
   window.__BUILD_TAG = BUILD_TAG;
 
   // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====

@@ -1,5 +1,5 @@
 /* Elsa数学小练 · Service Worker（离线缓存） */
-const CACHE = 'elsa-math-v28';
+const CACHE = 'elsa-math-v29';
 const ASSETS = [
   './elsa.html',
   './css/app.css',
