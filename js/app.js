@@ -2529,12 +2529,43 @@
   function multRenderGrids() {
     var max = MULT_STATE.version === 'basic' ? 9 : 20;
     var learn = document.getElementById('mult-learn-table');
-    if (learn) learn.innerHTML = multGridHTML(max, 'learn');
     var play = document.getElementById('mult-play-table');
-    if (play) play.innerHTML = multGridHTML(max, 'play');
-    var title = document.getElementById('mult-table-title');
-    if (title) title.textContent = MULT_STATE.version === 'basic' ? '九九乘法口诀表' : '20×20 乘法表';
+    var basic = MULT_STATE.version === 'basic';
+    document.querySelectorAll('.mult-cute-header').forEach(function (h) { h.style.display = basic ? 'none' : 'block'; });
+    [learn, play].forEach(function (w) { if (w) w.classList.toggle('mult-image-wrap', basic); });
+    if (basic) {
+      if (learn) learn.innerHTML = multWallpaperScene('learn');
+      if (play) play.innerHTML = multWallpaperScene('play');
+    } else {
+      if (learn) learn.innerHTML = multGridHTML(max, 'learn');
+      if (play) play.innerHTML = multGridHTML(max, 'play');
+    }
     multUpdateStageUI();
+  }
+  function multWallpaperScene(mode) {
+    var h = '<div class="mult-wallpaper-scene"><img src="assets/mult-table-original.png" alt="九九乘法口诀表">';
+    if (mode === 'play') {
+      var x0 = 48, y0 = 224, cw = 113.6, rh = 54.6;
+      for (var r = 1; r <= 9; r++) {
+        for (var c = 1; c <= r; c++) {
+          if (r !== MULT_STATE.stage) continue;
+          var left = (x0 + (c - 1) * cw + 58) / 1112 * 100;
+          var top = (y0 + (r - 1) * rh + 4) / 800 * 100;
+          var width = (cw - 62) / 1112 * 100;
+          var height = (rh - 9) / 800 * 100;
+          var revealed = MULT_STATE.revealed && MULT_STATE.revealed[r + '-' + c];
+          h += '<button type="button" class="mult-ans-patch' + (revealed ? ' revealed' : '') + '" style="left:' + left + '%;top:' + top + '%;width:' + width + '%;height:' + height + '%" onclick="multWallpaperClick(this,' + r + ',' + c + ')" aria-label="显示答案">?</button>';
+        }
+      }
+    }
+    return h + '</div>';
+  }
+  function multWallpaperClick(btn, r, c) {
+    btn.classList.add('revealed');
+    MULT_STATE.revealed[r + '-' + c] = 1;
+    MULT_STATE.last = { a: c, b: r };
+    multUpdateStageUI();
+    multSpeak(multCn(c) + '乘' + multCn(r) + '等于' + multCn(c * r));
   }
   function multGridHTML(max, mode) {
     var colors = ['#a7d7a5','#f5cf67','#f0a468','#9ed1e8','#f2a6c4','#b8ddb0','#ef8d8d','#c6a7e8','#f3a8c1','#c9dcf6','#f2cb9d','#b7dfe7','#e6b3db','#cbd9f4','#f6c2b8','#c7e4be','#f5db9c','#bcd9ef','#e4c1e8','#f3c8d6'];
@@ -4576,7 +4607,7 @@ function reciteBodyHTML(cfg) {
   }
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-27 口诀页自检版'
+  var BUILD_TAG = '2026-10-27 原图口诀表'
   window.__BUILD_TAG = BUILD_TAG;
 
   // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====

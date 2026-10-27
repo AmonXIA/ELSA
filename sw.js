@@ -1,5 +1,5 @@
 /* Elsa数学小练 · Service Worker（离线缓存） */
-const CACHE = 'elsa-math-v27';
+const CACHE = 'elsa-math-v28';
 const ASSETS = [
   './elsa.html',
   './css/app.css',
@@ -15,6 +15,7 @@ const ASSETS = [
   './assets/listen-icon.png',
   './assets/shawn-module-icons.png',
   './assets/mult-cute-wallpaper.jpg',
+  './assets/mult-table-original.png',
   './apple-touch-icon.png',
   './elsa-logo.svg'
 ];

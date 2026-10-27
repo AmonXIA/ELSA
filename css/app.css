@@ -1673,6 +1673,32 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     border-radius: 0 0 16px 16px;
     background: #fffdfd;
   }
+  #mult-learn-table.mult-image-wrap, #mult-play-table.mult-image-wrap {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    max-height: none;
+    background: transparent;
+  }
+  .mult-wallpaper-scene { position: relative; width: 100%; line-height: 0; }
+  .mult-wallpaper-scene > img { display: block; width: 100%; height: auto; border-radius: 16px; }
+  .mult-ans-patch {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid #d8c7e4;
+    border-radius: 5px;
+    background: rgba(255, 253, 248, .97);
+    color: #b05d8b;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .mult-ans-patch.revealed { opacity: 0; visibility: hidden; pointer-events: none; }
   .mult-tri-table { width: 100%; border-collapse: separate; border-spacing: 3px; table-layout: fixed; }
   .mult-tri-table.max20 { width: 1500px; min-width: 1500px; }
   .mult-tri-table .mcorner {
@@ -1750,4 +1776,5 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     .mult-tri-table .mcell { padding: 2px 0; font-size: 9px; letter-spacing: -.4px; }
     .mult-tri-table .mcell .m-ans { font-size: 9px; }
     .mult-tri-table .mh { padding: 3px 0; font-size: 10px; }
+    .mult-wallpaper-scene { min-width: 720px; }
   }
