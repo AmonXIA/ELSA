@@ -2503,11 +2503,12 @@
         '<button class="mult-tab" data-mode="play" onclick="multMode(\'play\')">🎯 闯关</button>' +
       '</div>' +
       '<div id="mult-learn" class="mult-pane">' +
-        '<div class="mult-table-title" id="mult-table-title">九九乘法口诀表</div>' +
+        '<div class="mult-cute-header"><img src="assets/mult-cute-header.jpg" alt="九九乘法口诀表"></div>' +
         '<div class="mult-tri-wrap" id="mult-learn-table"></div>' +
         '<p class="mult-tip">点任意格子听一遍口诀；所有答案都显示。</p>' +
       '</div>' +
       '<div id="mult-play" class="mult-pane" style="display:none">' +
+        '<div class="mult-cute-header mult-cute-header-small"><img src="assets/mult-cute-header.jpg" alt="九九乘法口诀表"></div>' +
         '<div class="mult-play-bar">' +
           '<span class="mult-stage-label" id="mult-stage-label">第 1 关</span>' +
           '<span id="mult-stage-left"></span>' +
@@ -2531,9 +2532,19 @@
     if (learn) learn.innerHTML = multGridHTML(max, 'learn');
     var play = document.getElementById('mult-play-table');
     if (play) play.innerHTML = multGridHTML(max, 'play');
+    multAddBoy(learn);
+    multAddBoy(play);
     var title = document.getElementById('mult-table-title');
     if (title) title.textContent = MULT_STATE.version === 'basic' ? '九九乘法口诀表' : '20×20 乘法表';
     multUpdateStageUI();
+  }
+  function multAddBoy(wrap) {
+    if (!wrap || MULT_STATE.version !== 'basic') return;
+    var img = document.createElement('img');
+    img.className = 'mult-cute-boy';
+    img.src = 'assets/mult-cute-boy.png';
+    img.alt = '';
+    wrap.appendChild(img);
   }
   function multGridHTML(max, mode) {
     var colors = ['#a7d7a5','#f5cf67','#f0a468','#9ed1e8','#f2a6c4','#b8ddb0','#ef8d8d','#c6a7e8','#f3a8c1','#c9dcf6','#f2cb9d','#b7dfe7','#e6b3db','#cbd9f4','#f6c2b8','#c7e4be','#f5db9c','#bcd9ef','#e4c1e8','#f3c8d6'];
@@ -4575,7 +4586,7 @@ function reciteBodyHTML(cfg) {
   }
 
   // 构建版本号：显示在页脚，方便确认是否刷新到最新版
-  var BUILD_TAG = '2026-10-27 口诀表闯关'
+  var BUILD_TAG = '2026-10-27 可爱乘法表壁纸'
   window.__BUILD_TAG = BUILD_TAG;
 
   // ===== AI 输出整理：只去掉客套/思考残留与 LaTeX 碎片，不动数学步骤 =====

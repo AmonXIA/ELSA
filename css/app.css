@@ -1389,8 +1389,26 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
   }
   /* ===== 20×20 乘法口诀小游戏 ===== */
   .mult-game {
-    background: linear-gradient(145deg, #f8f2ff 0%, #eef7ff 58%, #fff8ee 100%);
-    border: 1px solid #eadcf4;
+    background: #fffdf8;
+    border: 5px solid #9b6b4f;
+    border-radius: 28px;
+    box-shadow: 0 10px 28px #7e523b1f;
+  }
+  .mult-cute-header { margin: 4px 0 12px; overflow: hidden; border-radius: 20px 20px 14px 14px; }
+  .mult-cute-header img { display: block; width: 100%; height: auto; }
+  .mult-tri-wrap { position: relative; }
+  .mult-cute-boy {
+    position: absolute;
+    top: 64px;
+    right: 18px;
+    width: 180px;
+    height: auto;
+    z-index: 1;
+    pointer-events: none;
+    opacity: .98;
+  }
+  @media (max-width: 800px) {
+    .mult-cute-boy { display: none; }
   }
   .mult-tabs { display: flex; gap: 8px; margin: 6px 0 14px; flex-wrap: wrap; }
   .mult-tab {
