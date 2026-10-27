@@ -1674,7 +1674,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     background: #fffdfd;
   }
   .mult-tri-table { width: 100%; border-collapse: separate; border-spacing: 3px; table-layout: fixed; }
-  .mult-tri-table.max20 { min-width: 1120px; }
+  .mult-tri-table.max20 { width: 1500px; min-width: 1500px; }
   .mult-tri-table .mcorner {
     width: 34px;
     padding: 6px 2px;
@@ -1746,7 +1746,7 @@ body.theme-shawn .module-grid { grid-template-columns: repeat(4, 1fr); max-width
     .mult-table-title { font-size: 22px; letter-spacing: 2px; }
     .mult-tri-wrap { padding: 3px; border-radius: 12px; }
     .mult-tri-table { border-spacing: 2px; }
-    .mult-tri-table.max20 { min-width: 900px; }
+    .mult-tri-table.max20 { width: 1200px; min-width: 1200px; }
     .mult-tri-table .mcell { padding: 2px 0; font-size: 9px; letter-spacing: -.4px; }
     .mult-tri-table .mcell .m-ans { font-size: 9px; }
     .mult-tri-table .mh { padding: 3px 0; font-size: 10px; }
