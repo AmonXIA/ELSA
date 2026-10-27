@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Elsa的每日数学小练</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#f39bbd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Elsa数学小练">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="./elsa-logo.svg">
+<link rel="stylesheet" href="./css/app.css">
+</head>
+<body>
+
+<div class="top-actions">
+  <button class="fs-btn" id="fs-btn" onclick="toggleFullscreen()" title="切换全屏">⛶</button>
+  <button class="fs-btn wb-btn" id="wb-quick-btn" onclick="openWrongBook()" title="错题本" aria-label="错题本">📓<span class="wb-badge" id="wb-badge-quick">0</span></button>
+  <button class="fs-btn gg-btn" id="gg-btn" onclick="toggleGradeMenu()" title="按组批改" aria-label="按组批改" style="display:none">&#10004;</button>
+  <button class="fs-btn ai-btn" id="ai-quick-btn" onclick="toggleSettingsMenu()" title="设置" aria-label="设置">&#9881;</button>
+</div>
+<div class="settings-panel" id="settings-panel">
+  <div class="sp-head">⚙️ 设置</div>
+  <div class="sp-version">当前版本 <b id="sp-build"></b></div>
+  <button type="button" class="sp-item" onclick="closeSettingsMenu();openAiSettings()"><b>🤖 AI 批改设置</b><small>接口、模型与草稿批改</small></button>
+  <button type="button" class="sp-item" onclick="forceReload()"><b>⟳ 刷新到最新版本</b><small>清理缓存并重新加载</small></button>
+</div>
+<div class="gg-panel" id="gg-panel"></div>
+
+
+<header class="hero">
+  <div class="brand">
+    <span>✨ <span id="brand-text">Elsa 的每日数学小练</span></span>
+    <span class="p-switch">
+      <button type="button" data-p="elsa" onclick="switchProfile('elsa')"><img class="p-ico" alt="Elsa" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNiAzNiI+PHBhdGggZmlsbD0iI0ZGQUMzMyIgZD0iTTE4IDRjNiAwIDE2IDMgMTYgMTZzMCAxNi0zIDE2LTctMy0xMy0zLTkuOTE1IDMtMTMgM2MtMy4zNDMgMC0zLTEyLTMtMTZDMiA3IDEyIDQgMTggNHoiLz48cGF0aCBmaWxsPSIjRkZEQzVEIiBkPSJNNiAxOS41NjJjMC04LjUyNiA1LjM3My0xNS40MzggMTItMTUuNDM4czEyIDYuOTEyIDEyIDE1LjQzOFMyNC42MjcgMzUgMTggMzUgNiAyOC4wODggNiAxOS41NjJ6Ii8+PHBhdGggZmlsbD0iI0RGMUYzMiIgZD0iTTE4IDMxYy0yLjM0NyAwLTMuNTc1LTEuMTYtMy43MDctMS4yOTMtLjM5MS0uMzkxLS4zOTEtMS4wMjMgMC0xLjQxNC4zODctLjM4OCAxLjAxMy0uMzkgMS40MDQtLjAxLjA1MS4wNDcuODA2LjcxNyAyLjMwMy43MTcgMS41MTkgMCAyLjI3My0uNjkgMi4zMDUtLjcxOS4zOTktLjM3NCAxLjAyNy0uMzYzIDEuNDA4LjAyOS4zNzkuMzkzLjM4IDEuMDExLS4wMDYgMS4zOTdDMjEuNTc1IDI5Ljg0IDIwLjM0NyAzMSAxOCAzMXoiLz48cGF0aCBmaWxsPSIjQzE2OTRGIiBkPSJNMTkgMjZoLTJjLS41NTIgMC0xLS40NDctMS0xcy40NDgtMSAxLTFoMmMuNTUzIDAgMSAuNDQ3IDEgMXMtLjQ0NyAxLTEgMXoiLz48cGF0aCBmaWxsPSIjRkZBQzMzIiBkPSJNMy4wNjQgMjVjLS4wMy0uMzI1LS4wNjQtLjY0Ny0uMDY0LTEgMC01IDMgLjU2MiAzLTMgMC0zLjU2MyAyLTQgNC02bDMtM3M1IDMgOSAzIDggMiA4IDYgMy0yIDMgM2MwIC4zNTUtLjAzMy42NzMtLjA1OCAxaDEuMDQ5QzM0IDIzLjUyMyAzNCAyMS44NjggMzQgMjAgMzQgNyAyNCAyIDE4IDJTMiA3IDIgMjBjMCAxLjE1OC0uMDI4IDIuOTg2LjAxMiA1aDEuMDUyeiIvPjxwYXRoIGZpbGw9IiNBN0E5QUMiIGQ9Ik04IDZoMjBWNWwtMy0xLTItMy0zIDEtMi0yLTIgMi0zLTEtMiAzLTMgMXoiLz48ZWxsaXBzZSBmaWxsPSIjRjFGMkYyIiBjeD0iMTgiIGN5PSIzLjUiIHJ4PSIxIiByeT0iMS41Ii8+PGNpcmNsZSBmaWxsPSIjRjFGMkYyIiBjeD0iMTQiIGN5PSI0IiByPSIxIi8+PGNpcmNsZSBmaWxsPSIjRjFGMkYyIiBjeD0iMjIiIGN5PSI0IiByPSIxIi8+PHBhdGggZmlsbD0iIzY2MjExMyIgZD0iTTEzIDIzYy0uNTUyIDAtMS0uNDQ3LTEtMXYtMmMwLS41NTMuNDQ4LTEgMS0xczEgLjQ0NyAxIDF2MmMwIC41NTMtLjQ0OCAxLTEgMXptMTAgMGMtLjU1MyAwLTEtLjQ0Ny0xLTF2LTJjMC0uNTUzLjQ0Ny0xIDEtMXMxIC40NDcgMSAxdjJjMCAuNTUzLS40NDcgMS0xIDF6Ii8+PC9zdmc+"> Elsa</button>
+      <button type="button" data-p="shawn" onclick="switchProfile('shawn')"><img class="p-ico" alt="Shawn" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNiAzNiI+PHBhdGggZmlsbD0iI0ZGQUMzMyIgZD0iTTExLjk4MyAzLjU2MmM0LjU0My0uMjYyIDcuODI0IDEuNTk3IDguMDg5IDYuODI2LjIxNSA0LjE5LTUuMTg0IDYuNzktOC4wNDYgNi44NzktMi40NjIuMDc3LTEuMzUzLTEuODUyLjYxLTIuMzM0IDEuNTc2LS4zODcgNC4xMjQtMi40MTMgMy42MDItNC40NC0uNTk3LTIuMzItNC4zMTUtMi42ODQtNi4zNTEuMjkyLS43OTggMS4xNjctMy41NTQuODczLTQuMDk2LS40MzQtLjk1OC0yLjMwOSAxLjIxMS02LjUwMiA2LjE5Mi02Ljc4OXoiLz48cGF0aCBmaWxsPSIjRTFFOEVEIiBkPSJNMzUuNzUgMjEuMzg0YzAtNy43ODMtNC40OTUtMTEuNDA3LTE0LjUxOS0xMS40MDctMS4wODcgMC0yLjA4My4wNTEtMy4wMTguMTM3LTEuMzYtMi40MjMtNC44NDUtMi44MjgtOC4yMTMtMi44MjgtNC4zMDQgMC0xMCA2LjE0NS0xMCAxMC44MzkgMCA0LjYwOCAzLjYwNiA0Ljg2NiA3LjgxMSA0Ljg3NC4yMzMgMy4yNDUgMS4yMjYgNS42NDcgMy4yNDkgNy4yNkMxMS4zMzcgMzEuNDA5IDEyLjU5NCAzNiAxNSAzNmMxLjM1MyAwIDIuMDk5LTEuNjk1IDIuNTEtMy40MTcgMS4xMjguMTM2IDIuMzU5LjIwOSAzLjcyMi4yMDkgMS43MzMgMCAzLjI4OC0uMTE2IDQuNjk1LS4zMzVDMjYuMDE3IDM0LjExNCAyNi40NTggMzYgMjggMzZjMi4zMTcgMCA0LjI3My00Ljk1NiA0LjgzNC02LjUyMSAxLjk2OS0xLjg3IDIuOTE2LTQuNTQ1IDIuOTE2LTguMDk1eiIvPjxjaXJjbGUgZmlsbD0iIzI5MkYzMyIgY3g9IjQuNSIgY3k9IjE1Ljc4NiIgcj0iMS41Ii8+PHBhdGggZmlsbD0iI0ZGQ0M0RCIgZD0iTTE3LjU2MiA0LjMzOWM0LjMxMiAxLjQ1NSA1Ljc0IDQuMTQ4IDQuMDM0IDkuMDk5LTEuMzY3IDMuOTY3LTcuMzQ1IDQuMzYxLTEwLjAzNCAzLjM3NUM5LjI1IDE1Ljk2NCAxMSAxNC41ODkgMTMgMTQuODc1YzEuNjA2LjIzIDQuNzI3LS42OTggNS0yLjc3M0MxOC4zMTIgOS43MjcgMTUgOCAxMiAxMGMtMS4xNzcuNzg1LTUuNzc0LjQzLTUuNS0uOTU4LjYzOC0zLjIyNiA2LjMzNS02LjI5OCAxMS4wNjItNC43MDN6Ii8+PC9zdmc+"> Shawn</button>
+    </span>
+  </div>
+  <div class="hero-top">
+    <div class="greet">
+      <h1><span id="greet-hi">下午好</span>，<span id="child-name" onclick="setName()">小朋友</span> 👋</h1>
+      <p id="greet-sub">今天也和我们一起收集星星吧！</p>
+    </div>
+    <div class="star-jar">
+      <div class="jar-title">我的星星罐</div>
+      <div class="jar-counts">
+        <span class="jar-star">⭐ <b id="pts-total">0</b> 颗</span>
+        <span class="jar-dia">💎 <b id="pts-diamond">0</b> 颗</span>
+      </div>
+      <div class="jar-today">今日 +<b id="pts-today-earn">0</b> 颗</div>
+    </div>
+    <img class="hero-art" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MjAiIGhlaWdodD0iNTIwIiB2aWV3Qm94PSIwIDAgNTIwIDUyMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFbHNhIOWGsOmbquWtl+aghyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJpY2UiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjNjU4ZGM3Ii8+PHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0iIzk1ODZjZiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2I0N2ViOSIvPjwvbGluZWFyR3JhZGllbnQ+PHJhZGlhbEdyYWRpZW50IGlkPSJoYWxvIj48c3RvcCBzdG9wLWNvbG9yPSIjZmZmZmZmIiBzdG9wLW9wYWNpdHk9Ii44NSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+PC9yYWRpYWxHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMjYwIiBjeT0iMjUwIiByPSIyMTAiIGZpbGw9InVybCgjaGFsbykiLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyNjIgMTY0KSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGM5YWQzIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PHBhdGggaWQ9ImFybSIgZD0iTTAgMFYtNjRNMC00MGwtMTctMTZNMC00MGwxNy0xNk0wLTE4bC0xMy0xMk0wLTE4bDEzLTEyIi8+PHVzZSBocmVmPSIjYXJtIiB0cmFuc2Zvcm09InJvdGF0ZSg2MCkiLz48dXNlIGhyZWY9IiNhcm0iIHRyYW5zZm9ybT0icm90YXRlKDEyMCkiLz48dXNlIGhyZWY9IiNhcm0iIHRyYW5zZm9ybT0icm90YXRlKDE4MCkiLz48dXNlIGhyZWY9IiNhcm0iIHRyYW5zZm9ybT0icm90YXRlKDI0MCkiLz48dXNlIGhyZWY9IiNhcm0iIHRyYW5zZm9ybT0icm90YXRlKDMwMCkiLz48L2c+PHRleHQgeD0iMjYwIiB5PSIzMTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9InVybCgjaWNlKSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsVGltZXMgTmV3IFJvbWFuLHNlcmlmIiBmb250LXNpemU9IjExMiIgZm9udC1zdHlsZT0iaXRhbGljIiBsZXR0ZXItc3BhY2luZz0iLTQiPkVsc2E8L3RleHQ+PHBhdGggZD0iTTEzNiAzNDRRMjYwIDM3MCAzODQgMzQ0IiBmaWxsPSJub25lIiBzdHJva2U9IiNjMmFiZGIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHRleHQgeD0iMjYwIiB5PSIzOTMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM5ZTgzYjYiIGZvbnQtZmFtaWx5PSJQaW5nRmFuZyBTQyxNaWNyb3NvZnQgWWFIZWksc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMCIgbGV0dGVyLXNwYWNpbmc9IjYiPuavj+S4gOWkqSDCtyDlsI/miJDplb88L3RleHQ+PGcgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjYjZiNGRkIiBzdHJva2Utd2lkdGg9IjEuNSI+PHBhdGggZD0iTTEyMiAxODlsNSAxNCAxNCA1LTE0IDUtNSAxNC01LTE0LTE0LTUgMTQtNXoiLz48cGF0aCBkPSJNNDA0IDE0OGw0IDExIDExIDQtMTEgNC00IDExLTQtMTEtMTEtNCAxMS00eiIvPjxjaXJjbGUgY3g9IjM3OSIgY3k9IjIyNyIgcj0iNCIvPjxjaXJjbGUgY3g9IjE1NCIgY3k9IjEyNiIgcj0iMyIvPjwvZz48L3N2Zz4=" alt="Elsa 冰雪字标" width="260" height="260">
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- 首页 Dashboard -->
+  <div class="page" id="page-dashboard">
+    <div class="growth-row">
+      <div class="garden-card">
+        <div class="card-head">🌸 秘密花园</div>
+        <div class="garden-plant" id="garden-plant">🌱</div>
+        <div class="garden-tip" id="garden-tip">小嫩芽探出头啦</div>
+        <div class="bar"><i id="garden-fill"></i></div>
+        <div class="garden-sub"><span id="garden-pct">0%</span> · 已收藏 <b id="garden-gifts">0</b> 件礼物</div>
+      </div>
+      <div class="goal-card">
+        <div class="card-head">🎯 今日小目标 <span class="goal-num" id="goal-progress">0/5</span></div>
+        <ul class="goal-list" id="goal-list"></ul>
+        <div class="goal-note"><span>🔥 连续 <b id="pts-streak">0</b> 天</span><span id="pts-today" class="goal-today">今日：未打卡</span></div>
+        <div class="goal-note"><a onclick="openPoints()">查看星星规则 →</a></div>
+      </div>
+    </div>
+    <div class="section-label"><h2>今天，进步一点点</h2><span>每日小事 · 满满成长</span></div>
+    <div class="module-grid" id="module-grid"></div>
+    <div class="card calendar-card">
+      <div class="card-head">📅 我的坚持日历</div>
+      <div id="calendar"></div>
+    </div>
+  </div>
+
+  <!-- 阅读 -->
+  <div class="page" id="page-listen" style="display:none">
+  <div class="wrap">
+    <h2 class="page-title">🎧 磨耳朵 · 每日英语听读</h2>
+    <p class="listen-tip">一天一篇，先听童声朗读（▶ 播放），再跟读一遍。播放时句子会同步高亮，点某一句可以单独听；下面还有生词、问题和参考译文。</p>
+    <div id="listen-body"></div>
+  </div>
+</div>
+<div class="page" id="page-read" style="display:none">
+    <h2 class="page-title">📖 阅读打卡</h2>
+    <div class="card">
+      <div class="card-head">阅读计时 <span class="task-timer" data-timer="read">15:00</span></div>
+      <div><button class="task-btn primary" onclick="startTimer('read')">▶ 开始计时</button><button class="task-btn" onclick="resetTimer('read')">重置</button></div>
+    </div>
+    <div class="card">
+      <div class="card-head">记录阅读</div>
+      <div class="log-form">
+        <label>书名/内容<input id="read-book" placeholder="今天读了什么"></label>
+        <label>页码<input id="read-page" type="number" inputmode="numeric" placeholder="读到第几页"></label>
+        <label>时长(分)<input id="read-min" type="number" inputmode="numeric" value="15"></label>
+        <label>日期<input id="read-date" type="date"></label>
+        <button class="primary-btn" onclick="saveRead()">保存记录</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">阅读记录</div>
+      <div id="read-log" class="log-list"></div>
+    </div>
+  </div>
+
+  <!-- 运动 -->
+  <div class="page" id="page-sport" style="display:none">
+    <h2 class="page-title">🏃 运动打卡</h2>
+    <div class="card">
+      <div class="card-head">运动计时 <span class="task-timer" data-timer="sport">30:00</span></div>
+      <div><button class="task-btn primary" onclick="startTimer('sport')">▶ 开始计时</button><button class="task-btn" onclick="resetTimer('sport')">重置</button></div>
+      <div class="goal-note" style="margin-top:8px"><button class="primary-btn" onclick="completeModule('sport','运动',0,'')">完成打卡</button></div>
+    </div>
+  </div>
+
+  <!-- 做家务 -->
+  <div class="page" id="page-chore" style="display:none">
+    <h2 class="page-title">🧹 做家务</h2>
+    <div class="card">
+      <div class="card-head">选一件家务完成</div>
+      <div class="chore-list" id="chore-list"></div>
+    </div>
+  </div>
+
+  <!-- 计算 -->
+  <div class="page" id="page-calc" style="display:none">
+    <h2 class="page-title">➗ 计算小练</h2>
+    <div class="controls">
+      <button class="primary" onclick="gradeAll()">✔ 一键批改</button>
+      <button onclick="resetCalc()">🔄 重新作答</button>
+      <button onclick="setAllCalcAnswers(true)">显示全部答案</button>
+      <button onclick="setAllCalcAnswers(false)">隐藏全部答案</button>
+      <button onclick="refreshAllCalc()">🎲 全部换一批</button>
+      <button onclick="openWrongBook()">📓 错题本 <span class="wb-badge">0</span></button>
+      <span class="score" id="score">— / 30</span>
+    </div>
+    <p class="hint">✍️ 在 iPad 上用 Apple Pencil 在答案框里直接写，系统会自动转成数字（需在 iPad 设置中开启“随手写”）。</p>
+    <div id="calc-modules"></div>
+  </div>
+
+  <!-- 100以内口算练习纸 -->
+  <div class="page" id="page-paper" style="display:none">
+    <h2 class="page-title">📄 100以内加减法练习</h2>
+    <div class="controls">
+      <button class="primary" onclick="paperGradeAll()">✔ 一键批改</button>
+      <button onclick="paperReset()">🔄 重新作答</button>
+      <button onclick="paperShowAnswers(true)">显示全部答案</button>
+      <button onclick="paperShowAnswers(false)">隐藏全部答案</button>
+      <button onclick="paperRefreshAll()">🎲 全部换一批</button>
+      <button onclick="paperClearScratch()">🧹 清空草稿</button>
+      <button onclick="paperDownloadExcel()">⬇ 下载新版 Excel</button>
+      <button onclick="openWrongBook()">📓 错题本 <span class="wb-badge">0</span></button>
+      <span class="score" id="paper-score">— / 30</span>
+    </div>
+    <p class="hint">每次 30 题：20 道口算（4 组）+ 5 道竖式计算 + 5 道规律与等量代换。可以直接在 iPad 上作答并按组批改；新版 Excel 内按 F9 可换题。</p>
+    <div id="paper-modules"></div>
+  </div>
+
+  <!-- 思维 -->
+  <div class="page" id="page-think" style="display:none">
+    <h2 class="page-title">🧠 思维小练</h2>
+    <div class="controls">
+      <button class="primary" onclick="setAnswers(true)">展开全部答案</button>
+      <button onclick="setAnswers(false)">收起全部答案</button>
+      <button onclick="refreshAllThink()">🎲 全部换一批</button>
+      <button onclick="openWrongBook()">📓 错题本 <span class="wb-badge" id="wb-badge">0</span></button>
+    </div>
+    <nav class="toc">
+      <h2>目录</h2>
+      <div class="links" id="toc-links"></div>
+    </nav>
+<div id="sections"></div>
+  </div>
+
+  <!-- 通用模块页（多科目 / 多孩子） -->
+  <div class="page" id="page-module" style="display:none">
+    <h2 class="page-title" id="module-title"></h2>
+    <div class="controls" id="module-toolbar"></div>
+    <div id="module-content"></div>
+  </div>
+
+  <footer id="foot-text">Elsa 的每日数学小练 · 阅读 / 运动 / 家务 / 计算 / 思维 · 加油！</footer>
+</div>
+
+<nav class="bottom-nav" id="bottom-nav"></nav>
+
+<div class="modal-backdrop" id="wb-modal">
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h2>📓 错题本 <span id="wb-count"></span></h2>
+      <button class="modal-close" onclick="closeWrongBook()">✕</button>
+    </div>
+    <div class="modal-actions">
+      <button onclick="exportWrong()">导出</button>
+      <button onclick="document.getElementById('wb-import').click()">导入</button>
+      <input type="file" id="wb-import" accept=".json,application/json" style="display:none" onchange="importWrong(event)">
+      <button onclick="printWrongBook()">打印</button>
+      <button class="danger" onclick="clearWrongBook()">清空</button>
+    </div>
+    <div class="wb-list" id="wb-list"></div>
+    <div class="modal-foot"><button class="primary" onclick="closeWrongBook()">关闭</button></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="pts-modal">
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h2>🏅 我的星星罐</h2>
+      <button class="modal-close" onclick="closePoints()">✕</button>
+    </div>
+    <div class="pts-summary">
+      <div class="pts-stat"><b id="pts-m-total">0</b><span>星星</span></div>
+      <div class="pts-stat"><b id="pts-m-diamond">0</b><span>钻石</span></div>
+      <div class="pts-stat"><b id="pts-m-streak">0</b><span>连续天数</span></div>
+      <div class="pts-stat"><b id="pts-m-best">—</b><span>最快平均/题</span></div>
+    </div>
+    <div class="pts-rules">
+      <h3>星星规则</h3>
+      <ul>
+        <li>✅ 每日打卡：完成一次练习 <b>+10⭐</b></li>
+        <li>🎯 正确率：≥90% <b>+10⭐</b>；80%~89% <b>+6⭐</b>；70%~79% <b>+3⭐</b></li>
+        <li>⚡ 提速奖励：刷新个人最快 <b>+5⭐</b></li>
+        <li>🔥 连续打卡：连续第 N 天 <b>+2×(N-1)⭐</b>（封顶 +20⭐）</li>
+        <li>💎 连续每满 7 天 <b>+1💎</b>，可兑换花园礼物</li>
+      </ul>
+    </div>
+    <div class="pts-history">
+      <h3>最近记录</h3>
+      <div id="pts-history"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="danger" onclick="resetPoints()">重置数据</button>
+    </div>
+    <div class="modal-foot"><button class="primary" onclick="closePoints()">关闭</button></div>
+  </div>
+</div>
+
+<script src="js/data-listen.js"></script>
+<script src="js/data-listen-timing.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./sw.js').catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
