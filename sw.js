@@ -1,12 +1,15 @@
 /* Elsa数学小练 · Service Worker（离线缓存） */
-const CACHE = 'elsa-math-v31';
+const CACHE = 'elsa-math-v32';
 const ASSETS = [
   './elsa.html',
   './css/app.css',
   './js/data-listen.js',
   './js/data-listen-timing.js',
   './js/data.js',
+  './js/data-v32.js',
   './js/app.js',
+  './js/app-v32.js',
+  './css/app-v32.css',
   './assets/100-math-practice-30.xlsx',
   './manifest.webmanifest',
   './icon-192.png',
